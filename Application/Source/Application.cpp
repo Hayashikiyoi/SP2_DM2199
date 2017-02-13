@@ -115,6 +115,7 @@ void Application::changeScene(int sceneNum)
 void Application::Run()
 {
 	//Main Loop
+	SceneManager::instance()->addScene(new SceneCalvert); //Scene 0 (Add more scene like this way)
 	SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
 
