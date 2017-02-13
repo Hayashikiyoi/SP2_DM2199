@@ -24,6 +24,8 @@ void SceneCalvert::Init()
 	// Init VBO here
 	lightEnable = true;
 
+	rotation = .0f;
+
 	//Emable depth test
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE); //Deletes the backface
@@ -45,21 +47,22 @@ void SceneCalvert::Init()
 		meshList[i] = NULL;
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
 	meshList[GEO_QUAD]->textureID = LoadTGA("Image//zelda.tga");
-
-	//Generate Meshes for skybox
-	GenerateSkybox();
-
-	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
-
-	meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
-	meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
 
 	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
+
+	//Generate Meshes for skybox
+	GenerateSkybox();
+
+	//Generate Text
+	GenerateText();
+
+	//Generate OBJ
+	GenerateOBJ();
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -133,6 +136,9 @@ void SceneCalvert::Init()
 
 void SceneCalvert::Update(double dt)
 {
+	//Rotation code
+	rotation = Math::RadianToDegree(atan2f(-camera.position.z, camera.position.x));
+
 	deltaTime = "FPS:" + std::to_string(1 / dt);
 
 	static float LSPEED = 10;
@@ -182,7 +188,6 @@ void SceneCalvert::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 
 	//This will be edited further when more levels are added
 	if (Application::IsKeyPressed(VK_F1))
@@ -244,6 +249,7 @@ void SceneCalvert::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Rotate(rotation, 0, 1, 0);
 	RenderMesh(meshList[GEO_BIKE], true);
 	modelStack.PopMatrix();
 
@@ -252,8 +258,6 @@ void SceneCalvert::Render()
 	//No transform needed
 	RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
 	//-------------------------------------------------------------------------------------
-
-
 }
 
 //Skybox
@@ -334,6 +338,20 @@ void SceneCalvert::GenerateSkybox()
 
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_LEFT]->textureID = LoadTGA("Image//skybox//left.tga");
+}
+
+//Text
+void SceneCalvert::GenerateText()
+{
+	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
+}
+
+//OBJ
+void SceneCalvert::GenerateOBJ()
+{
+	meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
+	meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
 }
 
 void SceneCalvert::RenderMesh(Mesh *mesh, bool enableLight)

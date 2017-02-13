@@ -84,7 +84,14 @@ private:
 	void GenerateSkybox();
 
 	//Any text here
+	void GenerateText();
 	string deltaTime;
+
+	//OBJ here
+	void GenerateOBJ();
+
+	//TEST TEST
+	float rotation;
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);

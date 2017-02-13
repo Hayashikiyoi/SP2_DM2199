@@ -31,26 +31,24 @@ void Camera3::Update(double dt)
 	up = right.Cross(view).Normalized();
 	if (Application::IsKeyPressed('A'))
 	{
-		position -= right * (float)(50.f * dt);
-		target = position + view * (float)(50.f * dt);
+		position -= right * (float)(CAMERA_SPEED * dt);
+		target = position + view * (float)(CAMERA_SPEED * dt);
 	}
 	if (Application::IsKeyPressed('D'))
 	{
-		position += right * (float)(50.f * dt);
-		target = position + view * (float)(50.f * dt);
+		position += right * (float)(CAMERA_SPEED * dt);
+		target = position + view * (float)(CAMERA_SPEED * dt);
 	}
 	if (Application::IsKeyPressed('W'))
 	{
-		position += view * (float)(50.f * dt);
-		target = position + view * (float)(50.f * dt);
+		position += view * (float)(CAMERA_SPEED * dt);
+		target = position + view * (float)(CAMERA_SPEED * dt);
 	}
 	if (Application::IsKeyPressed('S'))
 	{
-		position -= view * (float)(50.f * dt);
-		target = position + view * (float)(50.f * dt);
+		position -= view * (float)(CAMERA_SPEED * dt);
+		target = position + view * (float)(CAMERA_SPEED * dt);
 	}
-
-
 	if (Application::IsKeyPressed(VK_UP))
 	{
 		float pitch = (float)(CAMERA_SPEED * dt);
