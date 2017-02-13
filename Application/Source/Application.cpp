@@ -1,4 +1,3 @@
-
 #include "Application.h"
 
 //Include GLEW
@@ -11,13 +10,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "SceneUI.h"
+
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
 static int switchSceneNum;
 static bool changed;
+
+//Initialise global class
+SceneManager *SceneManager::s_instance = 0;
 
 //Define an error callback
 static void error_callback(int error, const char* description)
@@ -113,46 +115,26 @@ void Application::changeScene(int sceneNum)
 void Application::Run()
 {
 	//Main Loop
-	Scene *scene1 = new SceneUI();
-	Scene *scene2 = new SceneUI();
-	Scene *scene = new SceneUI();
-	
-	/*scene1->Init();
-	scene2->Init();*/
-	scene->Init();
+	SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
+	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
-	{
-		if (switchSceneNum == 1 && switchSceneNum != 2 && !changed)
-		{
-			scene->Exit();
-			scene = scene1;
-			scene->Init();
-			changed = true;
-		}
-			
-		else if (switchSceneNum == 2 && switchSceneNum != 3 && !changed)
-		{
-			scene->Exit();
-			scene = scene2;
-			scene->Init();
-			changed = true;
-		}
-			
-		scene->Update(m_timer.getElapsedTime());
-		scene->Render();
+	{		
+		//New Update function
+		SceneManager::instance()->sceneUpdate(m_timer.getElapsedTime());
+		//Render function
+		SceneManager::instance()->render();
 		//Swap buffers
 		glfwSwapBuffers(m_window);
 		//Get and organize events, like keyboard and mouse input, window resizing, etc...
 		glfwPollEvents();
-        m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.   
+        m_timer.waitUntil(frameTime); // Frame rate limiter. Limits each frame to a specified time in ms. 
 
 	} //Check if the ESC key had been pressed or if the window had been closed
-	scene->Exit();
-	/*scene1->Exit();
-	scene2->Exit();*/
-	delete scene;
+
+	SceneManager::instance()->end();
+	delete SceneManager::instance();
 }
 
 void Application::Exit()

@@ -205,8 +205,10 @@ void SceneUI::Update(double dt)
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	if (Application::IsKeyPressed(VK_F2))
-		Application::changeScene(2);
+
+	//This will be edited further when more levels are added
+	if (Application::IsKeyPressed(VK_F1))
+		SceneManager::instance()->changeScene(1);//Test Scene
 
 	camera.Update(dt);
 }

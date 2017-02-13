@@ -4,6 +4,9 @@
 
 #include "timer.h"
 
+//Scene Manager
+#include "SceneManager.h"
+
 class Application
 {
 public:
