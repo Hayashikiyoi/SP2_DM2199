@@ -12,6 +12,7 @@
 #include <stdlib.h>
 
 #include "SceneUI.h"
+#include "ChuanXu.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -113,9 +114,9 @@ void Application::changeScene(int sceneNum)
 void Application::Run()
 {
 	//Main Loop
-	Scene *scene1 = new SceneUI();
-	Scene *scene2 = new SceneUI();
-	Scene *scene = new SceneUI();
+	Scene *scene1 = new  ChuanXu();
+	Scene *scene2 = new ChuanXu();
+	Scene *scene = new ChuanXu();
 	
 	/*scene1->Init();
 	scene2->Init();*/
