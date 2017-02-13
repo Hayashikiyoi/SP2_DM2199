@@ -115,7 +115,8 @@ void Application::changeScene(int sceneNum)
 void Application::Run()
 {
 	//Main Loop
-	SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
+	//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
+	SceneManager::instance()->addScene(new Aloy_Scene);
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame

@@ -6,6 +6,7 @@
 
 //Level include here
 #include "SceneUI.h"
+#include "Aloy_Scene.h"
 
 using std::map;
 
