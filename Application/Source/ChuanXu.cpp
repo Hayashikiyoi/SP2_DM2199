@@ -81,9 +81,6 @@ void ChuanXu::Init()
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 
-	meshList[GEO_ROCK] = MeshBuilder::GenerateOBJ("Rock", "OBJ//Rock1.obj");
-	meshList[GEO_ROCK]->textureID = LoadTGA("Image//Rock");
-
 	meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//VendingMac.obj");
 	meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//VendingMac.tga");
 
@@ -366,10 +363,6 @@ void ChuanXu::Render()
 	RenderMesh(meshList[GEO_ITEM], true);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(5, 5, 5);
-	RenderMesh(meshList[GEO_ROCK], true);
-	modelStack.PopMatrix();
 }
 
 void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)

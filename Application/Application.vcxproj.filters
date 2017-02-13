@@ -50,6 +50,9 @@
     <ClCompile Include="Source\SceneUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SceneManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Source\ChuanXu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -100,7 +103,10 @@
     <ClInclude Include="Source\SceneUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ChuanXu.h">
+    <ClInclude Include="Source\SceneManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+<ClInclude Include="Source\ChuanXu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
