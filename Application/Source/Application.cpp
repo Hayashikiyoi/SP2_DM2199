@@ -10,7 +10,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
+#include "Scene_Calvert.h"
+#include "Aloy_Scene.h"
+#include "ChuanXu.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -115,8 +117,10 @@ void Application::changeScene(int sceneNum)
 void Application::Run()
 {
 	//Main Loop
-	SceneManager::instance()->addScene(new SceneCalvert); //Scene 0 (Add more scene like this way)
-	SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
+	SceneManager::instance()->addScene(new SceneCalvert);
+	//SceneManager::instance()->addScene(new Aloy_Scene);
+	//SceneManager::instance()->addScene(new ChuanXu);
+	//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame

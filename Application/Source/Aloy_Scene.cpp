@@ -1,4 +1,4 @@
-#include "SceneUI.h"
+#include "Aloy_Scene.h"
 #include "GL\glew.h"
 #include "Mtx44.h"
 #include "Application.h"
@@ -11,15 +11,15 @@
 #include "MyMath.h"
 using namespace Math;
 
-SceneUI::SceneUI()
+Aloy_Scene::Aloy_Scene()
 {
 }
 
-SceneUI::~SceneUI()
+Aloy_Scene::~Aloy_Scene()
 {
 }
 
-void SceneUI::Init()
+void Aloy_Scene::Init()
 {
 	// Init VBO here
 	rotateAngle = 0;
@@ -27,6 +27,11 @@ void SceneUI::Init()
 	translateX[1] = 0;
 	translateX[2] = 0;
 	scaleAll = 1;
+	TextSize = 30;
+	MenuSelect = 0;
+	TextChecking = true;
+	TextSwitching = false;
+
 	lightEnable = true;
 
 	//Emable depth test
@@ -49,9 +54,12 @@ void SceneUI::Init()
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 		meshList[i] = NULL;
 
-	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
-	meshList[GEO_QUAD]->textureID = LoadTGA("Image//zelda.tga");
+	//meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+	meshList[GEO_TITLE] = MeshBuilder::GenerateQuad("title", Color(1, 1, 1), 1, 1);
+	meshList[GEO_TITLE]->textureID = LoadTGA("Image//zelda.tga");
+
+	meshList[GEO_TEXT_1] = MeshBuilder::GenerateQuad("Text", Color(1, 1, 1), 1, 1);
+	meshList[GEO_TEXT_1]->textureID = LoadTGA("Image//zelda.tga");
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");
@@ -74,16 +82,6 @@ void SceneUI::Init()
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
 
-	meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
-	meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
-
-	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
-
-	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
-
-	meshList[GEO_ROBO8] = MeshBuilder::GenerateOBJ("ROBO8", "OBJ//Robo8.obj");
-	meshList[GEO_ROBO8]->textureID = LoadTGA("Image//Robo8.tga");
-
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
@@ -95,20 +93,6 @@ void SceneUI::Init()
 	m_parameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
 	m_parameters[U_LIGHTENABLED] = glGetUniformLocation(m_programID, "lightEnabled");
 
-	m_parameters[U_LIGHT0_POSITION] = glGetUniformLocation(m_programID, "lights[0].position_cameraspace");
-	m_parameters[U_LIGHT0_COLOR] = glGetUniformLocation(m_programID, "lights[0].color");
-	m_parameters[U_LIGHT0_POWER] = glGetUniformLocation(m_programID, "lights[0].power");
-	m_parameters[U_LIGHT0_KC] = glGetUniformLocation(m_programID, "lights[0].kC");
-	m_parameters[U_LIGHT0_KL] = glGetUniformLocation(m_programID, "lights[0].kL");
-	m_parameters[U_LIGHT0_KQ] = glGetUniformLocation(m_programID, "lights[0].kQ");
-
-	m_parameters[U_NUMLIGHTS] = glGetUniformLocation(m_programID, "numLights");
-	m_parameters[U_LIGHT0_TYPE] = glGetUniformLocation(m_programID, "lights[0].type");
-	m_parameters[U_LIGHT0_SPOTDIRECTION] = glGetUniformLocation(m_programID, "lights[0].spotDirection");
-	m_parameters[U_LIGHT0_COSCUTOFF] = glGetUniformLocation(m_programID, "lights[0].cosCutoff");
-	m_parameters[U_LIGHT0_COSINNER] = glGetUniformLocation(m_programID, "lights[0].cosInner");
-	m_parameters[U_LIGHT0_EXPONENT] = glGetUniformLocation(m_programID, "lights[0].exponent");
-
 	// Get a handle for our "colorTexture" uniform
 	m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
 	m_parameters[U_COLOR_TEXTURE] = glGetUniformLocation(m_programID, "colorTexture");
@@ -119,36 +103,6 @@ void SceneUI::Init()
 
 	glUseProgram(m_programID);
 
-	light[0].type = Light::LIGHT_SPOT;
-	light[0].position.Set(0, 20, 0);
-	light[0].color.Set(1, 1, 1);
-	light[0].power = 1;
-	light[0].kC = 1.f;
-	light[0].kL = 0.01f;
-	light[0].kQ = 0.001f;
-	light[0].cosCutoff = cos(Math::DegreeToRadian(45));
-	light[0].cosInner = cos(Math::DegreeToRadian(30));
-	light[0].exponent = 3.f;
-	light[0].spotDirection.Set(0.f, 1.f, 0.f);
-
-
-	//Make sure you pass uniform parameters after glUseProgram()
-	glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
-	glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
-	glUniform1f(m_parameters[U_LIGHT0_KC], light[0].kC);
-	glUniform1f(m_parameters[U_LIGHT0_KL], light[0].kL);
-	glUniform1f(m_parameters[U_LIGHT0_KQ], light[0].kQ);
-
-	glUniform1i(m_parameters[U_NUMLIGHTS], 1);
-	glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
-	glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
-	glUniform1f(m_parameters[U_LIGHT0_KC], light[0].kC);
-	glUniform1f(m_parameters[U_LIGHT0_KL], light[0].kL);
-	glUniform1f(m_parameters[U_LIGHT0_KQ], light[0].kQ);
-	glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
-	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
-	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
 
 	Mtx44 projection;
@@ -156,87 +110,54 @@ void SceneUI::Init()
 	projectionStack.LoadMatrix(projection);
 }
 
-void SceneUI::Update(double dt)
+void Aloy_Scene::Update(double dt)
 {
 	deltaTime = "FPS:" + std::to_string(1 / dt);
 
-	static float LSPEED = 10;
-
-	if (Application::IsKeyPressed('V'))
-		lightEnable = false;
-	if (Application::IsKeyPressed('B'))
-		lightEnable = true;
-
-	if (Application::IsKeyPressed('I'))
-		light[0].position.z -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('K'))
-		light[0].position.z += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('J'))
-		light[0].position.x -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('L'))
-		light[0].position.x += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('O'))
-		light[0].position.y -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('P'))
-		light[0].position.y += (float)(LSPEED * dt);
-
-	if (Application::IsKeyPressed('0'))
-	{
-		light[0].type = Light::LIGHT_POINT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	if (Application::IsKeyPressed('9'))
-	{
-		light[0].type = Light::LIGHT_DIRECTIONAL;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	if (Application::IsKeyPressed('8'))
-	{
-		light[0].type = Light::LIGHT_SPOT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-
-	//Cull back face
-	if (Application::IsKeyPressed('1'))
-		glEnable(GL_CULL_FACE);
-	if (Application::IsKeyPressed('2'))
-		glDisable(GL_CULL_FACE);
-
-	//Wireframe / not wireframe
-	if (Application::IsKeyPressed('3'))
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	if (Application::IsKeyPressed('4'))
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-
-	//This will be edited further when more levels are added
 	if (Application::IsKeyPressed(VK_F1))
 		SceneManager::instance()->changeScene(1);//Test Scene
+
+	if (TextChecking == true)
+	{
+		if (Application::IsKeyPressed(VK_RETURN))
+		{
+			TextSize = 0;
+			TextChecking = false;
+			Delaytimer = 0;
+		}
+	}
+	else if (TextChecking == false)
+	{
+		switch (MenuSelect)
+		{
+		case 0:
+			Delaytimer += (float)dt;
+			if (Delaytimer > 1.0)
+			{
+				if (Application::IsKeyPressed(VK_RETURN))
+					SceneManager::instance()->changeScene(0);
+				else if (Application::IsKeyPressed(VK_LEFT))
+					Delaytimer = 0;
+					MenuSelect == 1;
+			}
+		case 1:
+			Delaytimer += (float)dt;
+			if (Delaytimer > 1.0)
+			{
+				if (Application::IsKeyPressed(VK_RETURN))
+					//Aloy_Scene::Exit();
+					MenuSelect == 0;
+				else if (Application::IsKeyPressed(VK_LEFT))
+					MenuSelect == 0;
+			}
+		}
+	}
 
 	camera.Update(dt);
 }
 
-void SceneUI::Render()
+void Aloy_Scene::Render()
 {
-	if (light[0].type == Light::LIGHT_DIRECTIONAL)
-	{
-		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[0].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
-
 	//Initialize
 	Mtx44 MVP;
 
@@ -251,13 +172,6 @@ void SceneUI::Render()
 	modelStack.LoadIdentity();
 
 	//-------------------------------------------------------------------------------------
-	RenderMesh(meshList[GEO_AXES], false);
-
-	modelStack.PushMatrix();
-	modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
-	RenderMesh(meshList[GEO_LIGHTBALL], false);
-	modelStack.PopMatrix();
-
 	//Bottom
 	modelStack.PushMatrix();
 	//to do: transformation code here
@@ -314,29 +228,21 @@ void SceneUI::Render()
 	RenderMesh(meshList[GEO_BACK], false);
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	//scale, translate, rotate
-	RenderText(meshList[GEO_TEXT], "Bye Bye World", Color(0, 1, 0));
-	modelStack.PopMatrix();
-
-	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
-
-	modelStack.PushMatrix();
-	RenderMesh(meshList[GEO_BIKE], true);
-	modelStack.PopMatrix();
+	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 0, 0);
 
 	//No transform needed
-	RenderMeshOnScreen(meshList[GEO_QUAD], 10 ,10 ,10 ,10);
-	//-------------------------------------------------------------------------------------
+	RenderMeshOnScreen(meshList[GEO_TITLE], 40, 30, 40, 40);
 
 	modelStack.PushMatrix();
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[GEO_ROBO8], true);
+	RenderMeshOnScreen(meshList[GEO_TEXT_1], 30, 30, TextSize, TextSize);
+	
 	modelStack.PopMatrix();
+	//-------------------------------------------------------------------------------------
+
 
 }
 
-void SceneUI::RenderMesh(Mesh *mesh, bool enableLight)
+void Aloy_Scene::RenderMesh(Mesh *mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -379,7 +285,7 @@ void SceneUI::RenderMesh(Mesh *mesh, bool enableLight)
 	}
 }
 
-void SceneUI::RenderText(Mesh* mesh, std::string text, Color color)
+void Aloy_Scene::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -406,7 +312,7 @@ void SceneUI::RenderText(Mesh* mesh, std::string text, Color color)
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneUI::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void Aloy_Scene::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -451,7 +357,7 @@ void SceneUI::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, floa
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneUI::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void Aloy_Scene::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -474,7 +380,7 @@ void SceneUI::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 }
 
 
-void SceneUI::Exit()
+void Aloy_Scene::Exit()
 {
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{

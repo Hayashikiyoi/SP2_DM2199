@@ -1,8 +1,8 @@
-#ifndef SCENE_UI_H
-#define SCENE_UI_H
+#ifndef ALOY_SCENE_H
+#define ALOY_SCENE_H
 
 #include "Scene.h"
-#include "Camera3.h"
+#include "Camera4.h"
 #include "Mesh.h"
 #include "MatrixStack.h"
 #include "Light.h"
@@ -11,7 +11,7 @@
 #include <string>
 using std::string;
 
-class SceneUI : public Scene
+class Aloy_Scene : public Scene
 {
 
 	enum UNIFORM_TYPE
@@ -49,7 +49,8 @@ class SceneUI : public Scene
 	enum GEOMETRY_TYPE
 	{
 		GEO_AXES,
-		GEO_QUAD,
+		GEO_TITLE,
+		GEO_TEXT_1,
 		GEO_LIGHTBALL,
 		GEO_LEFT,
 		GEO_RIGHT,
@@ -60,7 +61,6 @@ class SceneUI : public Scene
 		GEO_BIKE,
 		GEO_TEXT,
 		GEO_DEBUGBOX,
-		GEO_ROBO8,
 		NUM_GEOMETRY,
 	};
 
@@ -74,11 +74,16 @@ private:
 
 	string deltaTime;
 
+	float TextSize;//resizing the image when checking left or right
+	bool TextChecking;//if they press Enter already
+	bool TextSwitching;//Checking the left and right button
+	int MenuSelect;
+	float Delaytimer;
 
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
-	Camera3 camera;
+	Camera4 camera;
 	MS modelStack, viewStack, projectionStack;
 
 	bool lightEnable;
@@ -91,11 +96,11 @@ private:
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
-	
+
 
 public:
-	SceneUI();
-	~SceneUI();
+	Aloy_Scene();
+	~Aloy_Scene();
 
 	virtual void Init();
 	virtual void Update(double dt);

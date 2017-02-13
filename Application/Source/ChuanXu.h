@@ -1,5 +1,5 @@
-#ifndef SCENE_UI_H
-#define SCENE_UI_H
+#ifndef CHUAN_XU_H
+#define CHUAN_XU_H
 
 #include "Scene.h"
 #include "Camera3.h"
@@ -11,7 +11,7 @@
 #include <string>
 using std::string;
 
-class SceneUI : public Scene
+class ChuanXu : public Scene
 {
 
 	enum UNIFORM_TYPE
@@ -60,7 +60,10 @@ class SceneUI : public Scene
 		GEO_BIKE,
 		GEO_TEXT,
 		GEO_DEBUGBOX,
-		GEO_ROBO8,
+		GEO_BB8_BODY,
+		GEO_VENDINGBODY,
+		GEO_VENDINGCOVER,
+		GEO_ITEM,
 		NUM_GEOMETRY,
 	};
 
@@ -78,10 +81,12 @@ private:
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
+	float openCover = 0;
 	Camera3 camera;
 	MS modelStack, viewStack, projectionStack;
 
 	bool lightEnable;
+	bool coverOpened = false;
 	Light light[1];
 	void RenderMesh(Mesh *mesh, bool enableLight);
 
@@ -91,11 +96,11 @@ private:
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
-	
+
 
 public:
-	SceneUI();
-	~SceneUI();
+	ChuanXu();
+	~ChuanXu();
 
 	virtual void Init();
 	virtual void Update(double dt);
