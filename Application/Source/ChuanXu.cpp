@@ -1,4 +1,4 @@
-#include "SceneUI.h"
+#include "ChuanXu.h"
 #include "GL\glew.h"
 #include "Mtx44.h"
 #include "Application.h"
@@ -11,15 +11,15 @@
 #include "MyMath.h"
 using namespace Math;
 
-SceneUI::SceneUI()
+ChuanXu::ChuanXu()
 {
 }
 
-SceneUI::~SceneUI()
+ChuanXu::~ChuanXu()
 {
 }
 
-void SceneUI::Init()
+void ChuanXu::Init()
 {
 	// Init VBO here
 	rotateAngle = 0;
@@ -37,7 +37,7 @@ void SceneUI::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Initialise camera
-	camera.Init(Vector3(0, 0, 0), Vector3(0, 0, -10), Vector3(0, 1, 0));
+	camera.Init(Vector3(40, 30, 30), Vector3(0, 0, -10), Vector3(0, 1, 0));
 
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -81,9 +81,15 @@ void SceneUI::Init()
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 
-	meshList[GEO_ROBO8] = MeshBuilder::GenerateOBJ("ROBO8", "OBJ//Robo8.obj");
-	meshList[GEO_ROBO8]->textureID = LoadTGA("Image//Robo8.tga");
+	meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//VendingMac.obj");
+	meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//VendingMac.tga");
 
+	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//VendingCover.obj");
+	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//VendingCover.tga");
+	meshList[GEO_VENDINGCOVER]->material.kShininess = 1;
+	
+	meshList[GEO_ITEM] = MeshBuilder::GenerateCube("Item", Color(0, 0, 0), 1,1,1);
+	
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
@@ -126,7 +132,7 @@ void SceneUI::Init()
 	light[0].kC = 1.f;
 	light[0].kL = 0.01f;
 	light[0].kQ = 0.001f;
-	light[0].cosCutoff = cos(Math::DegreeToRadian(45));
+	light[0].cosCutoff = cos(Math::DegreeToRadian(90));
 	light[0].cosInner = cos(Math::DegreeToRadian(30));
 	light[0].exponent = 3.f;
 	light[0].spotDirection.Set(0.f, 1.f, 0.f);
@@ -156,8 +162,10 @@ void SceneUI::Init()
 	projectionStack.LoadMatrix(projection);
 }
 
-void SceneUI::Update(double dt)
-{
+void ChuanXu::Update(double dt)
+{	
+	static float translateLimit = 1;
+	
 	deltaTime = "FPS:" + std::to_string(1 / dt);
 
 	static float LSPEED = 10;
@@ -166,6 +174,17 @@ void SceneUI::Update(double dt)
 		lightEnable = false;
 	if (Application::IsKeyPressed('B'))
 		lightEnable = true;
+	
+	if (Application::IsKeyPressed('Y'))
+		coverOpened = true;
+
+	if (coverOpened)
+	{	
+		if (translateLimit<-10)
+		translateLimit *= -1;
+		if (openCover <6)
+		openCover += (float)(10 * translateLimit*dt);
+	}
 
 	if (Application::IsKeyPressed('I'))
 		light[0].position.z -= (float)(LSPEED * dt);
@@ -208,15 +227,15 @@ void SceneUI::Update(double dt)
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-
-	//This will be edited further when more levels are added
-	if (Application::IsKeyPressed(VK_F1))
-		SceneManager::instance()->changeScene(1);//Test Scene
+	if (Application::IsKeyPressed(VK_F2))
+		Application::changeScene(2);
 
 	camera.Update(dt);
 }
 
-void SceneUI::Render()
+
+
+void ChuanXu::Render()
 {
 	if (light[0].type == Light::LIGHT_DIRECTIONAL)
 	{
@@ -321,22 +340,32 @@ void SceneUI::Render()
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
 
-	modelStack.PushMatrix();
-	RenderMesh(meshList[GEO_BIKE], true);
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//RenderMesh(meshList[GEO_BIKE], true);
+	//modelStack.PopMatrix();
 
 	//No transform needed
-	RenderMeshOnScreen(meshList[GEO_QUAD], 10 ,10 ,10 ,10);
+	RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
 	//-------------------------------------------------------------------------------------
 
 	modelStack.PushMatrix();
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[GEO_ROBO8], true);
+	modelStack.Scale(1, 1, 1);
+	RenderMesh(meshList[GEO_VENDINGBODY], true);
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, openCover, 0);
+	RenderMesh(meshList[GEO_VENDINGCOVER], true);
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 5, -1);
+	RenderMesh(meshList[GEO_ITEM], true);
 	modelStack.PopMatrix();
 
 }
 
-void SceneUI::RenderMesh(Mesh *mesh, bool enableLight)
+void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -379,7 +408,7 @@ void SceneUI::RenderMesh(Mesh *mesh, bool enableLight)
 	}
 }
 
-void SceneUI::RenderText(Mesh* mesh, std::string text, Color color)
+void ChuanXu::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -406,7 +435,7 @@ void SceneUI::RenderText(Mesh* mesh, std::string text, Color color)
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneUI::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void ChuanXu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -451,7 +480,7 @@ void SceneUI::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, floa
 	glEnable(GL_DEPTH_TEST);
 }
 
-void SceneUI::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void ChuanXu::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -474,7 +503,7 @@ void SceneUI::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 }
 
 
-void SceneUI::Exit()
+void ChuanXu::Exit()
 {
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{

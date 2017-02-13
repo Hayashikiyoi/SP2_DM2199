@@ -53,10 +53,7 @@
     <ClCompile Include="Source\SceneManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Aloy_Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Camera4.cpp">
+    <ClCompile Include="Source\ChuanXu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -109,7 +106,8 @@
     <ClInclude Include="Source\SceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Aloy_Scene.h">
+<ClInclude Include="Source\ChuanXu.h">
+<ClInclude Include="Source\Aloy_Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Camera4.h">
