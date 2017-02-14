@@ -16,7 +16,6 @@ public:
 	void Run();
 	void Exit();
 	static bool IsKeyPressed(unsigned short key);
-	static void changeScene(int sceneNum);
 
 private:
 	//Declare a window object

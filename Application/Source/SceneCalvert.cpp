@@ -24,7 +24,7 @@ void SceneCalvert::Init()
 	// Init VBO here
 	lightEnable = true;
 
-	rotation = .0f;
+	enemy1.position.x = enemy1.position.z = 20.f;
 
 	//Emable depth test
 	glEnable(GL_DEPTH_TEST);
@@ -136,9 +136,6 @@ void SceneCalvert::Init()
 
 void SceneCalvert::Update(double dt)
 {
-	//Rotation code
-	rotation = Math::RadianToDegree(atan2f(-camera.position.z, camera.position.x));
-
 	deltaTime = "FPS:" + std::to_string(1 / dt);
 
 	static float LSPEED = 10;
@@ -249,7 +246,8 @@ void SceneCalvert::Render()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Rotate(rotation, 0, 1, 0);
+	modelStack.Translate(enemy1.position.x, enemy1.position.y, enemy1.position.z);
+	modelStack.Rotate(enemy1.RotateToPlayer(camera.position), 0, 1, 0);
 	RenderMesh(meshList[GEO_BIKE], true);
 	modelStack.PopMatrix();
 

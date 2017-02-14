@@ -17,8 +17,6 @@
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
-static int switchSceneNum;
-static bool changed;
 
 //Initialise global class
 SceneManager *SceneManager::s_instance = 0;
@@ -44,8 +42,6 @@ bool Application::IsKeyPressed(unsigned short key)
 
 Application::Application()
 {
-	switchSceneNum = 0;
-	changed = true;
 }
 
 Application::~Application()
@@ -106,12 +102,6 @@ void Application::Init()
 		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
 		//return -1;
 	}
-}
-
-void Application::changeScene(int sceneNum)
-{
-	switchSceneNum = sceneNum;
-	changed = false;
 }
 
 void Application::Run()

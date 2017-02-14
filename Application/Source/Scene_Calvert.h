@@ -11,6 +11,9 @@
 #include <string>
 using std::string;
 
+//Extra include files here
+#include "Enemy.h"
+
 class SceneCalvert : public Scene
 {
 
@@ -91,7 +94,10 @@ private:
 	void GenerateOBJ();
 
 	//TEST TEST
-	float rotation;
+	/*float rotation;
+	Vector3 target;*/
+
+	Enemy enemy1;
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
