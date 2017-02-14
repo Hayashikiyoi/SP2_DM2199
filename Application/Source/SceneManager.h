@@ -37,6 +37,9 @@ public:
 
 	//Update scene
 	void sceneUpdate(float dt);
+
+	//End Game
+	void EndGame();
 	
 private:
 	//Here be levels
