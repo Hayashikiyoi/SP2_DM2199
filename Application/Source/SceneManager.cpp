@@ -40,8 +40,6 @@ void SceneManager::end()
 {
 	sceneManager[currentLevel]->Exit();
 }
-<<<<<<< HEAD
-=======
 
 void SceneManager::EndGame(bool end)
 {
@@ -52,4 +50,3 @@ bool SceneManager::EndCheck()
 {
 	return endCheck;
 }
->>>>>>> e83ed0c4032234ce5f498aaef9adcf1c169240be
