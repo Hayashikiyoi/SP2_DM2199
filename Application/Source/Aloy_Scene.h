@@ -50,7 +50,6 @@ class Aloy_Scene : public Scene
 	{
 		GEO_AXES,
 		GEO_TITLE,
-		GEO_TEXT_1,
 		GEO_LIGHTBALL,
 		GEO_LEFT,
 		GEO_RIGHT,
@@ -60,6 +59,7 @@ class Aloy_Scene : public Scene
 		GEO_BACK,
 		GEO_BIKE,
 		GEO_TEXT,
+		GEO_TEXT_1,
 		GEO_DEBUGBOX,
 		NUM_GEOMETRY,
 	};
@@ -75,6 +75,7 @@ private:
 	string deltaTime;
 
 	float TextSize;//resizing the image when checking left or right
+	float TextSize_2;
 	bool TextChecking;//if they press Enter already
 	bool TextSwitching;//Checking the left and right button
 	int MenuSelect;

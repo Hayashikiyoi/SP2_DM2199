@@ -27,7 +27,8 @@ void Aloy_Scene::Init()
 	translateX[1] = 0;
 	translateX[2] = 0;
 	scaleAll = 1;
-	TextSize = 30;
+	TextSize = 3;
+	TextSize_2 = 0;
 	MenuSelect = 0;
 	TextChecking = true;
 	TextSwitching = false;
@@ -58,9 +59,6 @@ void Aloy_Scene::Init()
 	meshList[GEO_TITLE] = MeshBuilder::GenerateQuad("title", Color(1, 1, 1), 1, 1);
 	meshList[GEO_TITLE]->textureID = LoadTGA("Image//zelda.tga");
 
-	meshList[GEO_TEXT_1] = MeshBuilder::GenerateQuad("Text", Color(1, 1, 1), 1, 1);
-	meshList[GEO_TEXT_1]->textureID = LoadTGA("Image//zelda.tga");
-
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");
 
@@ -81,6 +79,9 @@ void Aloy_Scene::Init()
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
+
+	meshList[GEO_TEXT_1] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT_1]->textureID = LoadTGA("Image//gothiclight.tga");
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -132,10 +133,11 @@ void Aloy_Scene::Update(double dt)
 		{
 		case 0:
 			Delaytimer += (float)dt;
+			TextSize_2 = 3;
 			if (Delaytimer > 1.0)
 			{
 				if (Application::IsKeyPressed(VK_RETURN))
-					SceneManager::instance()->changeScene(0);
+					SceneManager::instance()->changeScene(1);
 				else if (Application::IsKeyPressed(VK_LEFT))
 					Delaytimer = 0;
 					MenuSelect == 1;
@@ -145,8 +147,9 @@ void Aloy_Scene::Update(double dt)
 			if (Delaytimer > 1.0)
 			{
 				if (Application::IsKeyPressed(VK_RETURN))
-					//Aloy_Scene::Exit();
+				{
 					MenuSelect == 0;
+				}
 				else if (Application::IsKeyPressed(VK_LEFT))
 					MenuSelect == 0;
 			}
@@ -234,8 +237,8 @@ void Aloy_Scene::Render()
 	RenderMeshOnScreen(meshList[GEO_TITLE], 40, 30, 40, 40);
 
 	modelStack.PushMatrix();
-	RenderMeshOnScreen(meshList[GEO_TEXT_1], 30, 30, TextSize, TextSize);
-	
+	RenderTextOnScreen(meshList[GEO_TEXT_1], "Press Any Button", Color(0, 1, 0), TextSize, 5, 4);
+	RenderTextOnScreen(meshList[GEO_TEXT_1], "Start Game" , Color(0, 1, 0), TextSize_2, 8, 4);
 	modelStack.PopMatrix();
 	//-------------------------------------------------------------------------------------
 
