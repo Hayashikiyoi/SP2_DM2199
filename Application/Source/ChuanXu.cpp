@@ -86,10 +86,13 @@ void ChuanXu::Init()
 
 	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//VendingCover.obj");
 	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//VendingCover.tga");
-	meshList[GEO_VENDINGCOVER]->material.kShininess = 1;
 	
-	meshList[GEO_ITEM] = MeshBuilder::GenerateCube("Item", Color(0, 0, 0), 1,1,1);
-	
+	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("RoboBody", "OBJ//RoboBody.obj");
+	meshList[GEO_ROBOBODY]->textureID = LoadTGA("Image//RoboBody.tga");
+
+	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//RoboArm.obj");
+	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image//RoboArms.tga");
+
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
@@ -351,16 +354,22 @@ void ChuanXu::Render()
 	modelStack.PushMatrix();
 	modelStack.Scale(1, 1, 1);
 	RenderMesh(meshList[GEO_VENDINGBODY], true);
-
 	modelStack.PushMatrix();
 	modelStack.Translate(0, openCover, 0);
 	RenderMesh(meshList[GEO_VENDINGCOVER], true);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
+
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 5, -1);
-	RenderMesh(meshList[GEO_ITEM], true);
+	RenderMesh(meshList[GEO_ROBOBODY], true);
+	modelStack.PushMatrix();
+	RenderMesh(meshList[GEO_ROBOARMS], true);
+	modelStack.PopMatrix();
+	modelStack.PushMatrix();
+	modelStack.Translate(-0.95, 0, 0);
+	RenderMesh(meshList[GEO_ROBOARMS], true);
+	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
 }

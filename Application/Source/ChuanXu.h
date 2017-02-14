@@ -64,6 +64,8 @@ class ChuanXu : public Scene
 		GEO_VENDINGBODY,
 		GEO_VENDINGCOVER,
 		GEO_ITEM,
+		GEO_ROBOBODY,
+		GEO_ROBOARMS,
 		NUM_GEOMETRY,
 	};
 
