@@ -37,6 +37,10 @@ public:
 
 	//Update scene
 	void sceneUpdate(float dt);
+
+	//End Game bool
+	void EndGame(bool end);
+	bool EndCheck();
 	
 private:
 	//Here be levels
@@ -44,6 +48,7 @@ private:
 	size_t nextLevel; //For adding new level
 	map <size_t, Scene*> sceneManager; //Store level and level name
 	static SceneManager *s_instance; //For singleton scene management
+	bool endCheck;
 };
 
 #endif

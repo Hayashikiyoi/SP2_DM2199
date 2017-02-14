@@ -1,6 +1,6 @@
 #include "SceneManager.h"
 
-SceneManager::SceneManager() :currentLevel(0), nextLevel(0)
+SceneManager::SceneManager() :currentLevel(0), nextLevel(0), endCheck(false)
 {
 }
 SceneManager::~SceneManager()
@@ -39,4 +39,14 @@ void SceneManager::render()
 void SceneManager::end()
 {
 	sceneManager[currentLevel]->Exit();
+}
+
+void SceneManager::EndGame(bool end)
+{
+	endCheck = end;
+}
+
+bool SceneManager::EndCheck()
+{
+	return endCheck;
 }
