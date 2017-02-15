@@ -13,6 +13,7 @@
 #include "Scene_Calvert.h"
 #include "Aloy_Scene.h"
 #include "ChuanXu.h"
+#include "Wilson.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -108,7 +109,7 @@ void Application::Run()
 {
 	//Main Loop
 	//SceneManager::instance()->addScene(new Aloy_Scene);
-	SceneManager::instance()->addScene(new SceneCalvert);
+	SceneManager::instance()->addScene(new Wilson);
 	//SceneManager::instance()->addScene(new ChuanXu);
 	//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
