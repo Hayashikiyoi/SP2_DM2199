@@ -96,6 +96,7 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
+    <ClCompile Include="Source\Scene1tutorial.cpp" />
     <ClCompile Include="Source\SceneCalvert.cpp" />
     <ClCompile Include="Source\SceneManager.cpp" />
     <ClCompile Include="Source\SceneUI.cpp" />
@@ -121,6 +122,7 @@
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\MeshBuilder.h" />
     <ClInclude Include="Source\Scene.h" />
+    <ClInclude Include="Source\Scene1tutorial.h" />
     <ClInclude Include="Source\SceneManager.h" />
     <ClInclude Include="Source\SceneUI.h" />
     <ClInclude Include="Source\Scene_Calvert.h" />
