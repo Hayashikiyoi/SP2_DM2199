@@ -23,7 +23,7 @@ void Camera3::Init(const Vector3& pos, const Vector3& target, const Vector3& up)
 
 void Camera3::Update(double dt)
 {
-	static const float CAMERA_SPEED = 50.f;
+	static const float CAMERA_SPEED = 10.f;
 	Vector3 view = (target - position).Normalized();
 	Vector3 right = view.Cross(up);
 	right.y = 0;
@@ -51,7 +51,7 @@ void Camera3::Update(double dt)
 	}
 	if (Application::IsKeyPressed(VK_UP))
 	{
-		float pitch = (float)(CAMERA_SPEED * dt);
+		float pitch = (float)(CAMERA_SPEED * dt * 5);
 		Mtx44 rotation;
 		rotation.SetToRotation(pitch, right.x, right.y, right.z);
 		view = (rotation) * view;
@@ -60,7 +60,7 @@ void Camera3::Update(double dt)
 	}
 	if (Application::IsKeyPressed(VK_DOWN))
 	{
-		float pitch = (float)(-CAMERA_SPEED * dt);
+		float pitch = (float)(-CAMERA_SPEED * dt * 5);
 		Mtx44 rotation;
 		rotation.SetToRotation(pitch, right.x, right.y, right.z);
 		view = (rotation)* view;
@@ -69,7 +69,7 @@ void Camera3::Update(double dt)
 	}
 	if (Application::IsKeyPressed(VK_LEFT))
 	{
-		float yaw = (float)(CAMERA_SPEED * dt);
+		float yaw = (float)(CAMERA_SPEED * dt * 5);
 		Mtx44 rotation;
 		rotation.SetToRotation(yaw, 0, 1, 0);
 		view = (rotation)* view;
@@ -78,7 +78,7 @@ void Camera3::Update(double dt)
 	}
 	if (Application::IsKeyPressed(VK_RIGHT))
 	{
-		float yaw = (float)(-CAMERA_SPEED * dt);
+		float yaw = (float)(-CAMERA_SPEED * dt * 5);
 		Mtx44 rotation;
 		rotation.SetToRotation(yaw, 0, 1, 0);
 		view = (rotation)* view;

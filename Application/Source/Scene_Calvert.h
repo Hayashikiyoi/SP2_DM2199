@@ -93,11 +93,8 @@ private:
 	//OBJ here
 	void GenerateOBJ();
 
-	//TEST TEST
-	/*float rotation;
-	Vector3 target;*/
-
 	Enemy enemy1;
+	Enemy enemy2;
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
