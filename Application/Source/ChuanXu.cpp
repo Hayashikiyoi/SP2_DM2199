@@ -230,8 +230,8 @@ void ChuanXu::Update(double dt)
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	if (Application::IsKeyPressed(VK_F2))
-		Application::changeScene(2);
+	/*if (Application::IsKeyPressed(VK_F2))
+		Application::changeScene(2);*/
 
 	camera.Update(dt);
 }

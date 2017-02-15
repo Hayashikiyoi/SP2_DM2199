@@ -109,6 +109,7 @@
     <ClInclude Include="Source\Camera3.h" />
     <ClInclude Include="Source\ChuanXu.h" />
     <ClInclude Include="Source\Camera4.h" />
+    <ClInclude Include="Source\CollisionChecker.h" />
     <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\LoadOBJ.h" />
