@@ -74,9 +74,6 @@ void ChuanXu::Init()
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
 
-	meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
-	meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
-
 	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
@@ -92,6 +89,12 @@ void ChuanXu::Init()
 
 	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//RoboArm.obj");
 	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image//RoboArms.tga");
+
+	meshList[GEO_TURRETBODY] = MeshBuilder::GenerateOBJ("TurretBody", "OBJ//Turret_body.obj");
+	meshList[GEO_TURRETBODY]->textureID = LoadTGA("Image//Turret_body.tga");
+
+	meshList[GEO_TURRETHEAD] = MeshBuilder::GenerateOBJ("TurretHead", "OBJ//Turret_head.obj");
+	meshList[GEO_TURRETHEAD]->textureID = LoadTGA("Image//Turret_Head.tga");
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -372,6 +375,13 @@ void ChuanXu::Render()
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[GEO_TURRETBODY], true);
+	modelStack.PushMatrix();
+	RenderMesh(meshList[GEO_TURRETHEAD], true);
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
 }
 
 void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)
