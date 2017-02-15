@@ -7,11 +7,12 @@
 #include "MatrixStack.h"
 #include "Light.h"
 #include "Utility.h"
+#include "Enemy.h"
 
 #include <string>
 using std::string;
 
-class ChuanXu : public Scene
+class ChuanXu : public Scene , Enemy
 {
 
 	enum UNIFORM_TYPE
@@ -65,6 +66,7 @@ class ChuanXu : public Scene
 		GEO_ROBOARMS,
 		GEO_TURRETHEAD,
 		GEO_TURRETBODY,
+		GEO_BULLET,
 		NUM_GEOMETRY,
 	};
 
@@ -77,12 +79,19 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 
 	string deltaTime;
-
-
-	float rotateAngle;
+	Vector3 Robot;
+	Vector3 Bullet;
+	Enemy turret;
+	float rotateAngle ;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
 	float openCover = 0;
+	
+	void skyBox();
+	bool shootBullet = false;
+
+	
+
 	Camera3 camera;
 	MS modelStack, viewStack, projectionStack;
 
