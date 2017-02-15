@@ -31,6 +31,7 @@ public:
 	static Mesh* GenerateSTorus(const std::string &meshName, Color color,Color color2, unsigned numSlices = 12, unsigned numStacks = 12, float outerR = 10.f, float innerR = .5f);
 	static Mesh* GenerateOBJ(const std::string &meshName, const std::string &file_path);
 	static Mesh* MeshBuilder::GenerateText(const std::string &meshName, unsigned numRow, unsigned numCol);
+	static Mesh* GenerateGround(const std::string &meshName, Color color, float lengthX, float lengthY);
 };
 
 #endif
