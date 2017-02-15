@@ -110,7 +110,8 @@ void Application::Run()
 {
 	//Main Loop
 	//SceneManager::instance()->addScene(new Aloy_Scene);
-	SceneManager::instance()->addScene(new Scene1tutorial);
+	SceneManager::instance()->addScene(new SceneCalvert);
+	//SceneManager::instance()->addScene(new Scene1tutorial);
 	//SceneManager::instance()->addScene(new ChuanXu);
 	SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)

@@ -13,6 +13,7 @@ using std::string;
 
 //Extra include files here
 #include "Enemy.h"
+#include "CollisionChecker.h"
 
 class SceneCalvert : public Scene
 {
@@ -93,8 +94,12 @@ private:
 	//OBJ here
 	void GenerateOBJ();
 
+	//Enemy class
 	Enemy enemy1;
 	Enemy enemy2;
+
+	//Collider class
+	boxCollider box[5];
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);

@@ -11,10 +11,6 @@
 #include "MyMath.h"
 using namespace Math;
 
-#include "CollisionChecker.h"
-
-boxCollider box[5];
-
 SceneCalvert::SceneCalvert()
 {
 }
@@ -273,15 +269,16 @@ void SceneCalvert::Render()
 	RenderText(meshList[GEO_TEXT], "Bye Bye World", Color(0, 1, 0));
 	modelStack.PopMatrix();
 
+	//Bike test
 	modelStack.PushMatrix();
 	modelStack.Translate(enemy1.position.x, enemy1.position.y, enemy1.position.z);
-	//modelStack.Rotate(enemy1.RotateToPlayer(camera.position), 0, 1, 0);
+	modelStack.Rotate(enemy1.RotateToPlayer(camera.position), 0, 1, 0);
 	RenderMesh(meshList[GEO_BIKE], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(enemy2.position.x, enemy2.position.y, enemy2.position.z);
-	//modelStack.Rotate(enemy2.RotateToPlayer(camera.position), 0, 1, 0);
+	modelStack.Rotate(enemy2.RotateToPlayer(camera.position), 0, 1, 0);
 	RenderMesh(meshList[GEO_BIKE], true);
 	modelStack.PopMatrix();
 
