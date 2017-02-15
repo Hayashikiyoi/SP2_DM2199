@@ -17,8 +17,6 @@
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
-static int switchSceneNum;
-static bool changed;
 
 //Initialise global class
 SceneManager *SceneManager::s_instance = 0;
@@ -44,8 +42,6 @@ bool Application::IsKeyPressed(unsigned short key)
 
 Application::Application()
 {
-	switchSceneNum = 0;
-	changed = true;
 }
 
 Application::~Application()
@@ -108,16 +104,10 @@ void Application::Init()
 	}
 }
 
-void Application::changeScene(int sceneNum)
-{
-	switchSceneNum = sceneNum;
-	changed = false;
-}
-
 void Application::Run()
 {
 	//Main Loop
-	SceneManager::instance()->addScene(new Aloy_Scene);
+	//SceneManager::instance()->addScene(new Aloy_Scene);
 	SceneManager::instance()->addScene(new SceneCalvert);
 	//SceneManager::instance()->addScene(new ChuanXu);
 	//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)

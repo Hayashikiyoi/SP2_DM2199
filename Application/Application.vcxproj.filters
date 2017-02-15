@@ -65,7 +65,7 @@
     <ClCompile Include="Source\Camera4.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Fps_Camera.cpp">
+    <ClCompile Include="Source\Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -130,7 +130,10 @@
     <ClInclude Include="Source\Camera4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Fps_Camera.h">
+    <ClInclude Include="Source\Enemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CollisionChecker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

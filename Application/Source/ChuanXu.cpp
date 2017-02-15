@@ -74,9 +74,6 @@ void ChuanXu::Init()
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
 
-	meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
-	meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
-
 	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
@@ -86,10 +83,19 @@ void ChuanXu::Init()
 
 	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//VendingCover.obj");
 	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//VendingCover.tga");
-	meshList[GEO_VENDINGCOVER]->material.kShininess = 1;
 	
-	meshList[GEO_ITEM] = MeshBuilder::GenerateCube("Item", Color(0, 0, 0), 1,1,1);
-	
+	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("RoboBody", "OBJ//RoboBody.obj");
+	meshList[GEO_ROBOBODY]->textureID = LoadTGA("Image//RoboBody.tga");
+
+	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//RoboArm.obj");
+	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image//RoboArms.tga");
+
+	meshList[GEO_TURRETBODY] = MeshBuilder::GenerateOBJ("TurretBody", "OBJ//Turret_body.obj");
+	meshList[GEO_TURRETBODY]->textureID = LoadTGA("Image//Turret_body.tga");
+
+	meshList[GEO_TURRETHEAD] = MeshBuilder::GenerateOBJ("TurretHead", "OBJ//Turret_head.obj");
+	meshList[GEO_TURRETHEAD]->textureID = LoadTGA("Image//Turret_Head.tga");
+
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
@@ -227,8 +233,8 @@ void ChuanXu::Update(double dt)
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	if (Application::IsKeyPressed(VK_F2))
-		Application::changeScene(2);
+	/*if (Application::IsKeyPressed(VK_F2))
+		Application::changeScene(2);*/
 
 	camera.Update(dt);
 }
@@ -351,18 +357,31 @@ void ChuanXu::Render()
 	modelStack.PushMatrix();
 	modelStack.Scale(1, 1, 1);
 	RenderMesh(meshList[GEO_VENDINGBODY], true);
-
 	modelStack.PushMatrix();
 	modelStack.Translate(0, openCover, 0);
 	RenderMesh(meshList[GEO_VENDINGCOVER], true);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
+
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 5, -1);
-	RenderMesh(meshList[GEO_ITEM], true);
+	RenderMesh(meshList[GEO_ROBOBODY], true);
+	modelStack.PushMatrix();
+	RenderMesh(meshList[GEO_ROBOARMS], true);
+	modelStack.PopMatrix();
+	modelStack.PushMatrix();
+	modelStack.Translate(-0.95, 0, 0);
+	RenderMesh(meshList[GEO_ROBOARMS], true);
+	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
+
+	modelStack.PushMatrix();
+	RenderMesh(meshList[GEO_TURRETBODY], true);
+	modelStack.PushMatrix();
+	RenderMesh(meshList[GEO_TURRETHEAD], true);
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
 }
 
 void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)
