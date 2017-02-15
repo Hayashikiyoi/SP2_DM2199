@@ -9,7 +9,7 @@ public:
 	boxCollider();
 	~boxCollider();
 
-	bool colidecheck(Vector3 objMin, Vector3 objMax);
+	bool colidecheck(Vector3 objMin, Vector3 objMax); //Strictly to detect where player is at
 
 	Vector3 colliderBoxMin;
 	Vector3 colliderBoxMax;
