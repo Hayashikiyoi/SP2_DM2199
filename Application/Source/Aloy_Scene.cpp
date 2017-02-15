@@ -29,6 +29,7 @@ void Aloy_Scene::Init()
 	scaleAll = 1;
 	TextSize = 3;
 	TextSize_2 = 0;
+	TextSize_3 = 0;
 	MenuSelect = 0;
 	TextChecking = true;
 	TextSwitching = false;
@@ -44,7 +45,7 @@ void Aloy_Scene::Init()
 
 	//Initialise camera
 	camera.Init(Vector3(0, 0, 0), Vector3(0, 0, -10), Vector3(0, 1, 0));
-
+	//camera2.Init(Vector3(0,0,0), Vector3(0,0,-10),Vector3(0,1,0));
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
@@ -57,42 +58,23 @@ void Aloy_Scene::Init()
 
 	//meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_TITLE] = MeshBuilder::GenerateQuad("title", Color(1, 1, 1), 1, 1);
-	meshList[GEO_TITLE]->textureID = LoadTGA("Image//zelda.tga");
+	meshList[GEO_TITLE]->textureID = LoadTGA("Image//Title.tga");
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");
-
-	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//skybox//back.tga");
-
-	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//skybox//bottom.tga");
-
-	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//skybox//top.tga");
-
-	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//skybox//right.tga");
-
-	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//skybox//left.tga");
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
 
 	meshList[GEO_TEXT_1] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT_1]->textureID = LoadTGA("Image//gothiclight.tga");
+	meshList[GEO_TEXT_1]->textureID = LoadTGA("Image//ocrastd.tga");
+
+	meshList[GEO_TEXT_2] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT_2]->textureID = LoadTGA("Image//ocrastd.tga");
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
-	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
-	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
-	m_parameters[U_MATERIAL_AMBIENT] = glGetUniformLocation(m_programID, "material.kAmbient");
-	m_parameters[U_MATERIAL_DIFFUSE] = glGetUniformLocation(m_programID, "material.kDiffuse");
-	m_parameters[U_MATERIAL_SPECULAR] = glGetUniformLocation(m_programID, "material.kSpecular");
-	m_parameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
-	m_parameters[U_LIGHTENABLED] = glGetUniformLocation(m_programID, "lightEnabled");
 
 	// Get a handle for our "colorTexture" uniform
 	m_parameters[U_COLOR_TEXTURE_ENABLED] = glGetUniformLocation(m_programID, "colorTextureEnabled");
@@ -134,24 +116,32 @@ void Aloy_Scene::Update(double dt)
 		case 0:
 			Delaytimer += (float)dt;
 			TextSize_2 = 3;
-			if (Delaytimer > 1.0)
+			if (Delaytimer > 0.5)
 			{
 				if (Application::IsKeyPressed(VK_RETURN))
 					SceneManager::instance()->changeScene(1);
-				else if (Application::IsKeyPressed(VK_LEFT))
+				else if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
+				{
 					Delaytimer = 0;
-					MenuSelect == 1;
+					TextSize_2 = 0;
+					TextSize_3 = 3;
+					MenuSelect = 1;
+				}
 			}
 		case 1:
 			Delaytimer += (float)dt;
-			if (Delaytimer > 1.0)
+			if (Delaytimer > 0.5)
 			{
 				if (Application::IsKeyPressed(VK_RETURN))
 				{
-					MenuSelect == 0;
+					SceneManager::instance()->EndGame(true);
 				}
-				else if (Application::IsKeyPressed(VK_LEFT))
-					MenuSelect == 0;
+				else if (Application::IsKeyPressed(VK_LEFT)||Application::IsKeyPressed(VK_RIGHT))
+				{
+					Delaytimer = 0;
+					TextSize_3 = 0;
+					MenuSelect = 0;
+				}
 			}
 		}
 	}
@@ -175,70 +165,23 @@ void Aloy_Scene::Render()
 	modelStack.LoadIdentity();
 
 	//-------------------------------------------------------------------------------------
-	//Bottom
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(camera.position.x, camera.position.y - 498.f, camera.position.z);
-	modelStack.Rotate(90, 0, -1, 0);
-	modelStack.Rotate(90, -1, 0, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
-	RenderMesh(meshList[GEO_BOTTOM], false);
-	modelStack.PopMatrix();
-
-	//Top
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(camera.position.x, camera.position.y + 498.f, camera.position.z);
-	modelStack.Rotate(90, 0, -1, 0);
-	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
-	RenderMesh(meshList[GEO_TOP], false);
-	modelStack.PopMatrix();
-
 	//Front
 	modelStack.PushMatrix();
 	//to do: transformation code here
 	modelStack.Translate(camera.position.x, camera.position.y, camera.position.z - 498.f);
-	//modelStack.Rotate(90, -1, 0, 0);
 	modelStack.Scale(1000.f, 1000.f, 1000.f);
 	RenderMesh(meshList[GEO_FRONT], false);
-	modelStack.PopMatrix();
-
-	//Right
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(camera.position.x + 498.f, camera.position.y, camera.position.z);
-	modelStack.Rotate(90, 0, -1, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
-	RenderMesh(meshList[GEO_RIGHT], false);
-	modelStack.PopMatrix();
-
-	//Left
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(camera.position.x - 498.f, camera.position.y, camera.position.z);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
-	RenderMesh(meshList[GEO_LEFT], false);
-	modelStack.PopMatrix();
-
-	//Back
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(camera.position.x, camera.position.y, camera.position.z + 498.f);
-	modelStack.Rotate(180, 0, 1, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
-	RenderMesh(meshList[GEO_BACK], false);
 	modelStack.PopMatrix();
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 0, 0);
 
 	//No transform needed
-	RenderMeshOnScreen(meshList[GEO_TITLE], 40, 30, 40, 40);
+	RenderMeshOnScreen(meshList[GEO_TITLE], 40, 30, 50, 50);
 
 	modelStack.PushMatrix();
 	RenderTextOnScreen(meshList[GEO_TEXT_1], "Press Any Button", Color(0, 1, 0), TextSize, 5, 4);
 	RenderTextOnScreen(meshList[GEO_TEXT_1], "Start Game" , Color(0, 1, 0), TextSize_2, 8, 4);
+	RenderTextOnScreen(meshList[GEO_TEXT_2], "Quit Game", Color(0,1,0), TextSize_3 ,8.5,4);
 	modelStack.PopMatrix();
 	//-------------------------------------------------------------------------------------
 
@@ -253,22 +196,6 @@ void Aloy_Scene::RenderMesh(Mesh *mesh, bool enableLight)
 	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
 	modelView = viewStack.Top() * modelStack.Top();
 	glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
-	if (enableLight && lightEnable)
-	{
-		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
-		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
-		glUniformMatrix4fv(m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
-
-		//load material
-		glUniform3fv(m_parameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
-		glUniform3fv(m_parameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
-		glUniform3fv(m_parameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
-		glUniform1f(m_parameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
-	}
-	else
-	{
-		glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	}
 
 	if (mesh->textureID > 0)
 	{

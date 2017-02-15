@@ -90,6 +90,7 @@
     <ClCompile Include="Source\ChuanXu.cpp" />
     <ClCompile Include="Source\Camera4.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
+    <ClCompile Include="Source\Fps_Camera.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
     <ClCompile Include="Source\main.cpp" />
@@ -112,6 +113,7 @@
     <ClInclude Include="Source\Camera4.h" />
     <ClInclude Include="Source\CollisionChecker.h" />
     <ClInclude Include="Source\Enemy.h" />
+    <ClInclude Include="Source\Fps_Camera.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\LoadOBJ.h" />
     <ClInclude Include="Source\LoadTGA.h" />
