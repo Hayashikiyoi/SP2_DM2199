@@ -11,6 +11,10 @@
 #include "MyMath.h"
 using namespace Math;
 
+#include "CollisionChecker.h"
+
+boxCollider box[5];
+
 SceneCalvert::SceneCalvert()
 {
 }
@@ -24,7 +28,7 @@ void SceneCalvert::Init()
 	// Init VBO here
 	lightEnable = true;
 
-	enemy1.position.x = enemy1.position.z = 20.f;
+	enemy1.position.x = enemy1.position.z = 10.f;
 
 	//Emable depth test
 	glEnable(GL_DEPTH_TEST);
@@ -190,6 +194,36 @@ void SceneCalvert::Update(double dt)
 	if (Application::IsKeyPressed(VK_F1))
 		SceneManager::instance()->EndGame(true);//Test Scene
 
+	//Test Test Colliderbox
+	/*box[1].colliderBoxMax.x = box[1].colliderBoxMax.x + enemy1.position.x;
+	box[1].colliderBoxMax.z = box[1].colliderBoxMax.z + enemy1.position.z;
+	box[1].colliderBoxMin.x = box[1].colliderBoxMin.x + enemy1.position.x;
+	box[1].colliderBoxMin.z = box[1].colliderBoxMin.z + enemy1.position.z;*/
+
+	box[0].colliderBoxMax.x = camera.position.x + 1.f;
+	box[0].colliderBoxMax.z = 1.f + camera.position.z;
+	box[0].colliderBoxMin.x = -1.f + camera.position.x;
+	box[0].colliderBoxMin.z = -1.f + camera.position.z;
+
+	/*box[0].colliderBoxMax.x += camera.position.x;
+	box[0].colliderBoxMax.z += camera.position.z;
+	box[0].colliderBoxMin.x += camera.position.x;
+	box[0].colliderBoxMin.z += camera.position.z;*/
+
+	static Vector3 prevpos;
+	static Vector3 prevposTarget;
+	//Run checker
+	if (box[0].colidecheck(box[1].colliderBoxMin, box[1].colliderBoxMax))
+	{
+		deltaTime = "Wham bam";
+		camera.position = prevpos;
+		camera.target = prevposTarget;
+	}
+	else
+	{
+		prevpos = camera.position;
+		prevposTarget = camera.target;
+	}
 	camera.Update(dt);
 }
 
@@ -350,6 +384,20 @@ void SceneCalvert::GenerateOBJ()
 {
 	meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
 	meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
+	box[1].colliderBoxMax.x = .5f;
+	box[1].colliderBoxMax.z = .5f;
+	box[1].colliderBoxMin.x = -.5f;
+	box[1].colliderBoxMin.z = -.5f;
+
+	box[1].colliderBoxMax.x = box[1].colliderBoxMax.x + enemy1.position.x;
+	box[1].colliderBoxMax.z = box[1].colliderBoxMax.z + enemy1.position.z;
+	box[1].colliderBoxMin.x = box[1].colliderBoxMin.x + enemy1.position.x;
+	box[1].colliderBoxMin.z = box[1].colliderBoxMin.z + enemy1.position.z;
+
+	box[0].colliderBoxMax.x = 1.f;
+	box[0].colliderBoxMax.z = 1.f;
+	box[0].colliderBoxMin.x = -1.f;
+	box[0].colliderBoxMin.z = -1.f;
 }
 
 void SceneCalvert::RenderMesh(Mesh *mesh, bool enableLight)

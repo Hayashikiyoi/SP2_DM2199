@@ -25,17 +25,6 @@ class Aloy_Scene : public Scene
 		U_MATERIAL_SHININESS,
 		U_LIGHTENABLED,
 
-		U_LIGHT0_POSITION,
-		U_LIGHT0_COLOR,
-		U_LIGHT0_POWER,
-		U_LIGHT0_KC,
-		U_LIGHT0_KL,
-		U_LIGHT0_KQ,
-		U_LIGHT0_TYPE,
-		U_LIGHT0_SPOTDIRECTION,
-		U_LIGHT0_COSCUTOFF,
-		U_LIGHT0_COSINNER,
-		U_LIGHT0_EXPONENT,
 		U_COLOR_TEXTURE_ENABLED,
 		U_COLOR_TEXTURE,
 
@@ -50,17 +39,10 @@ class Aloy_Scene : public Scene
 	{
 		GEO_AXES,
 		GEO_TITLE,
-		GEO_LIGHTBALL,
-		GEO_LEFT,
-		GEO_RIGHT,
-		GEO_TOP,
-		GEO_BOTTOM,
 		GEO_FRONT,
-		GEO_BACK,
-		GEO_BIKE,
 		GEO_TEXT,
 		GEO_TEXT_1,
-		GEO_DEBUGBOX,
+		GEO_TEXT_2,
 		NUM_GEOMETRY,
 	};
 
@@ -75,7 +57,8 @@ private:
 	string deltaTime;
 
 	float TextSize;//resizing the image when checking left or right
-	float TextSize_2;
+	float TextSize_2;//resizing text for scene for startgame
+	float TextSize_3; //resizing text for scene for exit game
 	bool TextChecking;//if they press Enter already
 	bool TextSwitching;//Checking the left and right button
 	int MenuSelect;
