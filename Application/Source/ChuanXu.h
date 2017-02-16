@@ -67,6 +67,7 @@ class ChuanXu : public Scene , Enemy
 		GEO_TURRETHEAD,
 		GEO_TURRETBODY,
 		GEO_BULLET,
+		GEO_BOSSHEAD,
 		NUM_GEOMETRY,
 	};
 
@@ -86,9 +87,11 @@ private:
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
 	float openCover = 0;
+	float DelayTimer;
 	
 	void skyBox();
 	bool shootBullet = false;
+	bool bulletInChamber = true;
 
 	
 
