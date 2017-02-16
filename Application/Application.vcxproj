@@ -89,6 +89,7 @@
     <ClCompile Include="Source\Camera3.cpp" />
     <ClCompile Include="Source\ChuanXu.cpp" />
     <ClCompile Include="Source\Camera4.cpp" />
+    <ClCompile Include="Source\CollisionChecker.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
     <ClCompile Include="Source\Fps_Camera.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
@@ -97,6 +98,7 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
+    <ClCompile Include="Source\Scene1tutorial.cpp" />
     <ClCompile Include="Source\Scene4_Boss.cpp" />
     <ClCompile Include="Source\SceneCalvert.cpp" />
     <ClCompile Include="Source\SceneManager.cpp" />

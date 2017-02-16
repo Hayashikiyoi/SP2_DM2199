@@ -1,4 +1,4 @@
-#include "Scene_Calvert.h"
+#include "Scene1tutorial.h"
 #include "GL\glew.h"
 #include "Mtx44.h"
 #include "Application.h"
@@ -11,17 +11,22 @@
 #include "MyMath.h"
 using namespace Math;
 
-SceneCalvert::SceneCalvert()
+Scene1tutorial::Scene1tutorial()
+{ 
+}
+
+Scene1tutorial::~Scene1tutorial()
 {
 }
 
-SceneCalvert::~SceneCalvert()
-{
-}
-
-void SceneCalvert::Init()
+void Scene1tutorial::Init()
 {
 	// Init VBO here
+	rotateAngle = 0;
+	translateX[0] = 0;
+	translateX[1] = 0;
+	translateX[2] = 0;
+	scaleAll = 1;
 	lightEnable = true;
 
 	//Emable depth test
@@ -45,22 +50,54 @@ void SceneCalvert::Init()
 		meshList[i] = NULL;
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
 	meshList[GEO_QUAD]->textureID = LoadTGA("Image//zelda.tga");
+
+	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skyboxtutorial//front.tga");
+
+	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_BACK]->textureID = LoadTGA("Image//skyboxtutorial//back.tga");
+
+	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//skyboxtutorial//bottom.tga");
+
+	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_TOP]->textureID = LoadTGA("Image//skyboxtutorial//top.tga");
+
+	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//skyboxtutorial//right.tga");
+
+	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_LEFT]->textureID = LoadTGA("Image//skyboxtutorial//left.tga");
+
+	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
+
+	meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
+	meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
+
+	meshList[GEO_ROCK] = MeshBuilder::GenerateOBJ("Rock", "OBJ//Rock1.obj");
+	meshList[GEO_ROCK]->textureID = LoadTGA("Image//model//Rock.tga");
+
+	meshList[GEO_GROUND] = MeshBuilder::GenerateGround("quad", Color(1, 1, 1), 1, 1);
+	meshList[GEO_GROUND]->textureID = LoadTGA("Image//model//ground.tga");
+
+	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//star wars doors.obj");
+	meshList[GEO_DOOR]->textureID = LoadTGA("Image//model//star wars doors.tga");
+
+	meshList[GEO_BOULDER] = MeshBuilder::GenerateOBJ("Boulder", "OBJ//boulder.obj");
+	meshList[GEO_BOULDER]->textureID = LoadTGA("Image//model//Rock.tga");
+
+	meshList[GEO_BLUEKEYCARD] = MeshBuilder::GenerateOBJ("keycard", "OBJ//keycard.obj");
+	meshList[GEO_BLUEKEYCARD]->textureID = LoadTGA("Image//model//bluekeycard.tga");
 
 	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 
-	//Generate Meshes for skybox
-	GenerateSkybox();
-
-	//Generate Text
-	GenerateText();
-
-	//Generate OBJ
-	GenerateOBJ();
+	/*meshList[GEO_ROBO8] = MeshBuilder::GenerateOBJ("ROBO8", "OBJ//Robo8.obj");
+	meshList[GEO_ROBO8]->textureID = LoadTGA("Image//Robo8.tga");*/
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -109,6 +146,7 @@ void SceneCalvert::Init()
 	light[0].exponent = 3.f;
 	light[0].spotDirection.Set(0.f, 1.f, 0.f);
 
+
 	//Make sure you pass uniform parameters after glUseProgram()
 	glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
 	glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
@@ -127,12 +165,13 @@ void SceneCalvert::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
+
 	Mtx44 projection;
 	projection.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
 	projectionStack.LoadMatrix(projection);
 }
 
-void SceneCalvert::Update(double dt)
+void Scene1tutorial::Update(double dt)
 {
 	deltaTime = "FPS:" + std::to_string(1 / dt);
 
@@ -184,37 +223,15 @@ void SceneCalvert::Update(double dt)
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+
 	//This will be edited further when more levels are added
 	if (Application::IsKeyPressed(VK_F1))
-		SceneManager::instance()->EndGame(true);//Test Scene
+		SceneManager::instance()->changeScene(1);//Test Scene
 
-	//Test Test Colliderbox
-	//Player collider
-	box[0].updatePos(camera.position);
-
-	static Vector3 prevpos;
-	static Vector3 prevposTarget;
-	//Run checker
-	for (int i = 1; i != 3; i++)
-	{
-		if (box[0].colidecheck(box[i].getmin(), box[i].getmax()))
-		{
-			deltaTime = "Wham bam";
-			camera.position = prevpos;
-			camera.target = prevposTarget;
-			break;
-		}
-		else if (i == 2)//Max value thx
-		{
-			prevpos = camera.position;
-			prevposTarget = camera.target;
-		}
-	}
-	
 	camera.Update(dt);
 }
 
-void SceneCalvert::Render()
+void Scene1tutorial::Render()
 {
 	if (light[0].type == Light::LIGHT_DIRECTIONAL)
 	{
@@ -256,44 +273,11 @@ void SceneCalvert::Render()
 	RenderMesh(meshList[GEO_LIGHTBALL], false);
 	modelStack.PopMatrix();
 
-	//Render skybox
-	modelStack.PushMatrix();
-	modelStack.Translate(camera.position.x, camera.position.y, camera.position.z);
-	RenderSkybox();
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	RenderText(meshList[GEO_TEXT], "Bye Bye World", Color(0, 1, 0));
-	modelStack.PopMatrix();
-
-	//Bike test
-	modelStack.PushMatrix();
-	modelStack.Translate(enemy1.position.x, enemy1.position.y, enemy1.position.z);
-	modelStack.Rotate(enemy1.RotateToPlayer(camera.position), 0, 1, 0);
-	RenderMesh(meshList[GEO_BIKE], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(enemy2.position.x, enemy2.position.y, enemy2.position.z);
-	modelStack.Rotate(enemy2.RotateToPlayer(camera.position), 0, 1, 0);
-	RenderMesh(meshList[GEO_BIKE], true);
-	modelStack.PopMatrix();
-
-	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 2.5f, 0, 0);
-
-	//No transform needed
-	RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
-	//-------------------------------------------------------------------------------------
-}
-
-//Skybox
-void SceneCalvert::RenderSkybox()
-{
 	//Bottom
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(0, -498.f, 0);
-	modelStack.Rotate(90, 0, -1, 0);
+	modelStack.Translate(camera.position.x, camera.position.y - 498.f, camera.position.z);
+
 	modelStack.Rotate(90, -1, 0, 0);
 	modelStack.Scale(1000.f, 1000.f, 1000.f);
 	RenderMesh(meshList[GEO_BOTTOM], false);
@@ -302,8 +286,8 @@ void SceneCalvert::RenderSkybox()
 	//Top
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(0, 498.f, 0);
-	modelStack.Rotate(90, 0, -1, 0);
+	modelStack.Translate(camera.position.x, camera.position.y + 498.f, camera.position.z);
+	modelStack.Rotate(0, 0, -1, 0);
 	modelStack.Rotate(90, 1, 0, 0);
 	modelStack.Scale(1000.f, 1000.f, 1000.f);
 	RenderMesh(meshList[GEO_TOP], false);
@@ -312,7 +296,7 @@ void SceneCalvert::RenderSkybox()
 	//Front
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(0, 0, -498.f);
+	modelStack.Translate(camera.position.x, camera.position.y, camera.position.z - 498.f);
 	//modelStack.Rotate(90, -1, 0, 0);
 	modelStack.Scale(1000.f, 1000.f, 1000.f);
 	RenderMesh(meshList[GEO_FRONT], false);
@@ -321,7 +305,7 @@ void SceneCalvert::RenderSkybox()
 	//Right
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(498.f, 0, 0);
+	modelStack.Translate(camera.position.x + 498.f, camera.position.y, camera.position.z);
 	modelStack.Rotate(90, 0, -1, 0);
 	modelStack.Scale(1000.f, 1000.f, 1000.f);
 	RenderMesh(meshList[GEO_RIGHT], false);
@@ -330,7 +314,7 @@ void SceneCalvert::RenderSkybox()
 	//Left
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(-498.f, 0, 0);
+	modelStack.Translate(camera.position.x - 498.f, camera.position.y, camera.position.z);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(1000.f, 1000.f, 1000.f);
 	RenderMesh(meshList[GEO_LEFT], false);
@@ -339,57 +323,184 @@ void SceneCalvert::RenderSkybox()
 	//Back
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(0, 0, 498.f);
+	modelStack.Translate(camera.position.x, camera.position.y, camera.position.z + 498.f);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Scale(1000.f, 1000.f, 1000.f);
 	RenderMesh(meshList[GEO_BACK], false);
 	modelStack.PopMatrix();
+	for (int i = 0; i < 90; i += 10)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(i - 42, -1, 47);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(i - 42, -1, -47);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-47, -1, i - 42);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		modelStack.Rotate(90, 0, 1, 0);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(47, -1, i - 42);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		modelStack.Rotate(90, 0, 1, 0);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+
+	}
+
+	for (int i = 0; i < 30; i += 10)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(i - 37, -1, 20);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(10, -1, i + 20);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+	}
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-11.5, 0, 20);
+	modelStack.Scale(2.5f, 2.5f, 2.5f);
+	RenderMesh(meshList[GEO_DOOR], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-8.6, 0, 20);
+	modelStack.Scale(2.5f, 2.5f, 2.5f);
+	RenderMesh(meshList[GEO_DOOR], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-1.5, -1, 20);
+	modelStack.Scale(10.f, 10.f, 10.f);
+	RenderMesh(meshList[GEO_ROCK], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(20, -1, 20);
+	modelStack.Scale(10.f, 10.f, 10.f);
+	RenderMesh(meshList[GEO_ROCK], true);
+	modelStack.PopMatrix();
+
+	for (int i = 0; i < 40; i += 10)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(30, -1, i - 10);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+	}
+
+	for (int i = 0; i < 40; i += 10)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(i - 10, -1, -10);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+	}
+
+	for (int i = 0; i < 30; i += 10)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(-10, -1, i - 30);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+	}
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-10, 3.5, -38);
+	modelStack.Scale(4.f, 4.f, 4.f);
+	RenderMesh(meshList[GEO_BOULDER], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(38, 3.5, 10);
+	modelStack.Scale(4.f, 4.f, 4.f);
+	RenderMesh(meshList[GEO_BOULDER], true);
+	modelStack.PopMatrix();
+
+	for (int i = 0; i < 20; i += 10)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(28, -1, i - 38);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+	}
+
+	modelStack.PushMatrix();
+	modelStack.Translate(33.5, 0, -25);
+	modelStack.Scale(4.f, 2.5f, 2.5f);
+	RenderMesh(meshList[GEO_DOOR], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(38, 0, -25);
+	modelStack.Scale(4.f, 2.5f, 2.5f);
+	RenderMesh(meshList[GEO_DOOR], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Rotate(270, 1, 0, 0);
+	modelStack.Scale(100, 100, 100);
+	modelStack.Translate(0, 0, 0);
+	RenderMesh(meshList[GEO_GROUND], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 40);;
+	modelStack.Scale(2.5, 2.5, 2.5);
+	RenderMesh(meshList[GEO_BLUEKEYCARD], true);
+	modelStack.PopMatrix();
+
+	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
+
+
+
+	//No transform needed
+	RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
+	//-------------------------------------------------------------------------------------
+
+	/*modelStack.PushMatrix();
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[GEO_ROBO8], true);
+	modelStack.PopMatrix();*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
-void SceneCalvert::GenerateSkybox()
-{
-	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");
 
-	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//skybox//back.tga");
-
-	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//skybox//bottom.tga");
-
-	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//skybox//top.tga");
-
-	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//skybox//right.tga");
-
-	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//skybox//left.tga");
-}
-
-//Text
-void SceneCalvert::GenerateText()
-{
-	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
-}
-
-//OBJ
-void SceneCalvert::GenerateOBJ()
-{
-	enemy1.position.x = enemy1.position.z = 10.f;
-	enemy2.position.x = enemy2.position.z = -10.f;
-	meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
-	meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
-	box[1].setBoxSize(1, 1); //Bike 1
-	box[1].updatePos(enemy1.position);
-
-	box[2].setBoxSize(1, 1); //Bike 2
-	box[2].updatePos(enemy2.position);
-
-	box[0].setBoxSize(1, 1); //Camera
-}
-
-void SceneCalvert::RenderMesh(Mesh *mesh, bool enableLight)
+void Scene1tutorial::RenderMesh(Mesh *mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -431,7 +542,8 @@ void SceneCalvert::RenderMesh(Mesh *mesh, bool enableLight)
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
-void SceneCalvert::RenderText(Mesh* mesh, std::string text, Color color)
+
+void Scene1tutorial::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -457,7 +569,8 @@ void SceneCalvert::RenderText(Mesh* mesh, std::string text, Color color)
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
 	glEnable(GL_DEPTH_TEST);
 }
-void SceneCalvert::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+
+void Scene1tutorial::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -501,7 +614,8 @@ void SceneCalvert::RenderTextOnScreen(Mesh* mesh, std::string text, Color color,
 
 	glEnable(GL_DEPTH_TEST);
 }
-void SceneCalvert::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+
+void Scene1tutorial::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -522,7 +636,9 @@ void SceneCalvert::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int s
 	glEnable(GL_DEPTH_TEST);
 
 }
-void SceneCalvert::Exit()
+
+
+void Scene1tutorial::Exit()
 {
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{

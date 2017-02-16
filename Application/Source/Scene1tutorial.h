@@ -1,5 +1,5 @@
-#ifndef SCENE_CALVERT_H
-#define SCENE_CALVERT_H
+#ifndef SCENE1TUTORIAL_H
+#define SCENE1TURORIAL_H
 
 #include "Scene.h"
 #include "Camera3.h"
@@ -11,11 +11,7 @@
 #include <string>
 using std::string;
 
-//Extra include files here
-#include "Enemy.h"
-#include "CollisionChecker.h"
-
-class SceneCalvert : public Scene
+class Scene1tutorial : public Scene
 {
 
 	enum UNIFORM_TYPE
@@ -64,6 +60,12 @@ class SceneCalvert : public Scene
 		GEO_BIKE,
 		GEO_TEXT,
 		GEO_DEBUGBOX,
+		GEO_ROBO8,
+		GEO_ROCK,
+		GEO_GROUND,
+		GEO_BOULDER,
+		GEO_DOOR,
+		GEO_BLUEKEYCARD,
 		NUM_GEOMETRY,
 	};
 
@@ -72,42 +74,33 @@ private:
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
 	unsigned m_parameters[U_TOTAL];
+
 	Mesh* meshList[NUM_GEOMETRY];
 
-	//Camera here
+	string deltaTime;
+
+
+	float rotateAngle;
+	float translateX[3]; //Original code : float translateX; added [] to make 3 array
+	float scaleAll;
 	Camera3 camera;
 	MS modelStack, viewStack, projectionStack;
-	
-	//Lighting here
+
 	bool lightEnable;
 	Light light[1];
 	void RenderMesh(Mesh *mesh, bool enableLight);
 
-	//Skybox here
 	void RenderSkybox();
-	void GenerateSkybox();
-
-	//Any text here
-	void GenerateText();
-	string deltaTime;
-
-	//OBJ here
-	void GenerateOBJ();
-
-	//Enemy class
-	Enemy enemy1;
-	Enemy enemy2;
-
-	//Collider class
-	boxCollider box[5];
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
+
+
 public:
-	SceneCalvert();
-	~SceneCalvert();
+	Scene1tutorial();
+	~Scene1tutorial();
 
 	virtual void Init();
 	virtual void Update(double dt);
