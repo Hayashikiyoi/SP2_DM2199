@@ -99,6 +99,9 @@ void ChuanXu::Init()
 	meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Bullet", "OBJ//Bullet.obj");
 	meshList[GEO_BULLET]->textureID = LoadTGA("Image//Bullet.tga");
 
+	meshList[GEO_BOSSHEAD] = MeshBuilder::GenerateOBJ("Boss head", "OBJ//Boss_head.obj");
+	meshList[GEO_BOSSHEAD]->textureID = LoadTGA("Image//Boss_Head.tga");
+
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
@@ -172,12 +175,27 @@ void ChuanXu::Init()
 }
 
 void ChuanXu::Update(double dt)
-{	
+{		
 	static float translateLimit = 1;
+	float bulletDir;
+	if (shootBullet == true)
+	{
+		DelayTimer += (float)dt;
+		if (DelayTimer > 3)
+			shootBullet = false;
+	}
+	if (shootBullet == false)
+	{
+		Bullet.Set(0, 0, 0);
+		shootBullet = true;
+		DelayTimer = 0;
+	}
+	
+	
 
-	//Turret.Set(Turret.x, Turret.y, Turret.z);
+	Robot.Set(Robot.x, Robot.y, Robot.z);
 	deltaTime = "FPS:" + std::to_string(1 / dt);
-	turret.position.x = turret.position.z = 20;
+	turret.position.x = turret.position.z = 20.0f;
 	if (Application::IsKeyPressed('F'))
 	{
 		rotateAngle += (float)(100 * dt);
@@ -205,16 +223,20 @@ void ChuanXu::Update(double dt)
 	if (Application::IsKeyPressed('B'))
 		lightEnable = true;
 	
-	if (Application::IsKeyPressed('Y'))
-		coverOpened = true;
-	//if (Application::IsKeyPressed('H'))
-	//	shootBullet = true;
+	/*if (Application::IsKeyPressed('Y'))
+		coverOpened = true;*/
+	if (shootBullet == false)
+	{
+			shootBullet = true;
+	}
 
-	//if (shootBullet)
-	//{
-	//	Robot.x += (float)(5 * sin(Math::DegreeToRadian(rotateAngle))*dt);
-	//	Robot.z += (float)(5 * cos(Math::DegreeToRadian(rotateAngle))*dt);
-	//}
+	if (shootBullet)
+	{	
+		
+		bulletDir = turret.RotateToPlayer(Robot);
+		Bullet.x -= (float)(10 * sin(Math::DegreeToRadian(bulletDir))*dt);
+		Bullet.z -= (float)(10 * cos(Math::DegreeToRadian(bulletDir))*dt);
+	}
 
 	if (coverOpened)
 	{	
@@ -237,7 +259,7 @@ void ChuanXu::Update(double dt)
 	if (Application::IsKeyPressed('P'))
 		light[0].position.y += (float)(LSPEED * dt);
 
-	if (Application::IsKeyPressed('0'))
+	if (Application::IsKeyPressed('0')) 
 	{
 		light[0].type = Light::LIGHT_POINT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
@@ -265,7 +287,7 @@ void ChuanXu::Update(double dt)
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//Robot.Set(Robot.x, Robot.y, Robot.z);
-
+	//Bullet.Set(turret.position.x, turret.position.y, turret.position.z);
 
 	camera.Update(dt);
 }
@@ -376,6 +398,7 @@ void ChuanXu::Render()
 
 
 	modelStack.PushMatrix();
+
 	modelStack.Translate(Robot.x, Robot.y, Robot.z);
 	modelStack.Rotate(rotateAngle, 0, 1, 0);
 	RenderMesh(meshList[GEO_ROBOBODY], true);
@@ -398,10 +421,19 @@ void ChuanXu::Render()
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	RenderMesh(meshList[GEO_BULLET], false);
-	modelStack.PopMatrix();
 
+		for (int i = 0; i <= sqrt((Robot.Dot(Robot) + turret.position.Dot(turret.position))); i += 2)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(turret.position.x, 3.5, turret.position.z);
+			if (shootBullet)
+			modelStack.Translate(Bullet.x, 0, Bullet.z);
+			modelStack.Rotate(turret.RotateToPlayer(Robot), 0, 1, 0);
+			RenderMesh(meshList[GEO_BULLET], false);
+			modelStack.PopMatrix();
+		}
+	
+	
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
 
@@ -422,8 +454,15 @@ void ChuanXu::Render()
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(Robot.x, 0, Robot.z);
+	RenderMesh(meshList[GEO_BOSSHEAD], false);
+	modelStack.PopMatrix();
 
-	
+	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(Bullet.x), Color(1, 1, 1), 4, 1, 2);
+	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(Bullet.z), Color(1, 1, 1), 4, 1, 1);
+	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(DelayTimer), Color(1, 1, 1), 4, 1, 3);
+
 }
 
 void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)

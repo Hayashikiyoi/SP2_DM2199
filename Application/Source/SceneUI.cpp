@@ -81,6 +81,8 @@ void SceneUI::Init()
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 
+
+
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
@@ -325,6 +327,7 @@ void SceneUI::Render()
 	//No transform needed
 	RenderMeshOnScreen(meshList[GEO_QUAD], 10 ,10 ,10 ,10);
 	//-------------------------------------------------------------------------------------
+
 }
 
 void SceneUI::RenderMesh(Mesh *mesh, bool enableLight)
