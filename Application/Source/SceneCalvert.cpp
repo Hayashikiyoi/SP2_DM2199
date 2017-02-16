@@ -41,8 +41,13 @@ void SceneCalvert::Init()
 	glGenVertexArrays(1, &m_vertexArrayID);
 	glBindVertexArray(m_vertexArrayID);
 
+	//Initialise ur objects here
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
+	{
 		meshList[i] = NULL;
+		object[i] = 0;
+	}
+	CamObj = new GameObject("camera", Vector3(0, 0, 0));
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
@@ -50,6 +55,9 @@ void SceneCalvert::Init()
 	meshList[GEO_QUAD]->textureID = LoadTGA("Image//zelda.tga");
 
 	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
+	object[GEO_DEBUGBOX] = new GameObject("Debug", Vector3(-20, 0, -20));
+	object[GEO_DEBUGBOX]->setCollider(2, 2);
+	object[GEO_DEBUGBOX]->updateCurPos();
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 
@@ -190,21 +198,23 @@ void SceneCalvert::Update(double dt)
 
 	//Test Test Colliderbox
 	//Player collider
-	box[0].updatePos(camera.position);
+	//box[0].updatePos(camera.position);
+	CamObj->Position = camera.position;
+	CamObj->updateCurPos();
 
 	static Vector3 prevpos;
 	static Vector3 prevposTarget;
 	//Run checker
-	for (int i = 1; i != 3; i++)
+	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
-		if (box[0].colidecheck(box[i].getmin(), box[i].getmax()))
+		if (object[i] && CamObj->trigger(object[i]))
 		{
 			deltaTime = "Wham bam";
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
 		}
-		else if (i == 2)//Max value thx
+		else if (i == (NUM_GEOMETRY - 1))//Max value thx
 		{
 			prevpos = camera.position;
 			prevposTarget = camera.target;
@@ -270,14 +280,20 @@ void SceneCalvert::Render()
 	modelStack.PushMatrix();
 	modelStack.Translate(enemy1.position.x, enemy1.position.y, enemy1.position.z);
 	modelStack.Rotate(enemy1.RotateToPlayer(camera.position), 0, 1, 0);
+	modelStack.Rotate(90, 0, -1, 0);
 	RenderMesh(meshList[GEO_BIKE], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(object[GEO_DEBUGBOX]->Position.x, object[GEO_DEBUGBOX]->Position.y, object[GEO_DEBUGBOX]->Position.z);
+	RenderMesh(meshList[GEO_DEBUGBOX], true);
+	modelStack.PopMatrix();
+
+	/*modelStack.PushMatrix();
 	modelStack.Translate(enemy2.position.x, enemy2.position.y, enemy2.position.z);
 	modelStack.Rotate(enemy2.RotateToPlayer(camera.position), 0, 1, 0);
 	RenderMesh(meshList[GEO_BIKE], true);
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();*/
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 2.5f, 0, 0);
 
@@ -378,16 +394,12 @@ void SceneCalvert::GenerateText()
 void SceneCalvert::GenerateOBJ()
 {
 	enemy1.position.x = enemy1.position.z = 10.f;
-	enemy2.position.x = enemy2.position.z = -10.f;
+	//enemy2.position.x = enemy2.position.z = -10.f;
 	meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
 	meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
-	box[1].setBoxSize(1, 1); //Bike 1
-	box[1].updatePos(enemy1.position);
-
-	box[2].setBoxSize(1, 1); //Bike 2
-	box[2].updatePos(enemy2.position);
-
-	box[0].setBoxSize(1, 1); //Camera
+	object[GEO_BIKE] = new GameObject("Bike", enemy1.position);
+	object[GEO_BIKE]->setCollider(2, 2);
+	object[GEO_BIKE]->updateCurPos();
 }
 
 void SceneCalvert::RenderMesh(Mesh *mesh, bool enableLight)
@@ -529,7 +541,11 @@ void SceneCalvert::Exit()
 	{
 		if (meshList[i] != NULL)
 			delete meshList[i];
+
+		if (object[i] != 0)
+			delete object[i];
 	}
+	delete CamObj;
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 
