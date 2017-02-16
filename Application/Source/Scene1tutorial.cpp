@@ -37,7 +37,7 @@ void Scene1tutorial::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Initialise camera
-	camera.Init(Vector3(0, 0, 0), Vector3(0, 0, -10), Vector3(0, 1, 0));
+	camera.Init(Vector3(-30, 3, 40), Vector3(0, 0, -10), Vector3(0, 1, 0));
 
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -91,6 +91,14 @@ void Scene1tutorial::Init()
 
 	meshList[GEO_BLUEKEYCARD] = MeshBuilder::GenerateOBJ("keycard", "OBJ//keycard.obj");
 	meshList[GEO_BLUEKEYCARD]->textureID = LoadTGA("Image//model//bluekeycard.tga");
+
+	meshList[GEO_VENDINGMACHINE] = MeshBuilder::GenerateOBJ("vendingmachine", "OBJ//Vending_Machine.obj");
+	meshList[GEO_VENDINGMACHINE]->textureID = LoadTGA("Image//model//Vending_Machine.tga");
+
+	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("vendingcover", "OBJ//Vending_Cover.obj");
+	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//model//Vending_Cover.tga");
+
+
 
 	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
 
@@ -470,12 +478,29 @@ void Scene1tutorial::Render()
 	RenderMesh(meshList[GEO_BLUEKEYCARD], true);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(20, 0, 40);;
+	modelStack.Scale(2.5, 2.5, 2.5);
+	RenderMesh(meshList[GEO_BLUEKEYCARD], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-40, 0, -20);
+	modelStack.Scale(0.5, 0.5, 0.5);
+	modelStack.Rotate(270, 0, 1, 0);
+	RenderMesh(meshList[GEO_VENDINGMACHINE], true);
+	modelStack.PushMatrix();
+	RenderMesh(meshList[GEO_VENDINGCOVER], true);
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+
+
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
 
 
 
 	//No transform needed
-	RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
+	/*RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);*/
 	//-------------------------------------------------------------------------------------
 
 	/*modelStack.PushMatrix();
