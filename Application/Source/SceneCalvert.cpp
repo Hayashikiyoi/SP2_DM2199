@@ -11,10 +11,6 @@
 #include "MyMath.h"
 using namespace Math;
 
-#include "CollisionChecker.h"
-
-boxCollider box[5];
-
 SceneCalvert::SceneCalvert()
 {
 }
@@ -27,8 +23,6 @@ void SceneCalvert::Init()
 {
 	// Init VBO here
 	lightEnable = true;
-
-	enemy1.position.x = enemy1.position.z = 10.f;
 
 	//Emable depth test
 	glEnable(GL_DEPTH_TEST);
@@ -195,35 +189,28 @@ void SceneCalvert::Update(double dt)
 		SceneManager::instance()->EndGame(true);//Test Scene
 
 	//Test Test Colliderbox
-	/*box[1].colliderBoxMax.x = box[1].colliderBoxMax.x + enemy1.position.x;
-	box[1].colliderBoxMax.z = box[1].colliderBoxMax.z + enemy1.position.z;
-	box[1].colliderBoxMin.x = box[1].colliderBoxMin.x + enemy1.position.x;
-	box[1].colliderBoxMin.z = box[1].colliderBoxMin.z + enemy1.position.z;*/
-
-	box[0].colliderBoxMax.x = camera.position.x + 1.f;
-	box[0].colliderBoxMax.z = 1.f + camera.position.z;
-	box[0].colliderBoxMin.x = -1.f + camera.position.x;
-	box[0].colliderBoxMin.z = -1.f + camera.position.z;
-
-	/*box[0].colliderBoxMax.x += camera.position.x;
-	box[0].colliderBoxMax.z += camera.position.z;
-	box[0].colliderBoxMin.x += camera.position.x;
-	box[0].colliderBoxMin.z += camera.position.z;*/
+	//Player collider
+	box[0].updatePos(camera.position);
 
 	static Vector3 prevpos;
 	static Vector3 prevposTarget;
 	//Run checker
-	if (box[0].colidecheck(box[1].colliderBoxMin, box[1].colliderBoxMax))
+	for (int i = 1; i != 3; i++)
 	{
-		deltaTime = "Wham bam";
-		camera.position = prevpos;
-		camera.target = prevposTarget;
+		if (box[0].colidecheck(box[i].getmin(), box[i].getmax()))
+		{
+			deltaTime = "Wham bam";
+			camera.position = prevpos;
+			camera.target = prevposTarget;
+			break;
+		}
+		else if (i == 2)//Max value thx
+		{
+			prevpos = camera.position;
+			prevposTarget = camera.target;
+		}
 	}
-	else
-	{
-		prevpos = camera.position;
-		prevposTarget = camera.target;
-	}
+	
 	camera.Update(dt);
 }
 
@@ -279,9 +266,16 @@ void SceneCalvert::Render()
 	RenderText(meshList[GEO_TEXT], "Bye Bye World", Color(0, 1, 0));
 	modelStack.PopMatrix();
 
+	//Bike test
 	modelStack.PushMatrix();
 	modelStack.Translate(enemy1.position.x, enemy1.position.y, enemy1.position.z);
 	modelStack.Rotate(enemy1.RotateToPlayer(camera.position), 0, 1, 0);
+	RenderMesh(meshList[GEO_BIKE], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(enemy2.position.x, enemy2.position.y, enemy2.position.z);
+	modelStack.Rotate(enemy2.RotateToPlayer(camera.position), 0, 1, 0);
 	RenderMesh(meshList[GEO_BIKE], true);
 	modelStack.PopMatrix();
 
@@ -382,22 +376,17 @@ void SceneCalvert::GenerateText()
 //OBJ
 void SceneCalvert::GenerateOBJ()
 {
+	enemy1.position.x = enemy1.position.z = 10.f;
+	enemy2.position.x = enemy2.position.z = -10.f;
 	meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
 	meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
-	box[1].colliderBoxMax.x = .5f;
-	box[1].colliderBoxMax.z = .5f;
-	box[1].colliderBoxMin.x = -.5f;
-	box[1].colliderBoxMin.z = -.5f;
+	box[1].setBoxSize(1, 1); //Bike 1
+	box[1].updatePos(enemy1.position);
 
-	box[1].colliderBoxMax.x = box[1].colliderBoxMax.x + enemy1.position.x;
-	box[1].colliderBoxMax.z = box[1].colliderBoxMax.z + enemy1.position.z;
-	box[1].colliderBoxMin.x = box[1].colliderBoxMin.x + enemy1.position.x;
-	box[1].colliderBoxMin.z = box[1].colliderBoxMin.z + enemy1.position.z;
+	box[2].setBoxSize(1, 1); //Bike 2
+	box[2].updatePos(enemy2.position);
 
-	box[0].colliderBoxMax.x = 1.f;
-	box[0].colliderBoxMax.z = 1.f;
-	box[0].colliderBoxMin.x = -1.f;
-	box[0].colliderBoxMin.z = -1.f;
+	box[0].setBoxSize(1, 1); //Camera
 }
 
 void SceneCalvert::RenderMesh(Mesh *mesh, bool enableLight)

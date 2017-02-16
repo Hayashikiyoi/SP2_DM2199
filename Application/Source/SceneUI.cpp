@@ -328,11 +328,6 @@ void SceneUI::Render()
 	RenderMeshOnScreen(meshList[GEO_QUAD], 10 ,10 ,10 ,10);
 	//-------------------------------------------------------------------------------------
 
-	modelStack.PushMatrix();
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[GEO_ROBO8], true);
-	modelStack.PopMatrix();
-
 }
 
 void SceneUI::RenderMesh(Mesh *mesh, bool enableLight)
