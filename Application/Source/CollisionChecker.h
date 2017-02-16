@@ -9,26 +9,16 @@ public:
 	boxCollider();
 	~boxCollider();
 
-	bool colidecheck(Vector3 objMin, Vector3 objMax); //Strictly to detect where player is at
-
+	Vector3 getmin(void); //returns the min value of the vector
+	Vector3 getmax(void); //returns the max value of the vector
+	void updatePos(Vector3 position); //Position of the object
+	void setBoxSize(unsigned length, unsigned width); //Size of the collider box
+	bool colidecheck(Vector3 objMin, Vector3 objMax); //Detects if a collision have happened return true or false
+	
+private:
+	unsigned length, width;
 	Vector3 colliderBoxMin;
 	Vector3 colliderBoxMax;
-private:
-	
 };
-
-boxCollider::boxCollider() : colliderBoxMin(0), colliderBoxMax(0)
-{
-}
-
-boxCollider::~boxCollider()
-{
-}
-
-bool boxCollider::colidecheck(Vector3 objMin, Vector3 objMax)
-{
-	return ((colliderBoxMin.x <= objMax.x && colliderBoxMax.x >= objMin.x) &&
-		(colliderBoxMin.z <= objMax.z && colliderBoxMax.z >= objMin.z));
-}
 
 #endif
