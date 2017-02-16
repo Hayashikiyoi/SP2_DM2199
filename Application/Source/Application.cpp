@@ -12,6 +12,8 @@
 
 #include "Scene_Calvert.h"
 #include "Aloy_Scene.h"
+#include "Scene4_Boss.h"
+#include "LoadScene.h"
 #include "ChuanXu.h"
 #include "Wilson.h"
 #include "Scene1tutorial.h"
@@ -109,10 +111,13 @@ void Application::Init()
 void Application::Run()
 {
 	//Main Loop
-	//SceneManager::instance()->addScene(new Aloy_Scene);
+	SceneManager::instance()->addScene(new Aloy_Scene);
+    //SceneManager::instance()->addScene(new LoadScene);
 	//SceneManager::instance()->addScene(new SceneCalvert);
-	SceneManager::instance()->addScene(new Scene1tutorial);
+	//SceneManager::instance()->addScene(new Scene1tutorial);
+    //SceneManager::instance()->addScene(new Wilson);
 	//SceneManager::instance()->addScene(new ChuanXu);
+	SceneManager::instance()->addScene(new Scene4_Boss);
 	SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
 

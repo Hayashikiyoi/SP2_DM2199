@@ -36,7 +36,7 @@ void Fps_Camera::Update(double dt)
 	up = right.Cross(view).Normalized();
 
 	//Checking you walking position
-	position.y = 60;
+	position.y = 10;
 
 	//For movement
 	if (Application::IsKeyPressed('A'))
