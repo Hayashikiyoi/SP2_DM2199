@@ -99,6 +99,7 @@
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
     <ClCompile Include="Source\Scene1tutorial.cpp" />
+    <ClCompile Include="Source\Scene4_Boss.cpp" />
     <ClCompile Include="Source\SceneCalvert.cpp" />
     <ClCompile Include="Source\SceneManager.cpp" />
     <ClCompile Include="Source\SceneUI.cpp" />
