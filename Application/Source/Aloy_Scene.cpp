@@ -185,7 +185,6 @@ void Aloy_Scene::Render()
 	modelStack.PopMatrix();
 	//-------------------------------------------------------------------------------------
 
-
 }
 
 void Aloy_Scene::RenderMesh(Mesh *mesh, bool enableLight)
