@@ -54,22 +54,22 @@ void Scene1tutorial::Init()
 	meshList[GEO_QUAD]->textureID = LoadTGA("Image//zelda.tga");
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skyboxtutorial//front.tga");
 
 	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//skybox//back.tga");
+	meshList[GEO_BACK]->textureID = LoadTGA("Image//skyboxtutorial//back.tga");
 
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//skybox//bottom.tga");
+	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//skyboxtutorial//bottom.tga");
 
 	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//skybox//top.tga");
+	meshList[GEO_TOP]->textureID = LoadTGA("Image//skyboxtutorial//top.tga");
 
 	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//skybox//right.tga");
+	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//skyboxtutorial//right.tga");
 
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//skybox//left.tga");
+	meshList[GEO_LEFT]->textureID = LoadTGA("Image//skyboxtutorial//left.tga");
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
@@ -82,6 +82,15 @@ void Scene1tutorial::Init()
 
 	meshList[GEO_GROUND] = MeshBuilder::GenerateGround("quad", Color(1, 1, 1), 1, 1);
 	meshList[GEO_GROUND]->textureID = LoadTGA("Image//model//ground.tga");
+
+	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//star wars doors.obj");
+	meshList[GEO_DOOR]->textureID = LoadTGA("Image//model//star wars doors.tga");
+
+	meshList[GEO_BOULDER] = MeshBuilder::GenerateOBJ("Boulder", "OBJ//boulder.obj");
+	meshList[GEO_BOULDER]->textureID = LoadTGA("Image//model//Rock.tga");
+
+	meshList[GEO_BLUEKEYCARD] = MeshBuilder::GenerateOBJ("keycard", "OBJ//keycard.obj");
+	meshList[GEO_BLUEKEYCARD]->textureID = LoadTGA("Image//model//bluekeycard.tga");
 
 	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
 
@@ -319,90 +328,146 @@ void Scene1tutorial::Render()
 	modelStack.Scale(1000.f, 1000.f, 1000.f);
 	RenderMesh(meshList[GEO_BACK], false);
 	modelStack.PopMatrix();
-	for (int i = 0; i < 900; i += 45)
+	for (int i = 0; i < 90; i += 10)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(i - 420, -1, 470);
-		modelStack.Scale(40.f, 40.f, 40.f);
+		modelStack.Translate(i - 42, -1, 47);
+		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCK], true);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
-		modelStack.Translate(i - 420, -1, -470);
-		modelStack.Scale(40.f, 40.f, 40.f);
+		modelStack.Translate(i - 42, -1, -47);
+		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCK], true);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
-		modelStack.Translate(-470, -1, i - 420);
-		modelStack.Scale(40.f, 40.f, 40.f);
+		modelStack.Translate(-47, -1, i - 42);
+		modelStack.Scale(10.f, 10.f, 10.f);
 		modelStack.Rotate(90, 0, 1, 0);
 		RenderMesh(meshList[GEO_ROCK], true);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
-		modelStack.Translate(470, -1, i - 420);
-		modelStack.Scale(40.f, 40.f, 40.f);
+		modelStack.Translate(47, -1, i - 42);
+		modelStack.Scale(10.f, 10.f, 10.f);
 		modelStack.Rotate(90, 0, 1, 0);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+
+	}
+
+	for (int i = 0; i < 30; i += 10)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(i - 37, -1, 20);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(10, -1, i + 20);
+		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCK], true);
 		modelStack.PopMatrix();
 	}
 
-	
-	/*modelStack.PushMatrix();
-	modelStack.Translate(-460, -1, 470);
-	modelStack.Scale(40.f, 40.f, 40.f);
+	modelStack.PushMatrix();
+	modelStack.Translate(-11.5, 0, 20);
+	modelStack.Scale(2.5f, 2.5f, 2.5f);
+	RenderMesh(meshList[GEO_DOOR], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-8.6, 0, 20);
+	modelStack.Scale(2.5f, 2.5f, 2.5f);
+	RenderMesh(meshList[GEO_DOOR], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-1.5, -1, 20);
+	modelStack.Scale(10.f, 10.f, 10.f);
 	RenderMesh(meshList[GEO_ROCK], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-420, -1, 470);
-	modelStack.Scale(40.f, 40.f, 40.f);
+	modelStack.Translate(20, -1, 20);
+	modelStack.Scale(10.f, 10.f, 10.f);
 	RenderMesh(meshList[GEO_ROCK], true);
 	modelStack.PopMatrix();
 
+	for (int i = 0; i < 40; i += 10)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(30, -1, i - 10);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+	}
+
+	for (int i = 0; i < 40; i += 10)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(i - 10, -1, -10);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+	}
+
+	for (int i = 0; i < 30; i += 10)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(-10, -1, i - 30);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+	}
+
 	modelStack.PushMatrix();
-	modelStack.Translate(-380, -1, 470);
-	modelStack.Scale(40.f, 40.f, 40.f);
-	RenderMesh(meshList[GEO_ROCK], true);
+	modelStack.Translate(-10, 3.5, -38);
+	modelStack.Scale(4.f, 4.f, 4.f);
+	RenderMesh(meshList[GEO_BOULDER], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-340, -1, 470);
-	modelStack.Scale(40.f, 40.f, 40.f);
-	RenderMesh(meshList[GEO_ROCK], true);
+	modelStack.Translate(38, 3.5, 10);
+	modelStack.Scale(4.f, 4.f, 4.f);
+	RenderMesh(meshList[GEO_BOULDER], true);
+	modelStack.PopMatrix();
+
+	for (int i = 0; i < 20; i += 10)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(28, -1, i - 38);
+		modelStack.Scale(10.f, 10.f, 10.f);
+		RenderMesh(meshList[GEO_ROCK], true);
+		modelStack.PopMatrix();
+	}
+
+	modelStack.PushMatrix();
+	modelStack.Translate(33.5, 0, -25);
+	modelStack.Scale(4.f, 2.5f, 2.5f);
+	RenderMesh(meshList[GEO_DOOR], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-300, -1, 470);
-	modelStack.Scale(40.f, 40.f, 40.f);
-	RenderMesh(meshList[GEO_ROCK], true);
+	modelStack.Translate(38, 0, -25);
+	modelStack.Scale(4.f, 2.5f, 2.5f);
+	RenderMesh(meshList[GEO_DOOR], true);
 	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(-260, -1, 470);
-	modelStack.Scale(40.f, 40.f, 40.f);
-	RenderMesh(meshList[GEO_ROCK], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(-220, -1, 470);
-	modelStack.Scale(40.f, 40.f, 40.f);
-	RenderMesh(meshList[GEO_ROCK], true);
-	modelStack.PopMatrix();
-	
-	modelStack.PushMatrix();
-	modelStack.Translate(-180, -1, 470);
-	modelStack.Scale(40.f, 40.f, 40.f);
-	RenderMesh(meshList[GEO_ROCK], true);
-	modelStack.PopMatrix();
-*/
 
 	modelStack.PushMatrix();
 	modelStack.Rotate(270, 1, 0, 0);
-	modelStack.Scale(1000, 1000, 1000);
+	modelStack.Scale(100, 100, 100);
 	modelStack.Translate(0, 0, 0);
 	RenderMesh(meshList[GEO_GROUND], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 0, 40);;
+	modelStack.Scale(2.5, 2.5, 2.5);
+	RenderMesh(meshList[GEO_BLUEKEYCARD], true);
 	modelStack.PopMatrix();
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
