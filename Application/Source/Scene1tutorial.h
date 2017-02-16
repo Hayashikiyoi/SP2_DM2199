@@ -66,6 +66,8 @@ class Scene1tutorial : public Scene
 		GEO_BOULDER,
 		GEO_DOOR,
 		GEO_BLUEKEYCARD,
+		GEO_VENDINGMACHINE,
+		GEO_VENDINGCOVER,
 		NUM_GEOMETRY,
 	};
 
