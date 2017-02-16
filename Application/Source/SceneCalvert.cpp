@@ -345,6 +345,7 @@ void SceneCalvert::RenderSkybox()
 	RenderMesh(meshList[GEO_BACK], false);
 	modelStack.PopMatrix();
 }
+
 void SceneCalvert::GenerateSkybox()
 {
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);

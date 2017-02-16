@@ -18,7 +18,6 @@
 #include "Wilson.h"
 #include "Scene1tutorial.h"
 #include "SceneGameOver.h"
-
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
@@ -119,8 +118,8 @@ void Application::Run()
 	SceneManager::instance()->addScene(new SceneGameOver);
     //SceneManager::instance()->addScene(new Wilson);
 	//SceneManager::instance()->addScene(new ChuanXu);
-	//SceneManager::instance()->addScene(new Scene4_Boss);
-	//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
+	//SceneManager::instance()->addScene(new Scene4_Boss);	
+//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
