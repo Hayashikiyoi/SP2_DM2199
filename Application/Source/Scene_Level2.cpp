@@ -1,4 +1,4 @@
-#include "ChuanXu.h"
+#include "Scene_Level2.h"
 #include "GL\glew.h"
 #include "Mtx44.h"
 #include "Application.h"
@@ -9,19 +9,19 @@
 #include "LoadTGA.h"
 
 #include "MyMath.h"
+#include<fstream>
 using namespace Math;
 
-ChuanXu::ChuanXu()
+Scene_Level2::Scene_Level2()
 {
 }
 
-ChuanXu::~ChuanXu()
+Scene_Level2::~Scene_Level2()
 {
 }
 
-void ChuanXu::Init()
-{	
-
+void Scene_Level2::Init()
+{
 	// Init VBO here
 	rotateAngle = 0;
 	translateX[0] = 0;
@@ -49,10 +49,8 @@ void ChuanXu::Init()
 	glBindVertexArray(m_vertexArrayID);
 
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
-	{
 		meshList[i] = NULL;
-		//object[i] = 0;
-	}
+
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
 	meshList[GEO_QUAD]->textureID = LoadTGA("Image//zelda.tga");
@@ -87,13 +85,18 @@ void ChuanXu::Init()
 
 	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//Vending_Cover.obj");
 	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//Vending_Cover.tga");
-	
+
 	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("RoboBody", "OBJ//Robot_body.obj");
 	meshList[GEO_ROBOBODY]->textureID = LoadTGA("Image//Robot_Body.tga");
 
 	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//Robot_Arm.obj");
 	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image//Robot_Arms.tga");
 
+	meshList[GEO_TURRETBODY] = MeshBuilder::GenerateOBJ("TurretBody", "OBJ//Turret_body.obj");
+	meshList[GEO_TURRETBODY]->textureID = LoadTGA("Image//Turret_body.tga");
+
+	meshList[GEO_TURRETHEAD] = MeshBuilder::GenerateOBJ("TurretHead", "OBJ//Turret_head.obj");
+	meshList[GEO_TURRETHEAD]->textureID = LoadTGA("Image//Turret_Head.tga");
 
 	meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Bullet", "OBJ//Bullet.obj");
 	meshList[GEO_BULLET]->textureID = LoadTGA("Image//Bullet.tga");
@@ -175,35 +178,25 @@ void ChuanXu::Init()
 	projection.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
 	projectionStack.LoadMatrix(projection);
 }
-void ChuanXu::GenerateObj()
+
+void Scene_Level2::Update(double dt)
 {
-	meshList[GEO_TURRETBODY] = MeshBuilder::GenerateOBJ("TurretBody", "OBJ//Turret_body.obj");
-	meshList[GEO_TURRETBODY]->textureID = LoadTGA("Image//Turret_body.tga");
-	meshList[GEO_TURRETHEAD] = MeshBuilder::GenerateOBJ("TurretHead", "OBJ//Turret_head.obj");
-	meshList[GEO_TURRETHEAD]->textureID = LoadTGA("Image//Turret_Head.tga");
-
-	turret
-
-}
-void ChuanXu::Update(double dt)
-{		
 	static float translateLimit = 1;
 	const float bulletDir = turret.RotateToPlayer(Robot);
 	if (shootBullet == true)
 	{
 		DelayTimer += (float)dt;
-		if (DelayTimer> 3)
+		if (DelayTimer > 3)
 			shootBullet = false;
 	}
 	if (shootBullet == false)
 	{
-		bullet_1.position.Set(0, 0, 0);
+		Bullet.Set(0, 0, 0);
 		shootBullet = true;
 		DelayTimer = 0;
 	}
-	
-	bullet_1.shootBullet(shootBullet, turret.RotateToPlayer(Robot), dt, turret.position);
-	
+
+
 
 	Robot.Set(Robot.x, Robot.y, Robot.z);
 	deltaTime = "FPS:" + std::to_string(1 / dt);
@@ -234,20 +227,28 @@ void ChuanXu::Update(double dt)
 		lightEnable = false;
 	if (Application::IsKeyPressed('B'))
 		lightEnable = true;
-	
+
+	/*if (Application::IsKeyPressed('Y'))
+	coverOpened = true;*/
 	if (shootBullet == false)
 	{
-			shootBullet = true;
+		shootBullet = true;
 	}
 
+	if (shootBullet)
+	{
 
+
+		Bullet.x -= (float)(10 * sin(Math::DegreeToRadian(bulletDir))*dt);
+		Bullet.z -= (float)(10 * cos(Math::DegreeToRadian(bulletDir))*dt);
+	}
 
 	if (coverOpened)
-	{	
+	{
 		if (translateLimit<-10)
-		translateLimit *= -1;
+			translateLimit *= -1;
 		if (openCover <6)
-		openCover += (float)(10 * translateLimit*dt);
+			openCover += (float)(10 * translateLimit*dt);
 	}
 
 	if (Application::IsKeyPressed('I'))
@@ -263,7 +264,7 @@ void ChuanXu::Update(double dt)
 	if (Application::IsKeyPressed('P'))
 		light[0].position.y += (float)(LSPEED * dt);
 
-	if (Application::IsKeyPressed('0')) 
+	if (Application::IsKeyPressed('0'))
 	{
 		light[0].type = Light::LIGHT_POINT;
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
@@ -296,7 +297,7 @@ void ChuanXu::Update(double dt)
 	camera.Update(dt);
 }
 
-void ChuanXu::skyBox()
+void Scene_Level2::skyBox()
 {
 	RenderMesh(meshList[GEO_AXES], false);
 
@@ -363,7 +364,7 @@ void ChuanXu::skyBox()
 
 }
 
-void ChuanXu::Render()
+void Scene_Level2::Render()
 {
 	if (light[0].type == Light::LIGHT_DIRECTIONAL)
 	{
@@ -399,44 +400,14 @@ void ChuanXu::Render()
 
 	//-------------------------------------------------------------------------------------
 	skyBox();
+	RenderMap();
 
 
-	modelStack.PushMatrix();
-
-	//modelStack.Translate(Robot.x, Robot.y, Robot.z);
-	//modelStack.Rotate(rotateAngle, 0, 1, 0);
-	//RenderMesh(meshList[GEO_ROBOBODY], true);
-	//modelStack.PushMatrix();
-	//RenderMesh(meshList[GEO_ROBOARMS], true);
-	//modelStack.PopMatrix();
-	//modelStack.PushMatrix();
-	//modelStack.Translate(0.95, 0, 0);
-	//RenderMesh(meshList[GEO_ROBOARMS], true);
-	//modelStack.PopMatrix();
-	//modelStack.PopMatrix();
 
 
-	//modelStack.PushMatrix();
-	//modelStack.Translate(turret.position.x, 0, turret.position.z);
-	//RenderMesh(meshList[GEO_TURRETBODY], true);
-	//modelStack.PushMatrix();
-	//modelStack.Rotate(turret.RotateToPlayer(Robot), 0, 1, 0);
-	//RenderMesh(meshList[GEO_TURRETHEAD], true);
-	//modelStack.PopMatrix();
-	//modelStack.PopMatrix();
 
 
-		for (int i = 0; i <= sqrt((Robot.Dot(Robot) + turret.position.Dot(turret.position))); i += 2)
-		{
-			modelStack.PushMatrix();
-			modelStack.Translate(turret.position.x, 3.5, turret.position.z);
-			modelStack.Translate(bullet_1.position.x, 0, bullet_1.position.z);
-			modelStack.Rotate(turret.RotateToPlayer(Robot), 0, 1, 0);
-			RenderMesh(meshList[GEO_BULLET], false);
-			modelStack.PopMatrix();
-		}
-	
-	
+
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
 
@@ -448,31 +419,44 @@ void ChuanXu::Render()
 	RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
 	//-------------------------------------------------------------------------------------
 
-	/*modelStack.PushMatrix();
-	modelStack.Translate(-20, 0, -20);
-	RenderMesh(meshList[GEO_VENDINGBODY], true);
-	modelStack.PushMatrix();
-	modelStack.Translate(0, openCover, 0);
-	RenderMesh(meshList[GEO_VENDINGCOVER], true);
-	modelStack.PopMatrix();
-	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(Robot.x, 0, Robot.z);
-	RenderMesh(meshList[GEO_BOSSBODY], true);
-	modelStack.PushMatrix();
-	modelStack.Rotate(rotateAngle, 0, 1, 0);
-	RenderMesh(meshList[GEO_BOSSHEAD], true);
-	modelStack.PopMatrix();
-	modelStack.PopMatrix();*/
 
-	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(bullet_1.position.x), Color(1, 1, 1), 4, 1, 2);
-	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(bullet_1.position.z), Color(1, 1, 1), 4, 1, 1);
+	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(Bullet.x), Color(1, 1, 1), 4, 1, 2);
+	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(Bullet.z), Color(1, 1, 1), 4, 1, 1);
 	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(DelayTimer), Color(1, 1, 1), 4, 1, 3);
 
 }
 
-void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)
+void Scene_Level2::RenderMap()
+{	
+
+	string line;//[1000][1000];
+	std::ifstream myFile("Test.txt");
+	if (myFile.is_open())
+	{
+		for (int i = 0; i <6;i++)
+		{
+			if (line[0] == 'T')
+			{
+				modelStack.PushMatrix();
+				modelStack.Translate(i, 0, i);
+				modelStack.Scale(2, 2, 2);
+				RenderMesh(meshList[GEO_TURRETBODY], true);
+				modelStack.PushMatrix();
+				RenderMesh(meshList[GEO_TURRETHEAD], true);
+				modelStack.PopMatrix();
+				modelStack.PopMatrix();
+			}
+			else if (line[i] == '.')
+			{
+				
+			}
+		}
+	}
+
+}
+
+void Scene_Level2::RenderMesh(Mesh *mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -515,7 +499,7 @@ void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)
 	}
 }
 
-void ChuanXu::RenderText(Mesh* mesh, std::string text, Color color)
+void Scene_Level2::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -542,7 +526,7 @@ void ChuanXu::RenderText(Mesh* mesh, std::string text, Color color)
 	glEnable(GL_DEPTH_TEST);
 }
 
-void ChuanXu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void Scene_Level2::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -587,7 +571,7 @@ void ChuanXu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, floa
 	glEnable(GL_DEPTH_TEST);
 }
 
-void ChuanXu::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void Scene_Level2::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -610,7 +594,7 @@ void ChuanXu::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 }
 
 
-void ChuanXu::Exit()
+void Scene_Level2::Exit()
 {
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{

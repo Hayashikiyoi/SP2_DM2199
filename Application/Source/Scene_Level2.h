@@ -1,5 +1,5 @@
-#ifndef CHUAN_XU_H
-#define CHUAN_XU_H
+#ifndef SCENE_LEVEL2_H
+#define SCENE_LEVEL2_H
 
 #include "Scene.h"
 #include "Camera3.h"
@@ -8,14 +8,11 @@
 #include "Light.h"
 #include "Utility.h"
 #include "Enemy.h"
-#include"Bullet.h"
 
 #include <string>
 using std::string;
 
-#define numOfEnemy 10
-
-class ChuanXu : public Scene 
+class Scene_Level2 : public Scene, Enemy
 {
 
 	enum UNIFORM_TYPE
@@ -85,19 +82,19 @@ private:
 
 	string deltaTime;
 	Vector3 Robot;
-	Enemy turret[numOfEnemy];
-	Bullet bullet_1;
-	float rotateAngle ;
+	Vector3 Bullet;
+	Enemy turret;
+	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
 	float openCover = 0;
 	float DelayTimer;
-	
+
 	void skyBox();
 	bool shootBullet = false;
 	bool bulletInChamber = true;
 
-	void GenerateObj();
+
 
 	Camera3 camera;
 	MS modelStack, viewStack, projectionStack;
@@ -112,12 +109,12 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
-
+	void RenderMap();
 
 
 public:
-	ChuanXu();
-	~ChuanXu();
+	Scene_Level2();
+	~Scene_Level2();
 
 	virtual void Init();
 	virtual void Update(double dt);

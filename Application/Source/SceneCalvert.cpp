@@ -23,14 +23,14 @@ void SceneCalvert::Init()
 {
 	// Init VBO here
 	lightEnable = true;
-
+	
 	//Emable depth test
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE); //Deletes the backface
 	glEnable(GL_BLEND);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+	
 	//Initialise camera
 	camera.Init(Vector3(0, 0, 0), Vector3(0, 0, -10), Vector3(0, 1, 0));
 

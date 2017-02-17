@@ -2,8 +2,8 @@
 #define ENEMY_H
 
 #include "MatrixStack.h"
-
-class Enemy
+#include "GameObject.h"
+class Enemy : public GameObject
 {
 public:
 	Enemy();

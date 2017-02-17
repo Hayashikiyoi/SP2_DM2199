@@ -84,6 +84,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Aloy_Scene.cpp" />
     <ClCompile Include="Source\Application.cpp" />
+    <ClCompile Include="Source\Bullet.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Camera2.cpp" />
     <ClCompile Include="Source\Camera3.cpp" />
@@ -105,6 +106,7 @@
     <ClCompile Include="Source\SceneGameOver.cpp" />
     <ClCompile Include="Source\SceneManager.cpp" />
     <ClCompile Include="Source\SceneUI.cpp" />
+    <ClCompile Include="Source\Scene_Level2.cpp" />
     <ClCompile Include="Source\shader.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
     <ClCompile Include="Source\Wilson.cpp" />
@@ -112,6 +114,7 @@
   <ItemGroup>
     <ClInclude Include="Source\Aloy_Scene.h" />
     <ClInclude Include="Source\Application.h" />
+    <ClInclude Include="Source\Bullet.h" />
     <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Camera2.h" />
     <ClInclude Include="Source\Camera3.h" />
@@ -136,6 +139,7 @@
     <ClInclude Include="Source\SceneUI.h" />
     <ClInclude Include="Source\Scene_Calvert.h" />
     <ClInclude Include="Source\shader.hpp" />
+    <ClInclude Include="Source\Scene_Level2.h" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
     <ClInclude Include="Source\Wilson.h" />
