@@ -11,7 +11,6 @@ GameObject::~GameObject()
 
 GameObject::GameObject(string Name, Vector3 Position) : Name(Name), Position(Position),rotation(0)
 {
-
 }
 
 string GameObject::getName()
