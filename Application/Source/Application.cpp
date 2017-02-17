@@ -114,7 +114,7 @@ void Application::Run()
 	SceneManager::instance()->addScene(new Aloy_Scene);
     //SceneManager::instance()->addScene(new LoadScene);
 	//SceneManager::instance()->addScene(new SceneCalvert);
-	SceneManager::instance()->addScene(new Scene1tutorial);
+	//SceneManager::instance()->addScene(new Scene1tutorial);
 	//SceneManager::instance()->addScene(new SceneGameOver);
     //SceneManager::instance()->addScene(new Wilson);
 	//SceneManager::instance()->addScene(new ChuanXu);

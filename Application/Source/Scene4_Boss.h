@@ -15,7 +15,9 @@ using std::string;
 #include "Enemy.h"
 #include "GameObject.h"
 
-class Scene4_Boss : public Scene, Enemy
+#define numOfEnemy 10
+
+class Scene4_Boss : public Scene
 {
 
 	enum UNIFORM_TYPE
@@ -93,7 +95,7 @@ private:
 	Vector3 Robot;
 	Vector3 Bullet;
 
-	Enemy turret;
+	Enemy* turret[numOfEnemy];
 	
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
@@ -102,8 +104,6 @@ private:
 
 	void skyBox();
 	bool shootBullet = false;
-
-
 
 	Fps_Camera camera;
 	MS modelStack, viewStack, projectionStack;

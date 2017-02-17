@@ -54,12 +54,14 @@ void Scene4_Boss::Init()
 	}
 	CamObj = new GameObject("camera", Vector3(0, 0, 0));
 
-	/*for (int i = 0; i < NUM_GEOMETRY; ++i)
-		meshList[i] = NULL;*/
+	for (int i = 0; i < numOfEnemy; ++i)
+	{
+		turret[i] = NULL;
+	}
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
-	meshList[GEO_QUAD]->textureID = LoadTGA("Image//zelda.tga");
+	meshList[GEO_QUAD]->textureID = LoadTGA("Image//Text//zelda.tga");
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");
@@ -80,43 +82,36 @@ void Scene4_Boss::Init()
 	meshList[GEO_LEFT]->textureID = LoadTGA("Image//skybox//left.tga");
 
 	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("Floor", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor.tga");
+	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor//floor.tga");
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
 
 	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 
-	meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//Vending_Machine.obj");
-	meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//Vending_Machine.tga");
+	meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//NPC//Vending_Machine.obj");
+	meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//NPC//Vending_Machine.tga");
 
-	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//Vending_Cover.obj");
-	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//Vending_Cover.tga");
+	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//NPC//Vending_Cover.obj");
+	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//NPC//Vending_Cover.tga");
 
-	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("RoboBody", "OBJ//Robot_body.obj");
-	meshList[GEO_ROBOBODY]->textureID = LoadTGA("Image//Robot_Body.tga");
+	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("RoboBody", "OBJ//NPC//Robot_body.obj");
+	meshList[GEO_ROBOBODY]->textureID = LoadTGA("Image//NPC//Robot_Body.tga");
 
-	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//Robot_Arm.obj");
-	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image//Robot_Arms.tga");
+	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//NPC//Robot_Arm.obj");
+	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image//NPC//Robot_Arms.tga");
 
 	GenerateOBJ();
 
-	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Stone_1", "OBJ//Wall.obj");
-	meshList[GEO_WALL]->textureID = LoadTGA("Image//Wall.tga");
+	
 
-	meshList[GEO_WALL_2] = MeshBuilder::GenerateOBJ("Stone_2", "OBJ//Stone_2.obj");
-	meshList[GEO_WALL_2]->textureID = LoadTGA("Image//Stone_2.tga");
+	meshList[GEO_WALL_2] = MeshBuilder::GenerateOBJ("Stone_2", "OBJ//Wall//Stone_2.obj");
+	meshList[GEO_WALL_2]->textureID = LoadTGA("Image//Wall//Stone_2.tga");
 
-	meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Bullet", "OBJ//Bullet.obj");
-	meshList[GEO_BULLET]->textureID = LoadTGA("Image//Bullet.tga");
-
-	/*meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
-	object[GEO_DEBUGBOX] = new GameObject("Debug", Vector3(-20, 0, -20));
-	object[GEO_DEBUGBOX]->setCollider(2, 2);
-	object[GEO_DEBUGBOX]->updateCurPos();*/
-
+	meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Bullet", "OBJ//Enemy//Bullet.obj");
+	meshList[GEO_BULLET]->textureID = LoadTGA("Image//Enemy//Bullet.tga");
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -194,9 +189,7 @@ void Scene4_Boss::Update(double dt)
 {
 	static float translateLimit = 1;
 
-	//Turret.Set(Turret.x, Turret.y, Turret.z);
 	deltaTime = "FPS:" + std::to_string(1 / dt);
-	//turret.position.x = turret.position.z = 20;
 
 	static float LSPEED = 10;
 
@@ -279,13 +272,25 @@ void Scene4_Boss::Update(double dt)
 			camera.target = prevposTarget;
 			break;
 		}
-		else if (i == (NUM_GEOMETRY - 1))//Max value thx
+	}
+
+	for (int i = 0; i < numOfEnemy; ++i)
+	{
+		if (turret[i] && CamObj->trigger(turret[i]))
+		{
+			//if you need to get pushed out of the collider
+			deltaTime = "Wham bam";
+			camera.position = prevpos;
+			camera.target = prevposTarget;
+			break;
+		}
+		else if (i == (numOfEnemy - 1))//Max value thx
 		{
 			prevpos = camera.position;
 			prevposTarget = camera.target;
 		}
 	}
-
+	
 	camera.Update(dt);
 }
 
@@ -370,44 +375,47 @@ void Scene4_Boss::rocks()
 {
 	modelStack.PushMatrix();
 	modelStack.Scale(10,10,10);
-	modelStack.Translate(0,0,45);
+	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
 	RenderMesh(meshList[GEO_WALL],false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Scale(10, 10, 10);
-	modelStack.Translate(0, 0, -45);
+	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, -turret[1]->Position.z);
 	RenderMesh(meshList[GEO_WALL], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Scale(10, 10, 10);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Translate(0, 0, -45);
+	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
 	RenderMesh(meshList[GEO_WALL], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Scale(10, 10, 10);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Translate(0, 0, 45);
+	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y,-turret[1]->Position.z);
 	RenderMesh(meshList[GEO_WALL], false);
 	modelStack.PopMatrix();
 }
 
 void Scene4_Boss::GenerateOBJ()
 {
-	turret.position.x = turret.position.z = 10.f;
-	meshList[GEO_TURRETHEAD] = MeshBuilder::GenerateOBJ("Boss", "OBJ//Boss_Head.obj");
-	meshList[GEO_TURRETHEAD]->textureID = LoadTGA("Image//Boss_head.tga");
-	meshList[GEO_TURRETBODY] = MeshBuilder::GenerateOBJ("Boss", "OBJ//Boss_body.obj");
-	meshList[GEO_TURRETBODY]->textureID = LoadTGA("Image//Boss_body.tga");
-	object[GEO_TURRETHEAD] = new GameObject("Boss_head", turret.position);
-	object[GEO_TURRETHEAD]->setCollider(100, 100);
-	object[GEO_TURRETHEAD]->updateCurPos();
-	object[GEO_TURRETBODY] = new GameObject("Boss_body", turret.position);
-	object[GEO_TURRETBODY]->setCollider(100, 100);
-	object[GEO_TURRETBODY]->updateCurPos();
+	meshList[GEO_TURRETHEAD] = MeshBuilder::GenerateOBJ("Boss_head", "OBJ//Enemy//Boss_Head.obj");
+	meshList[GEO_TURRETHEAD]->textureID = LoadTGA("Image//Enemy//Boss_head.tga");
+	meshList[GEO_TURRETBODY] = MeshBuilder::GenerateOBJ("Boss_body", "OBJ//Enemy//Boss_body.obj");
+	meshList[GEO_TURRETBODY]->textureID = LoadTGA("Image//Enemy//Boss_body.tga");
+	turret[1] = new Enemy ("Boss_head", Vector3(10,0,10));
+	turret[1]->setCollider(100, 100);
+	turret[1]->updateCurPos();
+	turret[2] = new Enemy("Boss_body", Vector3(10,0,10));
+
+	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall", "OBJ//Wall//Wall.obj");
+	meshList[GEO_WALL]->textureID = LoadTGA("Image//Wall//Wall.tga");
+	turret[3] = new Enemy("Wall", Vector3(0,0,45));
+	turret[3]->setCollider(10,400);
+	turret[3]->updateCurPos();
 }
 
 void Scene4_Boss::Render()
@@ -449,15 +457,15 @@ void Scene4_Boss::Render()
 	rocks();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(turret.position.x, turret.position.y, turret.position.z);
+	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
 	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_TURRETBODY], true);
 	modelStack.PopMatrix(); 
 	
 	modelStack.PushMatrix();
-	modelStack.Translate(turret.position.x, turret.position.y, turret.position.z);
+	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
 	modelStack.Rotate(180, 0, 1, 0);
-	modelStack.Rotate(turret.RotateToPlayer(camera.position), 0, 1, 0);
+	modelStack.Rotate(turret[1]->RotateToPlayer(camera.position), 0, 1, 0);
 	modelStack.Scale(9, 9, 9);
 	RenderMesh(meshList[GEO_TURRETHEAD], true);
 	modelStack.PopMatrix();

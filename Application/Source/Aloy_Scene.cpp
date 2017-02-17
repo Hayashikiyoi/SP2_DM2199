@@ -58,19 +58,19 @@ void Aloy_Scene::Init()
 
 	//meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_TITLE] = MeshBuilder::GenerateQuad("title", Color(1, 1, 1), 1, 1);
-	meshList[GEO_TITLE]->textureID = LoadTGA("Image//Title.tga");
+	meshList[GEO_TITLE]->textureID = LoadTGA("Image//Text//Title.tga");
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
 
 	meshList[GEO_TEXT_1] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT_1]->textureID = LoadTGA("Image//ocrastd.tga");
+	meshList[GEO_TEXT_1]->textureID = LoadTGA("Image//Text//ocrastd.tga");
 
 	meshList[GEO_TEXT_2] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT_2]->textureID = LoadTGA("Image//ocrastd.tga");
+	meshList[GEO_TEXT_2]->textureID = LoadTGA("Image//Text//ocrastd.tga");
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");

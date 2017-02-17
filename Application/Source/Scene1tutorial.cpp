@@ -75,7 +75,7 @@ void Scene1tutorial::Init()
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
 
 	meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
-	meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
+	meshList[GEO_BIKE]->textureID = LoadTGA("Image//Object//Vehicle.tga");
 
 	meshList[GEO_ROCK] = MeshBuilder::GenerateOBJ("Rock", "OBJ//Rock1.obj");
 	meshList[GEO_ROCK]->textureID = LoadTGA("Image//model//Rock.tga");

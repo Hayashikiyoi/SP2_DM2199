@@ -56,9 +56,6 @@
     <ClCompile Include="Source\SceneCalvert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ChuanXu.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Aloy_Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -143,9 +140,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene_Calvert.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ChuanXu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Aloy_Scene.h">
