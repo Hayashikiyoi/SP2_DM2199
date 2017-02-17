@@ -191,7 +191,10 @@ void ChuanXu::Update(double dt)
 		DelayTimer = 0;
 	}
 	
-	
+	if (Application::IsKeyPressed(VK_F1))
+	{
+		SceneManager::instance()->changeScene(2);
+	}
 
 	Robot.Set(Robot.x, Robot.y, Robot.z);
 	deltaTime = "FPS:" + std::to_string(1 / dt);
@@ -425,7 +428,7 @@ void ChuanXu::Render()
 		for (int i = 0; i <= sqrt((Robot.Dot(Robot) + turret.position.Dot(turret.position))); i += 2)
 		{
 			modelStack.PushMatrix();
-			modelStack.Translate(turret.position.x, 3.5, turret.position.z);
+			modelStack.Translate(turret.position.x, 0, turret.position.z);
 			if (shootBullet)
 			modelStack.Translate(Bullet.x, 0, Bullet.z);
 			modelStack.Rotate(turret.RotateToPlayer(Robot), 0, 1, 0);

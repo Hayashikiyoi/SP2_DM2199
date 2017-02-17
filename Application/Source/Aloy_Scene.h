@@ -61,6 +61,7 @@ private:
 	float TextSize_3; //resizing text for scene for exit game
 	bool TextChecking;//if they press Enter already
 	bool TextSwitching;//Checking the left and right button
+	bool bSomethingHappen;
 	int MenuSelect;
 	float Delaytimer;
 

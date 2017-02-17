@@ -105,32 +105,35 @@ void Aloy_Scene::Update(double dt)
 		if (Application::IsKeyPressed(VK_RETURN))
 		{
 			TextSize = 0;
-			TextChecking = false;
 			Delaytimer = 0;
+			TextChecking = false;
 		}
 	}
 	else if (TextChecking == false)
 	{
+		bSomethingHappen = false;
 		switch (MenuSelect)
 		{
 		case 0:
-			Delaytimer += (float)dt;
+			bSomethingHappen = true;
 			TextSize_2 = 3;
-			if (Delaytimer > 0.5)
+			if (Delaytimer > 0.125)
 			{
 				if (Application::IsKeyPressed(VK_RETURN))
 					SceneManager::instance()->changeScene(1);
 				else if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
 				{
+
 					Delaytimer = 0;
 					TextSize_2 = 0;
 					TextSize_3 = 3;
 					MenuSelect = 1;
 				}
 			}
+			break;
 		case 1:
-			Delaytimer += (float)dt;
-			if (Delaytimer > 0.5)
+			bSomethingHappen = true;
+			if (Delaytimer > 0.125)
 			{
 				if (Application::IsKeyPressed(VK_RETURN))
 				{
@@ -143,6 +146,13 @@ void Aloy_Scene::Update(double dt)
 					MenuSelect = 0;
 				}
 			}
+			break;
+		default:
+			break;
+		}
+		if (bSomethingHappen)
+		{
+			Delaytimer += (float)dt;
 		}
 	}
 
