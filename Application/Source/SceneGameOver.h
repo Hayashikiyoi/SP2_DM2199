@@ -38,7 +38,7 @@ class SceneGameOver : public Scene
 	enum GEOMETRY_TYPE
 	{
 		GEO_AXES,
-		GEO_TITLE,
+		GEO_GAMEOVER,
 		GEO_FRONT,
 		GEO_TEXT,
 		GEO_TEXT_1,

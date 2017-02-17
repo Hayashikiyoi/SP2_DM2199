@@ -2,7 +2,7 @@
 #define SCENE1TURORIAL_H
 
 #include "Scene.h"
-#include "Camera3.h"
+#include "Fps_Camera.h"
 #include "Mesh.h"
 #include "MatrixStack.h"
 #include "Light.h"
@@ -85,7 +85,7 @@ private:
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
-	Camera3 camera;
+	Fps_Camera camera;
 	MS modelStack, viewStack, projectionStack;
 
 	bool lightEnable;

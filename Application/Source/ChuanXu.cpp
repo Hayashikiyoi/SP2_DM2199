@@ -29,6 +29,7 @@ void ChuanXu::Init()
 	scaleAll = 1;
 	lightEnable = true;
 
+
 	//Emable depth test
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE); //Deletes the backface
@@ -101,6 +102,9 @@ void ChuanXu::Init()
 
 	meshList[GEO_BOSSHEAD] = MeshBuilder::GenerateOBJ("Boss head", "OBJ//Boss_head.obj");
 	meshList[GEO_BOSSHEAD]->textureID = LoadTGA("Image//Boss_Head.tga");
+
+	meshList[GEO_BOSSBODY] = MeshBuilder::GenerateOBJ("Boss body", "OBJ//Boss_body.obj");
+	meshList[GEO_BOSSBODY]->textureID = LoadTGA("Image//Boss_body.tga");
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -177,7 +181,7 @@ void ChuanXu::Init()
 void ChuanXu::Update(double dt)
 {		
 	static float translateLimit = 1;
-	float bulletDir;
+	const float bulletDir = turret.RotateToPlayer(Robot);
 	if (shootBullet == true)
 	{
 		DelayTimer += (float)dt;
@@ -233,7 +237,7 @@ void ChuanXu::Update(double dt)
 	if (shootBullet)
 	{	
 		
-		bulletDir = turret.RotateToPlayer(Robot);
+		
 		Bullet.x -= (float)(10 * sin(Math::DegreeToRadian(bulletDir))*dt);
 		Bullet.z -= (float)(10 * cos(Math::DegreeToRadian(bulletDir))*dt);
 	}
@@ -456,7 +460,11 @@ void ChuanXu::Render()
 
 	modelStack.PushMatrix();
 	modelStack.Translate(Robot.x, 0, Robot.z);
-	RenderMesh(meshList[GEO_BOSSHEAD], false);
+	RenderMesh(meshList[GEO_BOSSBODY], true);
+	modelStack.PushMatrix();
+	modelStack.Rotate(rotateAngle, 0, 1, 0);
+	RenderMesh(meshList[GEO_BOSSHEAD], true);
+	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
 	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(Bullet.x), Color(1, 1, 1), 4, 1, 2);
