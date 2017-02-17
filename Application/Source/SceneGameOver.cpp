@@ -27,7 +27,7 @@ void SceneGameOver::Init()
 	translateX[1] = 0;
 	translateX[2] = 0;
 	scaleAll = 1;
-	TextSize = 3;
+	TextSize = 2;
 	TextSize_2 = 0;
 	TextSize_3 = 0;
 	MenuSelect = 0;
@@ -57,11 +57,11 @@ void SceneGameOver::Init()
 		meshList[i] = NULL;
 
 	//meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_TITLE] = MeshBuilder::GenerateQuad("title", Color(1, 1, 1), 1, 1);
-	meshList[GEO_TITLE]->textureID = LoadTGA("Image//Title.tga");
+	meshList[GEO_GAMEOVER] = MeshBuilder::GenerateQuad("gameover", Color(1, 1, 1), 1, 1);
+	meshList[GEO_GAMEOVER]->textureID = LoadTGA("Image//gameover.tga");
 
-	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");
+	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(0, 0, 0), 1.f, 1.f);
+	/*meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");*/
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
@@ -85,8 +85,6 @@ void SceneGameOver::Init()
 	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
 
 	glUseProgram(m_programID);
-
-
 
 	Mtx44 projection;
 	projection.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
@@ -118,9 +116,7 @@ void SceneGameOver::Update(double dt)
 			TextSize_2 = 3;
 			if (Delaytimer > 0.5)
 			{
-				if (Application::IsKeyPressed(VK_RETURN))
-					SceneManager::instance()->changeScene(1);
-				else if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
+			    if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
 				{
 					Delaytimer = 0;
 					TextSize_2 = 0;
@@ -136,7 +132,7 @@ void SceneGameOver::Update(double dt)
 				{
 					SceneManager::instance()->EndGame(true);
 				}
-				else if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
+			    else if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
 				{
 					Delaytimer = 0;
 					TextSize_3 = 0;
@@ -176,15 +172,15 @@ void SceneGameOver::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 0, 0);
 
 	//No transform needed
-	RenderMeshOnScreen(meshList[GEO_TITLE], 40, 30, 50, 50);
+	RenderMeshOnScreen(meshList[GEO_GAMEOVER], 40, 40, 60, 30);
 
 	modelStack.PushMatrix();
-	RenderTextOnScreen(meshList[GEO_TEXT_1], "Press Any Button", Color(0, 1, 0), TextSize, 5, 4);
-	RenderTextOnScreen(meshList[GEO_TEXT_1], "Start Game", Color(0, 1, 0), TextSize_2, 8, 4);
-	RenderTextOnScreen(meshList[GEO_TEXT_2], "Quit Game", Color(0, 1, 0), TextSize_3, 8.5, 4);
+	RenderTextOnScreen(meshList[GEO_TEXT], "Press any button to continue", Color(0, 1, 0), TextSize, 2, 4);
+	RenderTextOnScreen(meshList[GEO_TEXT_1], "Retry", Color(0, 1, 0), TextSize_2, 5, 4);
+	RenderTextOnScreen(meshList[GEO_TEXT_2], "Return Back to Main Menu", Color(0, 1, 0), TextSize_3, 2, 4);
 	modelStack.PopMatrix();
 	//-------------------------------------------------------------------------------------
-
+	 
 
 }
 

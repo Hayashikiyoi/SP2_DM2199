@@ -202,8 +202,10 @@ void ChuanXu::Update(double dt)
 		DelayTimer = 0;
 	}
 	
-	bullet_1.shootBullet(shootBullet, turret.RotateToPlayer(Robot), dt, turret.position);
-	
+		if (Application::IsKeyPressed(VK_F1))
+	{
+		SceneManager::instance()->changeScene(2);
+	}
 
 	Robot.Set(Robot.x, Robot.y, Robot.z);
 	deltaTime = "FPS:" + std::to_string(1 / dt);
@@ -239,7 +241,13 @@ void ChuanXu::Update(double dt)
 	{
 			shootBullet = true;
 	}
-
+	if (shootBullet)
+	{	
+		
+		
+		Bullet.x -= (float)(10 * sin(Math::DegreeToRadian(bulletDir))*dt);
+		Bullet.z -= (float)(10 * cos(Math::DegreeToRadian(bulletDir))*dt);
+	}
 
 
 	if (coverOpened)
@@ -430,7 +438,8 @@ void ChuanXu::Render()
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(turret.position.x, 3.5, turret.position.z);
-			modelStack.Translate(bullet_1.position.x, 0, bullet_1.position.z);
+			if (shootBullet)
+			modelStack.Translate(Bullet.x, 0, Bullet.z);
 			modelStack.Rotate(turret.RotateToPlayer(Robot), 0, 1, 0);
 			RenderMesh(meshList[GEO_BULLET], false);
 			modelStack.PopMatrix();

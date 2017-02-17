@@ -37,7 +37,7 @@ void Scene1tutorial::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Initialise camera
-	camera.Init(Vector3(-30, 3, 40), Vector3(0, 0, -10), Vector3(0, 1, 0));
+	camera.Init(Vector3(-30, 0, 40), Vector3(0, 0, -10), Vector3(0, 1, 0));
 
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -75,7 +75,7 @@ void Scene1tutorial::Init()
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
 
 	meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
-	meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
+	meshList[GEO_BIKE]->textureID = LoadTGA("Image//Object//Vehicle.tga");
 
 	meshList[GEO_ROCK] = MeshBuilder::GenerateOBJ("Rock", "OBJ//Rock1.obj");
 	meshList[GEO_ROCK]->textureID = LoadTGA("Image//model//Rock.tga");

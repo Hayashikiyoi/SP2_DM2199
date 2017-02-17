@@ -16,9 +16,9 @@
 #include "LoadScene.h"
 #include "ChuanXu.h"
 #include "Wilson.h"
-#include "Scene1tutorial.h"	
+#include "Scene1tutorial.h"
+#include "SceneGameOver.h"
 #include "Scene_Level2.h"
-
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
@@ -113,9 +113,10 @@ void Application::Run()
 {
 	//Main Loop
 	//SceneManager::instance()->addScene(new Aloy_Scene);
-	//SceneManager::instance()->addScene(new Wilson);
-	//SceneManager::instance()->addScene(new Scene1tutorial);
+	SceneManager::instance()->addScene(new Wilson);
+	SceneManager::instance()->addScene(new Scene1tutorial);
 	SceneManager::instance()->addScene(new ChuanXu);
+	//SceneManager::instance()->addScene(new SceneGameOver);
 	//SceneManager::instance()->addScene(new Scene_Level2);
 	//SceneManager::instance()->addScene(new SceneCalvert);
 	//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)

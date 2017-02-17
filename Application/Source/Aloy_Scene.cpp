@@ -58,19 +58,19 @@ void Aloy_Scene::Init()
 
 	//meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_TITLE] = MeshBuilder::GenerateQuad("title", Color(1, 1, 1), 1, 1);
-	meshList[GEO_TITLE]->textureID = LoadTGA("Image//Title.tga");
+	meshList[GEO_TITLE]->textureID = LoadTGA("Image//Text//Title.tga");
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
 
 	meshList[GEO_TEXT_1] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT_1]->textureID = LoadTGA("Image//ocrastd.tga");
+	meshList[GEO_TEXT_1]->textureID = LoadTGA("Image//Text//ocrastd.tga");
 
 	meshList[GEO_TEXT_2] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT_2]->textureID = LoadTGA("Image//ocrastd.tga");
+	meshList[GEO_TEXT_2]->textureID = LoadTGA("Image//Text//ocrastd.tga");
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -105,32 +105,35 @@ void Aloy_Scene::Update(double dt)
 		if (Application::IsKeyPressed(VK_RETURN))
 		{
 			TextSize = 0;
-			TextChecking = false;
 			Delaytimer = 0;
+			TextChecking = false;
 		}
 	}
 	else if (TextChecking == false)
 	{
+		bSomethingHappen = false;
 		switch (MenuSelect)
 		{
 		case 0:
-			Delaytimer += (float)dt;
+			bSomethingHappen = true;
 			TextSize_2 = 3;
-			if (Delaytimer > 0.5)
+			if (Delaytimer > 0.125)
 			{
 				if (Application::IsKeyPressed(VK_RETURN))
 					SceneManager::instance()->changeScene(1);
 				else if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
 				{
+
 					Delaytimer = 0;
 					TextSize_2 = 0;
 					TextSize_3 = 3;
 					MenuSelect = 1;
 				}
 			}
+			break;
 		case 1:
-			Delaytimer += (float)dt;
-			if (Delaytimer > 0.5)
+			bSomethingHappen = true;
+			if (Delaytimer > 0.125)
 			{
 				if (Application::IsKeyPressed(VK_RETURN))
 				{
@@ -143,6 +146,13 @@ void Aloy_Scene::Update(double dt)
 					MenuSelect = 0;
 				}
 			}
+			break;
+		default:
+			break;
+		}
+		if (bSomethingHappen)
+		{
+			Delaytimer += (float)dt;
 		}
 	}
 

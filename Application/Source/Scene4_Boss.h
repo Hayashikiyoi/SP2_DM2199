@@ -7,12 +7,17 @@
 #include "MatrixStack.h"
 #include "Light.h"
 #include "Utility.h"
-#include "Enemy.h"
 
 #include <string>
 using std::string;
 
-class Scene4_Boss : public Scene, Enemy
+//GameObject Folder
+#include "Enemy.h"
+#include "GameObject.h"
+
+#define numOfEnemy 10
+
+class Scene4_Boss : public Scene
 {
 
 	enum UNIFORM_TYPE
@@ -68,8 +73,8 @@ class Scene4_Boss : public Scene, Enemy
 		GEO_TURRETHEAD,
 		GEO_TURRETBODY,
 		GEO_BULLET,
-		GEO_ROCK,
-		GEO_ROCK_2,
+		GEO_WALL,
+		GEO_WALL_2,
 		GEO_DOOR,
 		NUM_GEOMETRY,
 	};
@@ -79,15 +84,19 @@ private:
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
 	unsigned m_parameters[U_TOTAL];
-
 	Mesh* meshList[NUM_GEOMETRY];
+
+	//GameObj
+	GameObject* object[NUM_GEOMETRY];
+	GameObject* CamObj;
 
 	string deltaTime;
 	string cordx, cordy, cordz;
 	Vector3 Robot;
 	Vector3 Bullet;
-	Enemy turret;
-	Enemy turret2;
+
+	Enemy* turret[numOfEnemy];
+	
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
@@ -95,8 +104,6 @@ private:
 
 	void skyBox();
 	bool shootBullet = false;
-
-
 
 	Fps_Camera camera;
 	MS modelStack, viewStack, projectionStack;
@@ -112,8 +119,9 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
-
-
+	
+	//Game Object
+	void GenerateOBJ();
 
 public:
 	Scene4_Boss();
