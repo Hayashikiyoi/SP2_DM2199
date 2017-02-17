@@ -68,6 +68,7 @@ class ChuanXu : public Scene , Enemy
 		GEO_TURRETBODY,
 		GEO_BULLET,
 		GEO_BOSSHEAD,
+		GEO_BOSSBODY,
 		NUM_GEOMETRY,
 	};
 

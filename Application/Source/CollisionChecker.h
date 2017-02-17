@@ -13,7 +13,7 @@ public:
 	Vector3 getmax(void); //returns the max value of the vector
 	void updatePos(Vector3 position); //Position of the object
 	void setBoxSize(unsigned length, unsigned width); //Size of the collider box
-	bool colidecheck(Vector3 objMin, Vector3 objMax); //Detects if a collision have happened return true or false
+	bool collidecheck(Vector3 objMin, Vector3 objMax); //Detects if a collision have happened return true or false
 	
 private:
 	unsigned length, width;

@@ -18,7 +18,7 @@ Vector3 boxCollider::getmax(void)
 	return (this->colliderBoxMax);
 }
 
-bool boxCollider::colidecheck(Vector3 objMin, Vector3 objMax)
+bool boxCollider::collidecheck(Vector3 objMin, Vector3 objMax)
 {
 	return ((colliderBoxMin.x <= objMax.x && colliderBoxMax.x >= objMin.x) &&
 		(colliderBoxMin.z <= objMax.z && colliderBoxMax.z >= objMin.z));

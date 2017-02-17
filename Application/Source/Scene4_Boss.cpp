@@ -99,8 +99,8 @@ void Scene4_Boss::Init()
 	meshList[GEO_TURRETHEAD] = MeshBuilder::GenerateOBJ("TurretHead", "OBJ//Turret_head.obj");
 	meshList[GEO_TURRETHEAD]->textureID = LoadTGA("Image//Turret_Head.tga");
 
-	meshList[GEO_ROCK] = MeshBuilder::GenerateOBJ("Stone_1", "OBJ//Stone_1.obj");
-	meshList[GEO_ROCK]->textureID = LoadTGA("Image//Stone_1.tga");
+	meshList[GEO_ROCK] = MeshBuilder::GenerateOBJ("Stone_1", "OBJ//Wall.obj");
+	meshList[GEO_ROCK]->textureID = LoadTGA("Image//Wall.tga");
 
 	meshList[GEO_ROCK_2] = MeshBuilder::GenerateOBJ("Stone_2", "OBJ//Stone_2.obj");
 	meshList[GEO_ROCK_2]->textureID = LoadTGA("Image//Stone_2.tga");
@@ -176,7 +176,7 @@ void Scene4_Boss::Init()
 
 
 	Mtx44 projection;
-	projection.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
+	projection.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 2000.0f);
 	projectionStack.LoadMatrix(projection);
 }
 
