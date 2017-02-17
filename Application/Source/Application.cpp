@@ -112,6 +112,7 @@ void Application::Run()
 {
 	//Main Loop
 	SceneManager::instance()->addScene(new Aloy_Scene);
+	SceneManager::instance()->addScene(new Scene4_Boss);
 	//SceneManager::instance()->addScene(new Wilson);
 	//SceneManager::instance()->addScene(new ChuanXu);
 	//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)

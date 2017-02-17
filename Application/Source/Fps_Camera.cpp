@@ -67,8 +67,8 @@ void Fps_Camera::Update(double dt)
 
 	glfwSetCursorPos(m_window, mid_x, mid_y);
 
-	float horizMovement = Math::DegreeToRadian((float)(mid_x - xpos) * 3);
-	float vertMovement = Math::DegreeToRadian((float)(mid_y - ypos) * 3);
+	float horizMovement = Math::DegreeToRadian((float)(mid_x - xpos) * 10);
+	float vertMovement = Math::DegreeToRadian((float)(mid_y - ypos) * 10);
 
 	Mtx44 camYaw, camPitch;
 	Mtx44 rotation;
