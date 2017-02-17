@@ -92,6 +92,7 @@
     <ClCompile Include="Source\CollisionChecker.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
     <ClCompile Include="Source\Fps_Camera.cpp" />
+    <ClCompile Include="Source\GameObject.cpp" />
     <ClCompile Include="Source\LoadOBJ.cpp" />
     <ClCompile Include="Source\LoadScene.cpp" />
     <ClCompile Include="Source\LoadTGA.cpp" />
@@ -101,6 +102,7 @@
     <ClCompile Include="Source\Scene1tutorial.cpp" />
     <ClCompile Include="Source\Scene4_Boss.cpp" />
     <ClCompile Include="Source\SceneCalvert.cpp" />
+    <ClCompile Include="Source\SceneGameOver.cpp" />
     <ClCompile Include="Source\SceneManager.cpp" />
     <ClCompile Include="Source\SceneUI.cpp" />
     <ClCompile Include="Source\shader.cpp" />
@@ -118,6 +120,7 @@
     <ClInclude Include="Source\CollisionChecker.h" />
     <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\Fps_Camera.h" />
+    <ClInclude Include="Source\GameObject.h" />
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\LoadOBJ.h" />
     <ClInclude Include="Source\LoadScene.h" />
@@ -126,7 +129,9 @@
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\MeshBuilder.h" />
     <ClInclude Include="Source\Scene.h" />
+    <ClInclude Include="Source\Scene1tutorial.h" />
     <ClInclude Include="Source\Scene4_Boss.h" />
+    <ClInclude Include="Source\SceneGameOver.h" />
     <ClInclude Include="Source\SceneManager.h" />
     <ClInclude Include="Source\SceneUI.h" />
     <ClInclude Include="Source\Scene_Calvert.h" />
