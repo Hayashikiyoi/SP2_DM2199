@@ -118,7 +118,7 @@ void Application::Run()
 	SceneManager::instance()->addScene(new ChuanXu);*/
 	//SceneManager::instance()->addScene(new SceneGameOver);
 	//SceneManager::instance()->addScene(new Scene_Level2);
-	//SceneManager::instance()->addScene(new SceneCalvert);
+	SceneManager::instance()->addScene(new SceneCalvert);
 	//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
 

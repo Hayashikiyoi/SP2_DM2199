@@ -47,7 +47,7 @@ void SceneCalvert::Init()
 		meshList[i] = NULL;
 		object[i] = 0;
 	}
-	CamObj = new GameObject("camera", Vector3(0, 0, 0));
+	player = new Player("camera", Vector3(0, 0, 0));
 
 	//Enemy
 	for (int i = 0; i < NumOfEnemy; ++i)
@@ -148,7 +148,9 @@ void SceneCalvert::Init()
 
 void SceneCalvert::Update(double dt)
 {
-	deltaTime = "FPS:" + std::to_string(1 / dt);
+	//deltaTime = "FPS:" + std::to_string(1 / dt);
+
+	deltaTime = "Health:" + std::to_string(player->getHealth());
 
 	static float LSPEED = 10;
 
@@ -204,17 +206,23 @@ void SceneCalvert::Update(double dt)
 
 	//Test Test Colliderbox
 	//Player collider
-	CamObj->Position = camera.position;
-	CamObj->updateCurPos();
+	player->Position = camera.position;
+	player->updateCurPos();
 
 	static Vector3 prevpos;
 	static Vector3 prevposTarget;
+	static bool smtHappen = false; 
+	static float time;
 	//Run checker
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
-		if (object[i] && CamObj->trigger(object[i]))
+		if (object[i] && player->trigger(object[i]))
 		{
-			deltaTime = "Wham bam";
+			if (!smtHappen)
+			{
+				player->DmgPlayer(5);
+				smtHappen = true;
+			}
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
@@ -223,9 +231,13 @@ void SceneCalvert::Update(double dt)
 
 	for (int i = 0; i < NumOfEnemy; ++i)
 	{
-		if (enemy[i] && CamObj->trigger(enemy[i]))
+		if (enemy[i] && player->trigger(enemy[i]))
 		{
-			deltaTime = "Wham bam";
+			if (!smtHappen)
+			{
+				player->HealPlayer(5);
+				smtHappen = true;
+			}
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
@@ -234,6 +246,17 @@ void SceneCalvert::Update(double dt)
 		{
 			prevpos = camera.position;
 			prevposTarget = camera.target;
+		}
+	}
+
+	
+	if (smtHappen)
+	{
+		time += dt;
+		if (time > 2)
+		{
+			time = 0;
+			smtHappen = false;
 		}
 	}
 	
@@ -404,7 +427,7 @@ void SceneCalvert::GenerateSkybox()
 void SceneCalvert::GenerateText()
 {
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
 }
 
 //OBJ
@@ -571,7 +594,7 @@ void SceneCalvert::Exit()
 		if (enemy[i] != 0)
 			delete enemy[i];
 	}
-	delete CamObj;
+	delete player;
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 
