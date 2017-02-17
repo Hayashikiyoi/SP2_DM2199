@@ -200,7 +200,7 @@ void Scene_Level2::Update(double dt)
 
 	Robot.Set(Robot.x, Robot.y, Robot.z);
 	deltaTime = "FPS:" + std::to_string(1 / dt);
-	turret.position.x = turret.position.z = 20.0f;
+//	turret.position.x = turret.position.z = 20.0f;
 	if (Application::IsKeyPressed('F'))
 	{
 		rotateAngle += (float)(100 * dt);

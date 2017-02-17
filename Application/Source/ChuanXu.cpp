@@ -182,13 +182,13 @@ void ChuanXu::GenerateObj()
 	meshList[GEO_TURRETHEAD] = MeshBuilder::GenerateOBJ("TurretHead", "OBJ//Turret_head.obj");
 	meshList[GEO_TURRETHEAD]->textureID = LoadTGA("Image//Turret_Head.tga");
 
-	turret
+	//turret
 
 }
 void ChuanXu::Update(double dt)
 {		
 	static float translateLimit = 1;
-	const float bulletDir = turret.RotateToPlayer(Robot);
+	/*const float bulletDir = turret.RotateToPlayer(Robot);*/
 	if (shootBullet == true)
 	{
 		DelayTimer += (float)dt;
@@ -197,7 +197,7 @@ void ChuanXu::Update(double dt)
 	}
 	if (shootBullet == false)
 	{
-		bullet_1.position.Set(0, 0, 0);
+		/*bullet_1.position.Set(0, 0, 0);*/
 		shootBullet = true;
 		DelayTimer = 0;
 	}
@@ -209,7 +209,7 @@ void ChuanXu::Update(double dt)
 
 	Robot.Set(Robot.x, Robot.y, Robot.z);
 	deltaTime = "FPS:" + std::to_string(1 / dt);
-	turret.position.x = turret.position.z = 20.0f;
+	//turret.position.x = turret.position.z = 20.0f;
 	if (Application::IsKeyPressed('F'))
 	{
 		rotateAngle += (float)(100 * dt);
@@ -245,8 +245,8 @@ void ChuanXu::Update(double dt)
 	{	
 		
 		
-		Bullet.x -= (float)(10 * sin(Math::DegreeToRadian(bulletDir))*dt);
-		Bullet.z -= (float)(10 * cos(Math::DegreeToRadian(bulletDir))*dt);
+		/*Bullet.x -= (float)(10 * sin(Math::DegreeToRadian(bulletDir))*dt);
+		Bullet.z -= (float)(10 * cos(Math::DegreeToRadian(bulletDir))*dt);*/
 	}
 
 
@@ -434,7 +434,7 @@ void ChuanXu::Render()
 	//modelStack.PopMatrix();
 
 
-		for (int i = 0; i <= sqrt((Robot.Dot(Robot) + turret.position.Dot(turret.position))); i += 2)
+		/*for (int i = 0; i <= sqrt((Robot.Dot(Robot) + turret.position.Dot(turret.position))); i += 2)
 		{
 			modelStack.PushMatrix();
 			modelStack.Translate(turret.position.x, 3.5, turret.position.z);
@@ -443,7 +443,7 @@ void ChuanXu::Render()
 			modelStack.Rotate(turret.RotateToPlayer(Robot), 0, 1, 0);
 			RenderMesh(meshList[GEO_BULLET], false);
 			modelStack.PopMatrix();
-		}
+		}*/
 	
 	
 
@@ -475,8 +475,8 @@ void ChuanXu::Render()
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();*/
 
-	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(bullet_1.position.x), Color(1, 1, 1), 4, 1, 2);
-	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(bullet_1.position.z), Color(1, 1, 1), 4, 1, 1);
+	/*RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(bullet_1.position.x), Color(1, 1, 1), 4, 1, 2);
+	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(bullet_1.position.z), Color(1, 1, 1), 4, 1, 1);*/
 	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(DelayTimer), Color(1, 1, 1), 4, 1, 3);
 
 }

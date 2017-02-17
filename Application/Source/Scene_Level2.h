@@ -12,7 +12,7 @@
 #include <string>
 using std::string;
 
-class Scene_Level2 : public Scene, Enemy
+class Scene_Level2 : public Scene
 {
 
 	enum UNIFORM_TYPE
