@@ -37,7 +37,7 @@ void Scene1tutorial::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Initialise camera
-	camera.Init(Vector3(-30, 3, 40), Vector3(0, 0, -10), Vector3(0, 1, 0));
+	camera.Init(Vector3(-30, 0, 40), Vector3(0, 0, -10), Vector3(0, 1, 0));
 
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);

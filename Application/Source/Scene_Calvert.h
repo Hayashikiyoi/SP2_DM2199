@@ -15,6 +15,8 @@ using std::string;
 #include "Enemy.h"
 #include "GameObject.h"
 
+#define NumOfEnemy 10
+
 class SceneCalvert : public Scene
 {
 
@@ -95,7 +97,7 @@ private:
 	void GenerateOBJ();
 
 	//Enemy class
-	Enemy enemy1;
+	Enemy* enemy[NumOfEnemy];
 
 	//Gameobj
 	GameObject* object[NUM_GEOMETRY];
