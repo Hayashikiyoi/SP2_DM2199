@@ -413,7 +413,7 @@ void Scene4_Boss::GenerateOBJ()
 
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall", "OBJ//Wall//Wall.obj");
 	meshList[GEO_WALL]->textureID = LoadTGA("Image//Wall//Wall.tga");
-	turret[3] = new Enemy("Wall", Vector3(0,0,45));
+	turret[3] = new Enemy("Wall", Vector3(0,0,450));
 	turret[3]->setCollider(10,400);
 	turret[3]->updateCurPos();
 }
