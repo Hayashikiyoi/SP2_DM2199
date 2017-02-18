@@ -37,6 +37,7 @@ public:
 
 	//Update scene
 	void sceneUpdate(float dt);
+	void loadingScene();
 
 	//End Game bool
 	void EndGame(bool end);
@@ -46,6 +47,7 @@ private:
 	//Here be levels
 	size_t currentLevel; //Shows current level
 	size_t nextLevel; //For adding new level
+	size_t offset; //For after loading scene is done
 	map <size_t, Scene*> sceneManager; //Store level and level name
 	static SceneManager *s_instance; //For singleton scene management
 	bool endCheck;

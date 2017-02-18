@@ -15,8 +15,10 @@ using std::string;
 #include "Enemy.h"
 #include "GameObject.h"
 #include "Player.h"
+#include "Item.h"
 
 #define NumOfEnemy 10
+#define NumOfCollectables 10
 
 class SceneCalvert : public Scene
 {
@@ -105,6 +107,9 @@ private:
 
 	//Player
 	Player* player;
+
+	//Some Collectable cubes
+	Item* collectables[NumOfCollectables];
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
