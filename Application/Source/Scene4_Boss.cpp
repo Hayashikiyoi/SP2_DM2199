@@ -105,8 +105,6 @@ void Scene4_Boss::Init()
 
 	GenerateOBJ();
 
-	
-
 	meshList[GEO_WALL_2] = MeshBuilder::GenerateOBJ("Stone_2", "OBJ//Wall//Stone_2.obj");
 	meshList[GEO_WALL_2]->textureID = LoadTGA("Image//Wall//Stone_2.tga");
 
@@ -190,7 +188,9 @@ void Scene4_Boss::Update(double dt)
 	static float translateLimit = 1;
 
 	deltaTime = "FPS:" + std::to_string(1 / dt);
-
+	
+	cordx = "X: " + std::to_string(camera.position.x);;
+	cordz = "Z: " + std::to_string(camera.position.z);
 	static float LSPEED = 10;
 
 	if (Application::IsKeyPressed(VK_F1))
@@ -371,31 +371,31 @@ void Scene4_Boss::skyBox()
 
 }
 
-void Scene4_Boss::rocks()
+void Scene4_Boss::Walls()
 {
 	modelStack.PushMatrix();
-	modelStack.Scale(10,10,10);
-	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
+	modelStack.Translate(turret[3]->Position.x, turret[3]->Position.y, turret[3]->Position.z);
+	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_WALL],false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(turret[4]->Position.x, turret[4]->Position.y, turret[4]->Position.z);
 	modelStack.Scale(10, 10, 10);
-	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, -turret[1]->Position.z);
 	RenderMesh(meshList[GEO_WALL], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Scale(10, 10, 10);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
+	modelStack.Translate(turret[5]->Position.x + 450, turret[5]->Position.y, turret[5]->Position.z - 450);
+	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_WALL], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Scale(10, 10, 10);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y,-turret[1]->Position.z);
+	modelStack.Translate(turret[6]->Position.x - 450, turret[6]->Position.y,-turret[6]->Position.z + 450);
+	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_WALL], false);
 	modelStack.PopMatrix();
 }
@@ -413,9 +413,18 @@ void Scene4_Boss::GenerateOBJ()
 
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall", "OBJ//Wall//Wall.obj");
 	meshList[GEO_WALL]->textureID = LoadTGA("Image//Wall//Wall.tga");
-	turret[3] = new Enemy("Wall", Vector3(0,0,450));
-	turret[3]->setCollider(10,400);
+	turret[3] = new Enemy("Wall", Vector3(0,0,-450));
+	turret[3]->setCollider(1000,15);
 	turret[3]->updateCurPos();
+	turret[4] = new Enemy("Wall", Vector3(0,0,450));
+	turret[4]->setCollider(1000,15);
+	turret[4]->updateCurPos();
+	turret[5] = new Enemy("Wall", Vector3(-450, 0, 0));
+	turret[5]->setCollider(15, 1000);
+	turret[5]->updateCurPos();
+	turret[6] = new Enemy("Wall", Vector3(450, 0, 0));
+	turret[6]->setCollider(15, 1000);
+	turret[6]->updateCurPos();
 }
 
 void Scene4_Boss::Render()
@@ -454,7 +463,7 @@ void Scene4_Boss::Render()
 
 	//-------------------------------------------------------------------------------------
 	skyBox();
-	rocks();
+	Walls();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
@@ -466,36 +475,9 @@ void Scene4_Boss::Render()
 	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
 	modelStack.Rotate(180, 0, 1, 0);
 	modelStack.Rotate(turret[1]->RotateToPlayer(camera.position), 0, 1, 0);
-	modelStack.Scale(9, 9, 9);
+	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_TURRETHEAD], true);
 	modelStack.PopMatrix();
-
-	/*modelStack.PushMatrix();
-	modelStack.Translate(object[GEO_DEBUGBOX]->Position.x, object[GEO_DEBUGBOX]->Position.y, object[GEO_DEBUGBOX]->Position.z);
-	RenderMesh(meshList[GEO_DEBUGBOX], true);
-	modelStack.PopMatrix();*/
-
-	/*modelStack.PushMatrix();
-	modelStack.Scale(3, 3, 3);
-	turret.position.Set(0, 0, 0);
-	RenderMesh(meshList[GEO_TURRETBODY], true);
-	modelStack.PushMatrix();
-	modelStack.Rotate(turret.RotateToPlayer(camera.position), 0, 1, 0);
-	RenderMesh(meshList[GEO_TURRETHEAD], true);
-	modelStack.PopMatrix();
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(20, 0, 20);
-	modelStack.Scale(3,3,3);
-	turret2.position = Vector3(20, 0, 20);
-	RenderMesh(meshList[GEO_TURRETBODY], true);
-	modelStack.PushMatrix();
-	modelStack.Rotate(turret2.RotateToPlayer(camera.position), 0, 1, 0);
-	RenderMesh(meshList[GEO_TURRETHEAD], true);
-	modelStack.PopMatrix();
-	modelStack.PopMatrix();*/
-
 
 	modelStack.PushMatrix();
 	RenderMesh(meshList[GEO_BULLET], false);
@@ -503,8 +485,8 @@ void Scene4_Boss::Render()
 
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
-
-
+	RenderTextOnScreen(meshList[GEO_TEXT], cordx ,Color(0,1,0),3,0,3);
+	RenderTextOnScreen(meshList[GEO_TEXT], cordz, Color(0, 1, 0), 3, 0, 5);
 	//No transform needed
 	RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
 	//-------------------------------------------------------------------------------------
