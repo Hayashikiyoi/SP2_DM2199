@@ -50,7 +50,7 @@ void LoadScene::Init()
 		meshList[i] = NULL;
 
 	meshList[GEO_NOWLOADING] = MeshBuilder::GenerateQuad("NowLoading", Color(1, 1, 1), 1, 1);
-	meshList[GEO_NOWLOADING]->textureID = LoadTGA("Image//NowLoading.tga");
+	meshList[GEO_NOWLOADING]->textureID = LoadTGA("Image//Text//NowLoading.tga");
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -75,9 +75,8 @@ void LoadScene::Init()
 
 void LoadScene::Update(double dt)
 {
-	deltaTime = "FPS:" + std::to_string(1 / dt);	
-
 	camera.Update(dt);
+	SceneManager::instance()->loadingScene();
 }
 
 void LoadScene::Render()

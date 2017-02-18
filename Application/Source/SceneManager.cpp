@@ -1,6 +1,6 @@
 #include "SceneManager.h"
 
-SceneManager::SceneManager() :currentLevel(0), nextLevel(0), endCheck(false)
+SceneManager::SceneManager() :currentLevel(0), nextLevel(0), offset(0), endCheck(false)
 {
 }
 SceneManager::~SceneManager()
@@ -10,7 +10,8 @@ SceneManager::~SceneManager()
 void SceneManager::changeScene(size_t levelnum)
 {
 	sceneManager[currentLevel]->Exit();
-	currentLevel = levelnum;
+	currentLevel = 1;
+	offset = levelnum;
 	sceneManager[currentLevel]->Init();
 }
 
@@ -49,4 +50,11 @@ void SceneManager::EndGame(bool end)
 bool SceneManager::EndCheck()
 {
 	return endCheck;
+}
+
+void SceneManager::loadingScene()
+{
+	sceneManager[currentLevel]->Exit();
+	currentLevel = offset;
+	sceneManager[currentLevel]->Init();
 }

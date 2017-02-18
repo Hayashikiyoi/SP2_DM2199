@@ -95,7 +95,7 @@ void Aloy_Scene::Init()
 
 void Aloy_Scene::Update(double dt)
 {
-	deltaTime = "FPS:" + std::to_string(1 / dt);
+	//deltaTime = "FPS:" + std::to_string(1 / dt);
 
 	if (Application::IsKeyPressed(VK_F1))
 		SceneManager::instance()->changeScene(1);//Test Scene
@@ -120,7 +120,7 @@ void Aloy_Scene::Update(double dt)
 			if (Delaytimer > 0.125)
 			{
 				if (Application::IsKeyPressed(VK_RETURN))
-					SceneManager::instance()->changeScene(1);
+					SceneManager::instance()->changeScene(2);
 				else if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
 				{
 
