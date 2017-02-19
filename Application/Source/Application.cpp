@@ -13,6 +13,7 @@
 #include "Scene_Calvert.h"
 #include "Aloy_Scene.h"
 #include "Scene4_Boss.h"
+#include "MenuRoom.h"
 #include "LoadScene.h"
 #include "ChuanXu.h"
 #include "Wilson.h"
@@ -121,6 +122,7 @@ void Application::Run()
 	//SceneManager::instance()->addScene(new Scene_Level2);
 	//SceneManager::instance()->addScene(new SceneCalvert);
 	//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
+	SceneManager::instance()->addScene(new Menu_Room);
 	SceneManager::instance()->addScene(new Scene4_Boss);
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
 
