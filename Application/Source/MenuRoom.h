@@ -1,5 +1,5 @@
-#ifndef SCENE4_BOSS_H
-#define SCENE4_BOSS_H
+#ifndef MENU_ROOM_H
+#define MENU_ROOM_H
 
 #include "Scene.h"
 #include "Fps_Camera.h"
@@ -17,7 +17,7 @@ using std::string;
 
 #define numOfEnemy 20
 
-class Scene4_Boss : public Scene
+class Menu_Room : public Scene
 {
 
 	enum UNIFORM_TYPE
@@ -100,7 +100,7 @@ private:
 	Vector3 Bullet;
 
 	Enemy* turret[numOfEnemy];
-	
+
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
@@ -124,13 +124,13 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
-	
+
 	//Game Object
 	void GenerateOBJ();
 
 public:
-	Scene4_Boss();
-	~Scene4_Boss();
+	Menu_Room();
+	~Menu_Room();
 
 	virtual void Init();
 	virtual void Update(double dt);
