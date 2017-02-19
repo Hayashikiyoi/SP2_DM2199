@@ -6,9 +6,12 @@ class Bullet : public GameObject
 {	
 public:
 	Bullet();
+	Bullet(string name, Vector3 curpos);
 	virtual ~Bullet();
-	void shootBullet(bool &check,float rotate, double &dt,Vector3& turretPos);
+	void shootBullet(float rotate, double dt, Vector3 turretPos);
 
+private:
+	bool shoot;
 };
 
 #endif 
