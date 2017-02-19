@@ -37,7 +37,7 @@ void Menu_Room::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Initialise camera
-	camera.Init(Vector3(400, 300, 300), Vector3(0, 0, -10), Vector3(0, 1, 0));
+	camera.Init(Vector3(0, 0, 0), Vector3(0, 0, -10), Vector3(0, 1, 0));
 
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -414,11 +414,87 @@ void Menu_Room::GenerateOBJ()
 	turret[4] = new Enemy("Wall", Vector3(450, 0, 0));
 	turret[4]->setCollider(15, 1000);
 	turret[4]->updateCurPos();
+
+	//ROBOT'S
+	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("Robot", "OBJ//NPC//Robot_body.obj");
+	meshList[GEO_ROBOBODY] ->textureID = LoadTGA("Image//NPC//Robot_Body.tga");
+	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("Robot", "OBJ//NPC//Robot_Arm.obj");
+	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image/NPC//Robot_Arms.tga");
+	turret[5] = new Enemy("Robot", Vector3(100, 0, -100));
+	turret[5]->setCollider(10, 10);
+	turret[5]->updateCurPos();
+	turret[6] = new Enemy("Robot", Vector3(100, 0, -100));
+	turret[6]->setCollider(10, 10);
+	turret[6]->updateCurPos();
+	turret[7] = new Enemy("Robot", Vector3(100, 0, 100));
+	turret[7]->setCollider(10, 10);
+	turret[7]->updateCurPos();
+	turret[8] = new Enemy("Robot", Vector3(100, 0, 100));
+	turret[8]->setCollider(10, 10);
+	turret[8]->updateCurPos();
+	turret[9] = new Enemy("Robot", Vector3(-100, 0, -100));
+	turret[9]->setCollider(10, 10);
+	turret[9]->updateCurPos();
+	turret[10] = new Enemy("Robot", Vector3(-100, 0,-100));
+	turret[10]->setCollider(10, 10);
+	turret[10]->updateCurPos();
+	turret[11] = new Enemy("Robot", Vector3(-100, 0, 100));
+	turret[11]->setCollider(10, 10);
+	turret[11]->updateCurPos();
+	turret[12] = new Enemy("Robot", Vector3(-100, 0, 100));
+	turret[12]->setCollider(10, 10);
+	turret[12]->updateCurPos();
 }
 
 void Menu_Room::EnemyField()
 {
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[5]->Position.x, turret[5]->Position.y, turret[5]->Position.z);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOBODY], false);
+	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[6]->Position.x, turret[6]->Position.y, turret[6]->Position.z);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOARMS], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[7]->Position.x, turret[7]->Position.y, turret[7]->Position.z);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOBODY], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[8]->Position.x, turret[8]->Position.y, turret[8]->Position.z);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOARMS], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[9]->Position.x, turret[9]->Position.y, turret[9]->Position.z);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOBODY], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[10]->Position.x, turret[10]->Position.y, turret[10]->Position.z);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOARMS], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[11]->Position.x, turret[11]->Position.y, turret[11]->Position.z);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOBODY], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[12]->Position.x, turret[12]->Position.y, turret[12]->Position.z);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOARMS], false);
+	modelStack.PopMatrix();
 }
 
 void Menu_Room::Render()
@@ -458,12 +534,12 @@ void Menu_Room::Render()
 	//-------------------------------------------------------------------------------------
 	skyBox();
 	Walls();
-	//EnemyField();
+	EnemyField();
 
 
-	modelStack.PushMatrix();
+	/*modelStack.PushMatrix();
 	RenderMesh(meshList[GEO_BULLET], false);
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();*/
 
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
