@@ -11,7 +11,7 @@ Bullet::~Bullet()
 }
 
 
-void Bullet::shootBullet(bool &checking, float rotate, double &dt, Vector3& turretPos)
+void Bullet::shootBullet(float rotate, double dt, Vector3 turretPos)
 {
 	/*if (checking)
 	{
