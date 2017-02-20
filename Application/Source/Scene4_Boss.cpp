@@ -190,10 +190,6 @@ void Scene4_Boss::Update(double dt)
 	cordz = "Z: " + std::to_string(camera.position.z);
 	static float LSPEED = 10;
 
-	if (Application::IsKeyPressed(VK_F1))
-	{
-		SceneManager::instance()->changeScene(3);
-	}
 	if (Application::IsKeyPressed('V'))
 		lightEnable = false;
 	if (Application::IsKeyPressed('B'))
@@ -251,7 +247,6 @@ void Scene4_Boss::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//Robot.Set(Robot.x, Robot.y, Robot.z);
 	
 	CamObj->Position = camera.position;
 	CamObj->updateCurPos();
@@ -289,6 +284,11 @@ void Scene4_Boss::Update(double dt)
 	}
 	
 	camera.Update(dt);
+	if (Application::IsKeyPressed(VK_F1))
+	{
+		SceneManager::instance()->changeScene(2);
+		return;
+	}
 }
 
 void Scene4_Boss::skyBox()
