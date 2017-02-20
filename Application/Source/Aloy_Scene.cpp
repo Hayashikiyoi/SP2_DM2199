@@ -95,11 +95,6 @@ void Aloy_Scene::Init()
 
 void Aloy_Scene::Update(double dt)
 {
-	//deltaTime = "FPS:" + std::to_string(1 / dt);
-
-	if (Application::IsKeyPressed(VK_F1))
-		SceneManager::instance()->changeScene(1);//Test Scene
-
 	if (TextChecking == true)
 	{
 		if (Application::IsKeyPressed(VK_RETURN))
