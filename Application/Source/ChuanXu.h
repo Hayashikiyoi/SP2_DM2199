@@ -8,12 +8,14 @@
 #include "Light.h"
 #include "Utility.h"
 #include "Enemy.h"
-#include"Bullet.h"
+#include "Bullet.h"
+
 
 #include <string>
 using std::string;
 
 #define numOfEnemy 10
+#define numOfBullet 5
 
 class ChuanXu : public Scene 
 {
@@ -83,28 +85,33 @@ private:
 
 	Mesh* meshList[NUM_GEOMETRY];
 
+	//GameObj
+	GameObject* object[NUM_GEOMETRY];
+	GameObject* CamObj;
+	Enemy* turret[numOfEnemy];
+	Bullet* bullet[numOfBullet];
 	string deltaTime;
 	Vector3 Robot;
-	Enemy turret[numOfEnemy];
 	Bullet bullet_1;
 	float rotateAngle ;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
 	float openCover = 0;
-	float DelayTimer;
+	float DelayTimer=0;
 	
 	void skyBox();
-	bool shootBullet = false;
-	bool bulletInChamber = true;
 
 	void GenerateObj();
 
 	Camera3 camera;
 	MS modelStack, viewStack, projectionStack;
 
+	bool shootBullet = false;
 	bool lightEnable;
+	//bool shootBullet = true;
 	bool coverOpened = false;
 	Light light[1];
+
 	void RenderMesh(Mesh *mesh, bool enableLight);
 
 	void RenderSkybox();

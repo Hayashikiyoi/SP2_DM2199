@@ -11,6 +11,13 @@
 #include <string>
 using std::string;
 
+// GameObject Folder
+#include "Enemy.h"
+#include "GameObject.h"
+
+#define numOfEnemy 20
+#define numOfRocks 10
+
 class Scene1tutorial : public Scene
 {
 
@@ -79,25 +86,45 @@ private:
 
 	Mesh* meshList[NUM_GEOMETRY];
 
-	string deltaTime;
+	//GameObj
+	GameObject* object[NUM_GEOMETRY];
+	GameObject* CamObj;
+	GameObject* Rock[NUM_GEOMETRY];
 
+
+	string deltaTime;
+	string cordx, cordy, cordz;
+	Vector3 Robot;
+	Vector3 Bullet;
+
+	Enemy* turret[numOfEnemy];
 
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
+	float openCover = 0;
+
+	void skyBox();
+	bool shootBullet = false;
+
 	Fps_Camera camera;
 	MS modelStack, viewStack, projectionStack;
 
 	bool lightEnable;
+	bool coverOpened = false;
 	Light light[1];
 	void RenderMesh(Mesh *mesh, bool enableLight);
 
 	void RenderSkybox();
+	void Rocks();
+	void EnemyField();
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
+	//Game Object
+	void GenerateOBJ();
 
 
 public:

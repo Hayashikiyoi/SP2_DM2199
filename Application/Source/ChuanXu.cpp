@@ -51,11 +51,16 @@ void ChuanXu::Init()
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
 		meshList[i] = NULL;
-		//object[i] = 0;
+		object[i] = 0;
 	}
+	CamObj = new GameObject("camera", Vector3(0, 0, 0));
+	for (int i = 0; i < numOfEnemy; ++i)
+	{
+		turret[i] = NULL;
+	}
+
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
-	meshList[GEO_QUAD]->textureID = LoadTGA("Image//zelda.tga");
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");
@@ -76,33 +81,25 @@ void ChuanXu::Init()
 	meshList[GEO_LEFT]->textureID = LoadTGA("Image//skybox//left.tga");
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//gothiclight.tga");
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
 
 	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 
+	GenerateObj();
 	meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//Vending_Machine.obj");
 	meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//Vending_Machine.tga");
 
 	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//Vending_Cover.obj");
 	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//Vending_Cover.tga");
 	
-	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("RoboBody", "OBJ//Robot_body.obj");
-	meshList[GEO_ROBOBODY]->textureID = LoadTGA("Image//Robot_Body.tga");
-
-	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//Robot_Arm.obj");
-	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image//Robot_Arms.tga");
 
 
-	meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Bullet", "OBJ//Bullet.obj");
-	meshList[GEO_BULLET]->textureID = LoadTGA("Image//Bullet.tga");
 
-	meshList[GEO_BOSSHEAD] = MeshBuilder::GenerateOBJ("Boss head", "OBJ//Boss_head.obj");
-	meshList[GEO_BOSSHEAD]->textureID = LoadTGA("Image//Boss_Head.tga");
 
-	meshList[GEO_BOSSBODY] = MeshBuilder::GenerateOBJ("Boss body", "OBJ//Boss_body.obj");
-	meshList[GEO_BOSSBODY]->textureID = LoadTGA("Image//Boss_body.tga");
+
+
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -177,39 +174,51 @@ void ChuanXu::Init()
 }
 void ChuanXu::GenerateObj()
 {
+	meshList[GEO_BOSSHEAD] = MeshBuilder::GenerateOBJ("Boss head", "OBJ//Boss_head.obj");
+	meshList[GEO_BOSSHEAD]->textureID = LoadTGA("Image//Enemy//Boss_Head.tga");
+	meshList[GEO_BOSSBODY] = MeshBuilder::GenerateOBJ("Boss body", "OBJ//Boss_body.obj");
+	meshList[GEO_BOSSBODY]->textureID = LoadTGA("Image//Enemy//Boss_body.tga");
 	meshList[GEO_TURRETBODY] = MeshBuilder::GenerateOBJ("TurretBody", "OBJ//Turret_body.obj");
-	meshList[GEO_TURRETBODY]->textureID = LoadTGA("Image//Turret_body.tga");
+	meshList[GEO_TURRETBODY]->textureID = LoadTGA("Image//Enemy//Turret_Body.tga");
 	meshList[GEO_TURRETHEAD] = MeshBuilder::GenerateOBJ("TurretHead", "OBJ//Turret_head.obj");
-	meshList[GEO_TURRETHEAD]->textureID = LoadTGA("Image//Turret_Head.tga");
+	meshList[GEO_TURRETHEAD]->textureID = LoadTGA("Image//Enemy//Turret_Head.tga");
+	turret[1] = new Enemy("Turret_1", Vector3(10, 0, 10));
+	turret[1]->setCollider(10, 10);
+	turret[1]->updateCurPos();
+	
+	turret[2] = new Enemy("Turret_2", Vector3(20, 0.20));
+	turret[2]->setCollider(10, 10);
+	turret[2]->updateCurPos();
 
-	//turret
+	//Bullet
+	meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Bullet", "OBJ//Bullet.obj");
+	meshList[GEO_BULLET]->textureID = LoadTGA("Image//Enemy//Bullet.tga");
+
+	bullet[1] = new Bullet("Bullet_1", Vector3(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z));
+	bullet[1]->setCollider(5, 5);
+	bullet[1]->updateCurPos();
+
+	bullet[2] = new Bullet("Bullet_1", Vector3(turret[2]->Position.x, turret[2]->Position.y, turret[2]->Position.z));
+	bullet[2]->setCollider(5, 5);
+	bullet[2]->updateCurPos();
+
+	//Robot
+	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("RoboBody", "OBJ//Robot_body.obj");
+	meshList[GEO_ROBOBODY]->textureID = LoadTGA("Image//NPC//Robot_Body.tga");
+
+	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//Robot_Arm.obj");
+	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image//NPC//Robot_Arms.tga");
+	
 
 }
 void ChuanXu::Update(double dt)
 {		
 	static float translateLimit = 1;
-	/*const float bulletDir = turret.RotateToPlayer(Robot);*/
-	if (shootBullet == true)
-	{
-		DelayTimer += (float)dt;
-		if (DelayTimer> 3)
-			shootBullet = false;
-	}
-	if (shootBullet == false)
-	{
-		/*bullet_1.position.Set(0, 0, 0);*/
-		shootBullet = true;
-		DelayTimer = 0;
-	}
-	
-		if (Application::IsKeyPressed(VK_F1))
-	{
-		SceneManager::instance()->changeScene(2);
-	}
-
+	static Vector3 prevpos;
+	static Vector3 prevposTarget;
+	static float lockRotation[numOfBullet] = { 0 };
 	Robot.Set(Robot.x, Robot.y, Robot.z);
 	deltaTime = "FPS:" + std::to_string(1 / dt);
-	//turret.position.x = turret.position.z = 20.0f;
 	if (Application::IsKeyPressed('F'))
 	{
 		rotateAngle += (float)(100 * dt);
@@ -236,19 +245,40 @@ void ChuanXu::Update(double dt)
 		lightEnable = false;
 	if (Application::IsKeyPressed('B'))
 		lightEnable = true;
-	
-	if (shootBullet == false)
-	{
-			shootBullet = true;
-	}
-	if (shootBullet)
-	{	
-		
-		
-		/*Bullet.x -= (float)(10 * sin(Math::DegreeToRadian(bulletDir))*dt);
-		Bullet.z -= (float)(10 * cos(Math::DegreeToRadian(bulletDir))*dt);*/
-	}
 
+	DelayTimer += (float)dt;
+
+	if (DelayTimer > 5)
+	{	
+		DelayTimer = 0;
+		bullet[1]->shoot = false;
+		bullet[2]->shoot = false;
+	}
+	else if (DelayTimer < 0.5)
+	{	
+		bullet[1]->shoot = true;
+		bullet[2]->shoot = true;
+	}
+	
+
+
+	//if (bullet[1]->shoot)
+	//bullet[1]->bulletUpdate(dt);
+	//if (bullet[1]->shoot == false)
+	//	bullet[1]->shootBullet(turret[1]->RotateToPlayer(Robot), turret[1]->Position);
+
+	//if (bullet[2]->shoot)
+	//	bullet[2]->bulletUpdate(dt);
+	//if (bullet[2]->shoot == false)
+	//	bullet[2]->shootBullet(turret[1]->RotateToPlayer(Robot), turret[1]->Position);
+
+	for (int i = 1; i <= 2; ++i)
+	{
+		if (bullet[i]->shoot)
+			bullet[i]->bulletUpdate(dt);
+		if (bullet[i]->shoot == false)
+			bullet[i]->shootBullet(turret[i]->RotateToPlayer(Robot), turret[i]->Position);
+	}
 
 	if (coverOpened)
 	{	
@@ -270,6 +300,8 @@ void ChuanXu::Update(double dt)
 		light[0].position.y -= (float)(LSPEED * dt);
 	if (Application::IsKeyPressed('P'))
 		light[0].position.y += (float)(LSPEED * dt);
+
+
 
 	if (Application::IsKeyPressed('0')) 
 	{
@@ -298,11 +330,39 @@ void ChuanXu::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	//Robot.Set(Robot.x, Robot.y, Robot.z);
-	//Bullet.Set(turret.position.x, turret.position.y, turret.position.z);
+
+	CamObj->Position = camera.position;
+	CamObj->updateCurPos();
+
+	for (int i = 0; i < NUM_GEOMETRY; ++i)
+	{
+		if (object[i] && CamObj->trigger(object[i]))
+		{
+			deltaTime = "Wham bam";
+			camera.position = prevpos;
+			camera.target = prevposTarget;
+			break;
+		}
+	}
+	for (int i = 0; i < numOfEnemy; ++i)
+	{
+		if (turret[i] && CamObj->trigger(turret[i]))
+		{
+			deltaTime = "Wham bam";
+			camera.position = prevpos;
+			camera.target = prevposTarget;
+			break;
+		}
+		else if (i == (numOfEnemy - 1))
+		{
+			prevpos = camera.position;
+			prevposTarget = camera.target;
+		}
+	}
 
 	camera.Update(dt);
 }
+
 
 void ChuanXu::skyBox()
 {
@@ -406,55 +466,59 @@ void ChuanXu::Render()
 	modelStack.LoadIdentity();
 
 	//-------------------------------------------------------------------------------------
-	skyBox();
+	 skyBox();
 
 
 	modelStack.PushMatrix();
+	modelStack.Translate(Robot.x, Robot.y, Robot.z);
+	modelStack.Rotate(rotateAngle, 0, 1, 0);
+	RenderMesh(meshList[GEO_ROBOBODY], true);
+	modelStack.PushMatrix();
+	RenderMesh(meshList[GEO_ROBOARMS], true);
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
 
-	//modelStack.Translate(Robot.x, Robot.y, Robot.z);
-	//modelStack.Rotate(rotateAngle, 0, 1, 0);
-	//RenderMesh(meshList[GEO_ROBOBODY], true);
-	//modelStack.PushMatrix();
-	//RenderMesh(meshList[GEO_ROBOARMS], true);
-	//modelStack.PopMatrix();
-	//modelStack.PushMatrix();
-	//modelStack.Translate(0.95, 0, 0);
-	//RenderMesh(meshList[GEO_ROBOARMS], true);
-	//modelStack.PopMatrix();
-	//modelStack.PopMatrix();
+	// Turret 1 
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
+	RenderMesh(meshList[GEO_TURRETBODY], true);
+	modelStack.PushMatrix();
+	modelStack.Rotate(turret[1]->RotateToPlayer(Robot), 0, 1, 0);
+	RenderMesh(meshList[GEO_TURRETHEAD], true);
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+	if (bullet[1]->shoot)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(bullet[1]->Position.x, bullet[1]->Position.y+3.5, bullet[1]->Position.z);
+		modelStack.Rotate(bullet[1]->rotation, 0, 1, 0);
+		RenderMesh(meshList[GEO_BULLET], false);
+		modelStack.PopMatrix();
+	}
 
+	//Turret 2
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[2]->Position.x, turret[2]->Position.y, turret[2]->Position.z);
+		RenderMesh(meshList[GEO_TURRETBODY], true);
+		modelStack.PushMatrix();
+		modelStack.Rotate(turret[2]->RotateToPlayer(Robot), 0, 1, 0);
+		RenderMesh(meshList[GEO_TURRETHEAD], true);
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
 
-	//modelStack.PushMatrix();
-	//modelStack.Translate(turret.position.x, 0, turret.position.z);
-	//RenderMesh(meshList[GEO_TURRETBODY], true);
-	//modelStack.PushMatrix();
-	//modelStack.Rotate(turret.RotateToPlayer(Robot), 0, 1, 0);
-	//RenderMesh(meshList[GEO_TURRETHEAD], true);
-	//modelStack.PopMatrix();
-	//modelStack.PopMatrix();
-
-
-		/*for (int i = 0; i <= sqrt((Robot.Dot(Robot) + turret.position.Dot(turret.position))); i += 2)
+		if (bullet[2]->shoot)
 		{
 			modelStack.PushMatrix();
-			modelStack.Translate(turret.position.x, 3.5, turret.position.z);
-			if (shootBullet)
-			modelStack.Translate(Bullet.x, 0, Bullet.z);
-			modelStack.Rotate(turret.RotateToPlayer(Robot), 0, 1, 0);
+			modelStack.Translate(bullet[2]->Position.x, bullet[2]->Position.y + 3.5, bullet[2]->Position.z);
+			modelStack.Rotate(bullet[2]->rotation, 0, 1, 0);
 			RenderMesh(meshList[GEO_BULLET], false);
 			modelStack.PopMatrix();
-		}*/
-	
-	
+		}
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
 
-	//modelStack.PushMatrix();
-	//RenderMesh(meshList[GEO_BIKE], true);
-	//modelStack.PopMatrix();
-
-	//No transform needed
-	RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
+	////No transform needed
+	//RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
 	//-------------------------------------------------------------------------------------
 
 	/*modelStack.PushMatrix();
@@ -475,10 +539,9 @@ void ChuanXu::Render()
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();*/
 
-	/*RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(bullet_1.position.x), Color(1, 1, 1), 4, 1, 2);
-	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(bullet_1.position.z), Color(1, 1, 1), 4, 1, 1);*/
+	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(bullet[1]->Position.x), Color(1, 1, 1), 4, 1, 2);
+	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(bullet[1]->Position.z), Color(1, 1, 1), 4, 1, 1);
 	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(DelayTimer), Color(1, 1, 1), 4, 1, 3);
-
 }
 
 void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)
@@ -496,7 +559,7 @@ void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)
 		glUniformMatrix4fv(m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
 
 		//load material
-		glUniform3fv(m_parameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
+ 		glUniform3fv(m_parameters[U_MATERIAL_AMBIENT], 1, &mesh->material.kAmbient.r);
 		glUniform3fv(m_parameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
 		glUniform3fv(m_parameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
 		glUniform1f(m_parameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
