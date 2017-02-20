@@ -8,10 +8,9 @@ public:
 	Bullet();
 	Bullet(string name, Vector3 curpos);
 	virtual ~Bullet();
-	void shootBullet(float rotate, double dt, Vector3 turretPos);
+	void shootBullet(float rotate, double dt, Vector3 turretPos, bool& shoot);
 
-private:
-	bool shoot;
+	bool bulletShot = true;
 };
 
 #endif 
