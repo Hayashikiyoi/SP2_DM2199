@@ -508,21 +508,6 @@ void Scene1tutorial::Render()
 	RenderMesh(meshList[GEO_ROBO8], true);
 	modelStack.PopMatrix();*/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
 void Scene1tutorial::RenderMesh(Mesh *mesh, bool enableLight)
