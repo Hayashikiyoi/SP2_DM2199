@@ -54,6 +54,10 @@ void SceneCalvert::Init()
 	{
 		enemy[i] = 0; //Initialise enemy obj
 	}
+	for (int i = 0; i < 5; ++i)
+	{
+		triggerbox[i] = 0; //Initialise enemy obj
+	}
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
@@ -64,6 +68,9 @@ void SceneCalvert::Init()
 	object[GEO_DEBUGBOX] = new GameObject("Debug", Vector3(-20, 0, -20));
 	object[GEO_DEBUGBOX]->setCollider(2, 2);
 	object[GEO_DEBUGBOX]->updateCurPos();
+	triggerbox[0] = new GameObject("DebugTrigger", Vector3(-20, 0, -20));
+	triggerbox[0]->setCollider(4, 4);
+	triggerbox[0]->updateCurPos();
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 
@@ -188,6 +195,14 @@ void SceneCalvert::Update(double dt)
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
 
+	//This will be edited further when more levels are added
+	if (Application::IsKeyPressed(VK_F1))
+	{
+		SceneManager::instance()->changeScene(3);//Test Scene
+		return;
+	}
+		
+
 	//Cull back face
 	if (Application::IsKeyPressed('1'))
 		glEnable(GL_CULL_FACE);
@@ -198,11 +213,7 @@ void SceneCalvert::Update(double dt)
 	if (Application::IsKeyPressed('3'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	if (Application::IsKeyPressed('4'))
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	//This will be edited further when more levels are added
-	if (Application::IsKeyPressed(VK_F1))
-		SceneManager::instance()->EndGame(true);//Test Scene
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	
 
 	//Test Test Colliderbox
 	//Player collider
@@ -225,6 +236,14 @@ void SceneCalvert::Update(double dt)
 			}
 			camera.position = prevpos;
 			camera.target = prevposTarget;
+			break;
+		}
+	}
+	for (int i = 0; i < 5; ++i)
+	{
+		if (triggerbox[i] && player->trigger(triggerbox[i]))
+		{
+			deltaTime = "Press E";
 			break;
 		}
 	}
@@ -261,6 +280,7 @@ void SceneCalvert::Update(double dt)
 	}
 	
 	camera.Update(dt);
+	
 }
 
 void SceneCalvert::Render()
@@ -324,7 +344,7 @@ void SceneCalvert::Render()
 			modelStack.Translate(enemy[i]->Position.x, enemy[i]->Position.y, enemy[i]->Position.z);
 			modelStack.Rotate(enemy[i]->RotateToPlayer(camera.position), 0, 1, 0);
 			modelStack.Rotate(90, 0, -1, 0);
-			RenderMesh(meshList[GEO_BIKE], true);
+			//RenderMesh(meshList[GEO_BIKE], true);
 			modelStack.PopMatrix();
 		}
 	}
@@ -436,8 +456,8 @@ void SceneCalvert::GenerateOBJ()
 	enemy[0] = new Enemy("Bike", Vector3(10,0,10));
 	enemy[0]->setCollider(3, 3);
 	enemy[0]->updateCurPos();
-	meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
-	meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
+	//meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
+	//meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
 
 	enemy[1] = new Enemy("Bike", Vector3(10, 0, -20));
 	enemy[1]->setCollider(3, 3);
@@ -593,6 +613,12 @@ void SceneCalvert::Exit()
 	{
 		if (enemy[i] != 0)
 			delete enemy[i];
+	}
+
+	for (int i = 0; i < 5; ++i)
+	{
+		if (triggerbox[i] != 0)
+			delete triggerbox[i];
 	}
 	delete player;
 	// Cleanup VBO here

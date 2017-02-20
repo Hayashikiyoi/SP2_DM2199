@@ -104,6 +104,7 @@ private:
 
 	//Gameobj
 	GameObject* object[NUM_GEOMETRY];
+	GameObject* triggerbox[5];
 
 	//Player
 	Player* player;
