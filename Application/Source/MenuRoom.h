@@ -89,6 +89,7 @@ private:
 	//GameObj
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* CamObj;
+	GameObject* TriggerBox[5];
 
 	string deltaTime;
 	string cordx, cordy, cordz;

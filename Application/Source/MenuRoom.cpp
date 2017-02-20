@@ -52,6 +52,10 @@ void Menu_Room::Init()
 		meshList[i] = NULL;
 		object[i] = 0;
 	}
+	for (int i = 0; i < 5; ++i)
+	{
+		TriggerBox[i] = 0;
+	}
 	CamObj = new GameObject("camera", Vector3(0, 0, 0));
 
 	for (int i = 0; i < numOfEnemy; ++i)
@@ -190,10 +194,7 @@ void Menu_Room::Update(double dt)
 	cordz = "Z: " + std::to_string(camera.position.z);
 	static float LSPEED = 10;
 
-	if (Application::IsKeyPressed(VK_F1))
-	{
-		SceneManager::instance()->changeScene(3);
-	}
+
 	if (Application::IsKeyPressed('V'))
 		lightEnable = false;
 	if (Application::IsKeyPressed('B'))
@@ -271,6 +272,7 @@ void Menu_Room::Update(double dt)
 		}
 	}
 
+
 	for (int i = 0; i < numOfEnemy; ++i)
 	{
 		if (turret[i] && CamObj->trigger(turret[i]))
@@ -288,7 +290,32 @@ void Menu_Room::Update(double dt)
 		}
 	}
 
+
 	camera.Update(dt);
+	for (int i = 0; i < 5; ++i)
+	{
+		if (TriggerBox[i] && CamObj->trigger(TriggerBox[i]))
+		{
+			if (i == 0)
+				deltaTime = "Press E: Level_1";
+			if (Application::IsKeyPressed('E') && i==0)
+				SceneManager::instance()->changeScene(3);
+			/*if (i == 1)
+				deltaTime = "Press E: Level_2";
+			if (Application::IsKeyPressed('E') && i == 1)
+				SceneManager::instance()->changeScene(4);
+			if (i == 2)
+				deltaTime = "Press E: Level_2";
+			if (Application::IsKeyPressed('E') && i == 2)
+				SceneManager::instance()->changeScene(5);
+			if (i == 1)
+				deltaTime = "Press E: Level_3";
+			if (Application::IsKeyPressed('E') && i == 3)
+				SceneManager::instance()->changeScene(6);*/
+			break;
+		}
+		
+	}
 }
 
 void Menu_Room::skyBox()
@@ -423,24 +450,39 @@ void Menu_Room::GenerateOBJ()
 	turret[5] = new Enemy("Robot", Vector3(100, 0, -100));
 	turret[5]->setCollider(10, 10);
 	turret[5]->updateCurPos();
+	TriggerBox[0] = new GameObject("Trigger", Vector3(100,0,-100));
+	TriggerBox[0]->setCollider(20, 20);
+	TriggerBox[0]->updateCurPos();
 	turret[6] = new Enemy("Robot", Vector3(100, 0, -100));
 	turret[6]->setCollider(10, 10);
 	turret[6]->updateCurPos();
+	//Robot_2
 	turret[7] = new Enemy("Robot", Vector3(100, 0, 100));
 	turret[7]->setCollider(10, 10);
 	turret[7]->updateCurPos();
+	TriggerBox[1] = new GameObject("Trigger", Vector3(100,0,100));
+	TriggerBox[1]->setCollider(20,20);
+	TriggerBox[1]->updateCurPos();
 	turret[8] = new Enemy("Robot", Vector3(100, 0, 100));
 	turret[8]->setCollider(10, 10);
 	turret[8]->updateCurPos();
+	//Robot_3
 	turret[9] = new Enemy("Robot", Vector3(-100, 0, -100));
 	turret[9]->setCollider(10, 10);
 	turret[9]->updateCurPos();
+	TriggerBox[2] = new GameObject("Trigger", Vector3(-100,0,-100));
+	TriggerBox[2]->setCollider(20, 20);
+	TriggerBox[2]->updateCurPos();
 	turret[10] = new Enemy("Robot", Vector3(-100, 0,-100));
 	turret[10]->setCollider(10, 10);
 	turret[10]->updateCurPos();
+	//Robot_4
 	turret[11] = new Enemy("Robot", Vector3(-100, 0, 100));
 	turret[11]->setCollider(10, 10);
 	turret[11]->updateCurPos();
+	TriggerBox[3] = new GameObject("Trigger", Vector3(-100,0,100));
+	TriggerBox[3]->setCollider(20,20);
+	TriggerBox[3]->updateCurPos();
 	turret[12] = new Enemy("Robot", Vector3(-100, 0, 100));
 	turret[12]->setCollider(10, 10);
 	turret[12]->updateCurPos();
@@ -450,48 +492,56 @@ void Menu_Room::EnemyField()
 {
 	modelStack.PushMatrix();
 	modelStack.Translate(turret[5]->Position.x, turret[5]->Position.y, turret[5]->Position.z);
+	modelStack.Rotate(turret[5]->RotateToPlayer(camera.position), 0, 1, 0);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_ROBOBODY], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(turret[6]->Position.x, turret[6]->Position.y, turret[6]->Position.z);
+	modelStack.Rotate(turret[6]->RotateToPlayer(camera.position), 0, 1, 0);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_ROBOARMS], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(turret[7]->Position.x, turret[7]->Position.y, turret[7]->Position.z);
+	modelStack.Rotate(turret[7]->RotateToPlayer(camera.position), 0, 1, 0);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_ROBOBODY], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(turret[8]->Position.x, turret[8]->Position.y, turret[8]->Position.z);
+	modelStack.Rotate(turret[8]->RotateToPlayer(camera.position), 0, 1, 0);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_ROBOARMS], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(turret[9]->Position.x, turret[9]->Position.y, turret[9]->Position.z);
+	modelStack.Rotate(turret[9]->RotateToPlayer(camera.position), 0, 1, 0);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_ROBOBODY], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(turret[10]->Position.x, turret[10]->Position.y, turret[10]->Position.z);
+	modelStack.Rotate(turret[10]->RotateToPlayer(camera.position), 0, 1, 0);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_ROBOARMS], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(turret[11]->Position.x, turret[11]->Position.y, turret[11]->Position.z);
+	modelStack.Rotate(turret[11]->RotateToPlayer(camera.position), 0, 1, 0);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_ROBOBODY], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(turret[12]->Position.x, turret[12]->Position.y, turret[12]->Position.z);
+	modelStack.Rotate(turret[12]->RotateToPlayer(camera.position), 0, 1, 0);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_ROBOARMS], false);
 	modelStack.PopMatrix();
@@ -696,6 +746,11 @@ void Menu_Room::Exit()
 
 		if (object[i] != 0)
 			delete object[i];
+	}
+	for (int i = 0; i < 5; ++i)
+	{
+		if (TriggerBox[i] != 0)
+			delete TriggerBox[i];
 	}
 	delete CamObj;
 	// Cleanup VBO here
