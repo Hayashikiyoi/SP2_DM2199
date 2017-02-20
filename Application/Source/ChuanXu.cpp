@@ -251,21 +251,34 @@ void ChuanXu::Update(double dt)
 	if (DelayTimer > 5)
 	{	
 		DelayTimer = 0;
-		bullet[1]->bulletShot = false;
-		bullet[2]->bulletShot = false;
+		bullet[1]->shoot = false;
+		bullet[2]->shoot = false;
 	}
 	else if (DelayTimer < 0.5)
 	{	
-		lockRotation[1] = turret[1]->RotateToPlayer(Robot);
-		bullet[1]->bulletShot = true;
-		lockRotation[2] = turret[2]->RotateToPlayer(Robot);
-		bullet[2]->bulletShot = true;
+		bullet[1]->shoot = true;
+		bullet[2]->shoot = true;
 	}
+	
 
 
-	bullet[1]->shootBullet(lockRotation[1], dt, turret[1]->Position, bullet[1]->bulletShot);
-	bullet[2]->shootBullet(lockRotation[2], dt, turret[2]->Position, bullet[2]->bulletShot);
+	//if (bullet[1]->shoot)
+	//bullet[1]->bulletUpdate(dt);
+	//if (bullet[1]->shoot == false)
+	//	bullet[1]->shootBullet(turret[1]->RotateToPlayer(Robot), turret[1]->Position);
 
+	//if (bullet[2]->shoot)
+	//	bullet[2]->bulletUpdate(dt);
+	//if (bullet[2]->shoot == false)
+	//	bullet[2]->shootBullet(turret[1]->RotateToPlayer(Robot), turret[1]->Position);
+
+	for (int i = 1; i <= 2; ++i)
+	{
+		if (bullet[i]->shoot)
+			bullet[i]->bulletUpdate(dt);
+		if (bullet[i]->shoot == false)
+			bullet[i]->shootBullet(turret[i]->RotateToPlayer(Robot), turret[i]->Position);
+	}
 
 	if (coverOpened)
 	{	
@@ -349,6 +362,7 @@ void ChuanXu::Update(double dt)
 
 	camera.Update(dt);
 }
+
 
 void ChuanXu::skyBox()
 {
@@ -464,7 +478,7 @@ void ChuanXu::Render()
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
-
+	// Turret 1 
 	modelStack.PushMatrix();
 	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
 	RenderMesh(meshList[GEO_TURRETBODY], true);
@@ -473,16 +487,16 @@ void ChuanXu::Render()
 	RenderMesh(meshList[GEO_TURRETHEAD], true);
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	if (bullet[1]->bulletShot)
-	modelStack.Translate(bullet[1]->Position.x, bullet[1]->Position.y, bullet[1]->Position.z);
-	if (bullet[1]->bulletShot == false)
-		bullet[1]->Position.Set(turret[1]->Position.x, turret[1]->Position.y+3.5, turret[1]->Position.z);
-	modelStack.Rotate(turret[1]->RotateToPlayer(Robot), 0, 1, 0);
+	if (bullet[1]->shoot)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(bullet[1]->Position.x, bullet[1]->Position.y+3.5, bullet[1]->Position.z);
+		modelStack.Rotate(bullet[1]->rotation, 0, 1, 0);
 		RenderMesh(meshList[GEO_BULLET], false);
 		modelStack.PopMatrix();
-	
+	}
+
+	//Turret 2
 	modelStack.PushMatrix();
 	modelStack.Translate(turret[2]->Position.x, turret[2]->Position.y, turret[2]->Position.z);
 		RenderMesh(meshList[GEO_TURRETBODY], true);
@@ -492,15 +506,14 @@ void ChuanXu::Render()
 		modelStack.PopMatrix();
 		modelStack.PopMatrix();
 
-		modelStack.PushMatrix();
-		if (bullet[2]->bulletShot)
-			modelStack.Translate(bullet[2]->Position.x, bullet[2]->Position.y, bullet[2]->Position.z);
-		if (bullet[2]->bulletShot == false)
-			bullet[2]->Position.Set(turret[2]->Position.x, turret[2]->Position.y + 3.5, turret[2]->Position.z);
-		modelStack.Rotate(turret[2]->RotateToPlayer(Robot), 0, 2, 0);
-		RenderMesh(meshList[GEO_BULLET], false);
-		modelStack.PopMatrix();
-	
+		if (bullet[2]->shoot)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(bullet[2]->Position.x, bullet[2]->Position.y + 3.5, bullet[2]->Position.z);
+			modelStack.Rotate(bullet[2]->rotation, 0, 1, 0);
+			RenderMesh(meshList[GEO_BULLET], false);
+			modelStack.PopMatrix();
+		}
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
 

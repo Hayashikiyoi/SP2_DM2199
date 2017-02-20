@@ -106,10 +106,12 @@ private:
 	Camera3 camera;
 	MS modelStack, viewStack, projectionStack;
 
+	bool shootBullet = false;
 	bool lightEnable;
 	//bool shootBullet = true;
 	bool coverOpened = false;
 	Light light[1];
+
 	void RenderMesh(Mesh *mesh, bool enableLight);
 
 	void RenderSkybox();
