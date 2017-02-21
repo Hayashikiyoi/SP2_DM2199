@@ -9,14 +9,14 @@
 #include "Utility.h"
 #include "Enemy.h"
 #include "Bullet.h"
-
+#include"Fps_Camera.h"
 
 #include <string>
 using std::string;
 
-#define numOfEnemy 10
+#define numOfEnemy 5
 #define numOfBullet 5
-
+#define Walls 40
 class ChuanXu : public Scene 
 {
 
@@ -74,6 +74,8 @@ class ChuanXu : public Scene
 		GEO_BULLET,
 		GEO_BOSSHEAD,
 		GEO_BOSSBODY,
+		GEO_CROSSHAIR,
+		GEO_WALL,
 		NUM_GEOMETRY,
 	};
 
@@ -88,11 +90,13 @@ private:
 	//GameObj
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* CamObj;
+	GameObject* Wall[Walls];
 	Enemy* turret[numOfEnemy];
 	Bullet* bullet[numOfBullet];
 	string deltaTime;
-	Vector3 Robot;
+	//Vector3 Robot;
 	Bullet bullet_1;
+	Vector3 CrossHair;
 	float rotateAngle ;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
@@ -100,22 +104,20 @@ private:
 	float DelayTimer=0;
 	
 	void skyBox();
-
+	void RenderWalls();
 	void GenerateObj();
 
-	Camera3 camera;
+	Fps_Camera camera;
 	MS modelStack, viewStack, projectionStack;
 
 	bool shootBullet = false;
 	bool lightEnable;
-	//bool shootBullet = true;
 	bool coverOpened = false;
 	Light light[1];
 
 	void RenderMesh(Mesh *mesh, bool enableLight);
 
-	void RenderSkybox();
-
+	
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
