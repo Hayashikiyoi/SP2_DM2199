@@ -2,7 +2,8 @@
 #define SCENE_CALVERT_H
 
 #include "Scene.h"
-#include "Camera3.h"
+//#include "Camera3.h"
+#include "Fps_Camera.h"
 #include "Mesh.h"
 #include "MatrixStack.h"
 #include "Light.h"
@@ -16,6 +17,7 @@ using std::string;
 #include "GameObject.h"
 #include "Player.h"
 #include "Item.h"
+#include "Weapon.h"
 
 #define NumOfEnemy 10
 #define NumOfCollectables 10
@@ -66,7 +68,7 @@ class SceneCalvert : public Scene
 		GEO_BOTTOM,
 		GEO_FRONT,
 		GEO_BACK,
-		GEO_BIKE,
+		GEO_BLASTER,
 		GEO_TEXT,
 		GEO_DEBUGBOX,
 		NUM_GEOMETRY,
@@ -80,7 +82,7 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 
 	//Camera here
-	Camera3 camera;
+	Fps_Camera camera;
 	MS modelStack, viewStack, projectionStack;
 	
 	//Lighting here
@@ -104,12 +106,16 @@ private:
 
 	//Gameobj
 	GameObject* object[NUM_GEOMETRY];
+	GameObject* triggerbox[5];
 
 	//Player
 	Player* player;
 
 	//Some Collectable cubes
 	Item* collectables[NumOfCollectables];
+
+	//Weapon for player
+	Weapon* lasergun;
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);

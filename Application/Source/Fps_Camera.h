@@ -2,6 +2,7 @@
 #define FPS_CAMERA_H
 
 #include "Camera2.h"
+#include "Mtx44.h"
 
 class Fps_Camera : public Camera
 {
@@ -9,6 +10,8 @@ public:
 	Vector3 defaultPosition;
 	Vector3 defaultTarget;
 	Vector3 defaultUp;
+
+	Mtx44 rotate;
 
 	Fps_Camera();
 	~Fps_Camera();
