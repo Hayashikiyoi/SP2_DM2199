@@ -317,15 +317,15 @@ void Menu_Room::Update(double dt)
 				deltaTime = "Press E: Level_1";
 			if (Application::IsKeyPressed('E') && i==0)
 				SceneManager::instance()->changeScene(3);
-			/*if (i == 1)
+			if (i == 1)
 				deltaTime = "Press E: Level_2";
 			if (Application::IsKeyPressed('E') && i == 1)
 				SceneManager::instance()->changeScene(4);
 			if (i == 2)
-				deltaTime = "Press E: Level_2";
+				deltaTime = "Press E: Level_3";
 			if (Application::IsKeyPressed('E') && i == 2)
 				SceneManager::instance()->changeScene(5);
-			if (i == 1)
+			/*if (i == 3)
 				deltaTime = "Press E: Level_3";
 			if (Application::IsKeyPressed('E') && i == 3)
 				SceneManager::instance()->changeScene(6);*/
@@ -616,7 +616,7 @@ void Menu_Room::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], cordx, Color(0, 1, 0), 3, 0, 3);
 	RenderTextOnScreen(meshList[GEO_TEXT], cordz, Color(0, 1, 0), 3, 0, 5);
 	//No transform needed
-	RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
+	//RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
 	//-------------------------------------------------------------------------------------
 }
 
