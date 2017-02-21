@@ -37,7 +37,7 @@ void Scene1tutorial::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Initialise camera
-	camera.Init(Vector3(-30, 0, 40), Vector3(0, 0, -10), Vector3(0, 1, 0));
+	camera.Init(Vector3(-30, 0, 40), Vector3(0, 0, 0), Vector3(0, 1, 0));
 
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -59,8 +59,15 @@ void Scene1tutorial::Init()
 	{
 		turret[i] = NULL;
 	}
+	for (int i = 0; i < numOfRocks; ++i)
+	{
+		Rock[i] = NULL;
+	}
 
 	GenerateOBJ(); 
+
+	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skyboxtutorial//front.tga");
@@ -163,6 +170,8 @@ void Scene1tutorial::Init()
 void Scene1tutorial::Update(double dt)
 {
 	static float translateLimit = 1;
+	static Vector3 prevpos;
+	static Vector3 prevposTarget;
 
 	deltaTime = "FPS:" + std::to_string(1 / dt);
 	cordx = "X: " + std::to_string(camera.position.x);;
@@ -227,13 +236,72 @@ void Scene1tutorial::Update(double dt)
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+	CamObj->Position = camera.position;
+	CamObj->updateCurPos();
+
+	//Run checker
+	// 
+
+	/*for (int i = 0; i < 2; ++i)
+	{
+		if (Keys[i] && CamObj->trigger(Keys[i]))
+		{
+			if (i == 0)
+				deltaTime = "Press E";
+			if (Application::IsKeyPressed('E') && i == 1)
+			{
+				Keys[1]->SetCollected(true);
+				break;
+			}
+		}
+	}*/
+
+	for (int i = 0; i < numOfEnemy; ++i) // this is alright
+	{
+		if (turret[i] && CamObj->trigger(turret[i]))
+		{
+			//if you need to get pushed out of the collider
+			deltaTime = "Wham bam";
+			camera.position = prevpos;
+			camera.target = prevposTarget;
+			break;
+		}
+		else if (i == (numOfEnemy - 1))//Max value thx
+		{
+			prevpos = camera.position;
+			prevposTarget = camera.target;
+		}
+	}
+
+	for (int i = 0; i < numOfRocks; ++i) // this is alright
+	{
+		if (Rock[i] && CamObj->trigger(Rock[i]))
+		{
+			//if you need to get pushed out of the collider
+			deltaTime = "Wham bam";
+			camera.position = prevpos;
+			camera.target = prevposTarget;
+			break;
+		}
+		else if (i == (numOfEnemy - 1))//Max value thx
+		{
+			prevpos = camera.position;
+			prevposTarget = camera.target;
+		}
+	}
+
+
 
 	camera.Update(dt);
-	if (Application::IsKeyPressed(VK_F1))
+	 
+	/*for (int i = 0; i < 1; ++i)
 	{
-		SceneManager::instance()->changeScene(2);
-		return;
-	}
+		if (TriggerBox[i] && CamObj->trigger(TriggerBox[i]))
+		{
+			SceneManager::instance()->changeScene(2);
+			break;
+		}
+	}*/
 }
 
 void Scene1tutorial::skyBox()
@@ -304,7 +372,7 @@ void Scene1tutorial::skyBox()
 	//Bottom
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(0, 0, 0);
+	modelStack.Translate(0, 7, 0);
 	modelStack.Rotate(90, 0, -1, 0);
 	modelStack.Rotate(90, -1, 0, 0);
 	modelStack.Scale(1000.f, 1000.f, 1000.f);
@@ -320,26 +388,26 @@ void Scene1tutorial::Rocks()
 	for (int i = 0; i < 90; i += 10)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(i - 42, -1, 47);
+		modelStack.Translate(i - 42, 6, 47);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCK], true);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
-		modelStack.Translate(i - 42, -1, -47);
+		modelStack.Translate(i - 42, 6, -47);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCK], true);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
-		modelStack.Translate(-47, -1, i - 42);
+		modelStack.Translate(-47, 6, i - 42);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		modelStack.Rotate(90, 0, 1, 0);
 		RenderMesh(meshList[GEO_ROCK], true);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
-		modelStack.Translate(47, -1, i - 42);
+		modelStack.Translate(47, 6, i - 42);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		modelStack.Rotate(90, 0, 1, 0);
 		RenderMesh(meshList[GEO_ROCK], true);
@@ -350,25 +418,25 @@ void Scene1tutorial::Rocks()
 	for (int i = 0; i < 30; i += 10)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(i - 37, -1, 20);
+		modelStack.Translate(i - 37, 6, 20);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCK], true);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
-		modelStack.Translate(10, -1, i + 20);
+		modelStack.Translate(10, 6, i + 20);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCK], true);
 		modelStack.PopMatrix();
 		
 		modelStack.PushMatrix();
-	    modelStack.Translate(-1.5, -1, 20);
+	    modelStack.Translate(-1.5, 6, 20);
 	    modelStack.Scale(10.f, 10.f, 10.f);
 	    RenderMesh(meshList[GEO_ROCK], true);
 	    modelStack.PopMatrix();
 
 	    modelStack.PushMatrix();
-	    modelStack.Translate(20, -1, 20);
+	    modelStack.Translate(20, 6, 20);
 	    modelStack.Scale(10.f, 10.f, 10.f);
 	    RenderMesh(meshList[GEO_ROCK], true);
 	    modelStack.PopMatrix();
@@ -376,7 +444,7 @@ void Scene1tutorial::Rocks()
 		for (int i = 0; i < 40; i += 10)
 		{
 		    modelStack.PushMatrix();
-		    modelStack.Translate(30, -1, i - 10);
+		    modelStack.Translate(30, 6, i - 10);
 		    modelStack.Scale(10.f, 10.f, 10.f);
 		    RenderMesh(meshList[GEO_ROCK], true);
 		    modelStack.PopMatrix();
@@ -385,7 +453,7 @@ void Scene1tutorial::Rocks()
 	    for (int i = 0; i < 40; i += 10)
 	    {
 		    modelStack.PushMatrix();
-		    modelStack.Translate(i - 10, -1, -10);
+		    modelStack.Translate(i - 10, 6, -10);
 		    modelStack.Scale(10.f, 10.f, 10.f);
 		    RenderMesh(meshList[GEO_ROCK], true);
 		    modelStack.PopMatrix();
@@ -394,20 +462,20 @@ void Scene1tutorial::Rocks()
 	for (int i = 0; i < 30; i += 10)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(-10, -1, i - 30);
+		modelStack.Translate(-10, 6, i - 30);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCK], true);
 		modelStack.PopMatrix();
 	}
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-10, 3.5, -38);
+	modelStack.Translate(-10, 10.5, -38);
 	modelStack.Scale(4.f, 4.f, 4.f);
 	RenderMesh(meshList[GEO_BOULDER], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(38, 3.5, 10);
+	modelStack.Translate(38, 10.5, 10);
 	modelStack.Scale(4.f, 4.f, 4.f);
 	RenderMesh(meshList[GEO_BOULDER], true);
 	modelStack.PopMatrix();
@@ -415,7 +483,7 @@ void Scene1tutorial::Rocks()
 	for (int i = 0; i < 20; i += 10)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(28, -1, i - 38);
+		modelStack.Translate(28, 6, i - 38);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCK], true);
 		modelStack.PopMatrix();
@@ -456,10 +524,10 @@ void Scene1tutorial::GenerateOBJ()
 
 	meshList[GEO_ROCK] = MeshBuilder::GenerateOBJ("Rock", "OBJ//Rock1.obj");
 	meshList[GEO_ROCK]->textureID = LoadTGA("Image//model//Rock.tga");
-	//object[1] = new GameObject("Rock", Vector3(300, 0, 300));
-	//object[1]->setCollider(10, 10);
-	//object[1]->updateCurPos();
-	//object[2] = new GameObject("Rock", Vector3(300, 0, 300));
+	Rock[1] = new GameObject("Vendingmachine", Vector3((-40, 7, -20)));
+	Rock[1]->setCollider(10, 10);
+	Rock[1]->updateCurPos();
+	Rock[2] = new GameObject("Vendingmachine", Vector3((-40, 7, -20)));
 
 	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//star wars doors.obj");
 	meshList[GEO_DOOR]->textureID = LoadTGA("Image//model//star wars doors.tga");
@@ -469,13 +537,24 @@ void Scene1tutorial::GenerateOBJ()
 
 	meshList[GEO_BLUEKEYCARD] = MeshBuilder::GenerateOBJ("keycard", "OBJ//keycard.obj");
 	meshList[GEO_BLUEKEYCARD]->textureID = LoadTGA("Image//model//bluekeycard.tga");
+	Keys[1] = new Item("Card", Vector3(0, 7, 40), "Getting a Key");
+	Keys[1]->setCollider(10, 10);
+	Keys[1]->SetCollected(false);
+	Keys[1]->updateCurPos();
 
 	meshList[GEO_VENDINGMACHINE] = MeshBuilder::GenerateOBJ("vendingmachine", "OBJ//Vending_Machine.obj");
 	meshList[GEO_VENDINGMACHINE]->textureID = LoadTGA("Image//model//Vending_Machine.tga");
+	object[1] = new GameObject("Vendingmachine", Vector3((-40, 7, -20)));
+	object[1]->setCollider(100, 100);
+	object[1]->updateCurPos();
+	object[2] = new GameObject("Vendingmachine", Vector3((-40, 7, -20)));
 
 	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("vendingcover", "OBJ//Vending_Cover.obj");
 	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//model//Vending_Cover.tga");
-
+	object[3] = new GameObject("Vendingcover", Vector3((-40, 7, -20)));
+	object[3]->setCollider(100, 100);
+	object[3]->updateCurPos();
+	object[4] = new GameObject("Vendingcover", Vector3((-40, 7, -20)));
 }
 
 void Scene1tutorial::EnemyField()
@@ -524,44 +603,53 @@ void Scene1tutorial::EnemyField()
 	modelStack.PopMatrix();*/
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-11.5, 0, 20);
+	modelStack.Translate(-11.5, 7, 20);
 	modelStack.Scale(2.5f, 2.5f, 2.5f);
 	RenderMesh(meshList[GEO_DOOR], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-8.6, 0, 20);
+	modelStack.Translate(-8.6, 7, 20);
 	modelStack.Scale(2.5f, 2.5f, 2.5f);
 	RenderMesh(meshList[GEO_DOOR], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(33.5, 0, -25);
+	modelStack.Translate(33.5, 7, -25);
 	modelStack.Scale(4.f, 2.5f, 2.5f);
 	RenderMesh(meshList[GEO_DOOR], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(38, 0, -25);
+	modelStack.Translate(38, 7, -25);
 	modelStack.Scale(4.f, 2.5f, 2.5f);
 	RenderMesh(meshList[GEO_DOOR], true);
 	modelStack.PopMatrix();
 
 
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 0, 40);;
+	modelStack.Translate(0, 7, 40);;
 	modelStack.Scale(2.5, 2.5, 2.5);
 	RenderMesh(meshList[GEO_BLUEKEYCARD], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(20, 0, 40);;
+	modelStack.Translate(20, 7, 40);;
 	modelStack.Scale(2.5, 2.5, 2.5);
 	RenderMesh(meshList[GEO_BLUEKEYCARD], true);
 	modelStack.PopMatrix();
 
+	/*if (!Keys[1]->isCollected())
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(Keys[1]->Position.x, Keys[1]->Position.y, Keys[1]->Position.z);
+		modelStack.Scale(scaleAll, scaleAll, scaleAll);
+		RenderMesh(meshList[GEO_BLUEKEYCARD], true);
+		modelStack.PopMatrix();
+	}*/
+
 	modelStack.PushMatrix();
-	modelStack.Translate(-40, 0, -20);
+	modelStack.Translate(-40, 7, -20);
 	modelStack.Scale(0.5, 0.5, 0.5);
 	modelStack.Rotate(270, 0, 1, 0);
 	RenderMesh(meshList[GEO_VENDINGMACHINE], true);
@@ -609,7 +697,7 @@ void Scene1tutorial::Render()
 
 	//-------------------------------------------------------------------------------------
 	skyBox();
-	Rocks();
+    Rocks();
 	EnemyField();
 
 	/*RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);*/
@@ -768,6 +856,12 @@ void Scene1tutorial::Exit()
 	{
 		if (meshList[i] != NULL)
 			delete meshList[i];
+	}
+
+	for (int i = 0; i < numOfRocks; ++i)
+	{
+		if (Rock[i] != 0)
+			delete Rock[i];
 	}
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
