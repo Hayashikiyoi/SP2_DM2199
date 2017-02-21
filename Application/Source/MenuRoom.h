@@ -14,7 +14,7 @@ using std::string;
 //GameObject Folder
 #include "Enemy.h"
 #include "GameObject.h"
-
+#include "Item.h"
 #define numOfEnemy 20
 
 class Menu_Room : public Scene
@@ -70,6 +70,8 @@ class Menu_Room : public Scene
 		GEO_VENDINGCOVER,
 		GEO_ROBOBODY,
 		GEO_ROBOARMS,
+		GEO_ROBOLOCKED,
+		GEO_ROBOARMSLOCKED,
 		GEO_BULLET,
 		GEO_WALL,
 		GEO_WALL_2,
@@ -90,6 +92,7 @@ private:
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* CamObj;
 	GameObject* TriggerBox[5];
+	Item* Locked[4];
 
 	string deltaTime;
 	string cordx, cordy, cordz;
