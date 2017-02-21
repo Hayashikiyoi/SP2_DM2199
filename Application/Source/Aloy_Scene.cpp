@@ -86,8 +86,6 @@ void Aloy_Scene::Init()
 
 	glUseProgram(m_programID);
 
-
-
 	Mtx44 projection;
 	projection.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
 	projectionStack.LoadMatrix(projection);
