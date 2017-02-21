@@ -14,6 +14,8 @@ using std::string;
 // GameObject Folder
 #include "Enemy.h"
 #include "GameObject.h"
+#include "Item.h"
+#include "Player.h"
 
 #define numOfEnemy 20
 #define numOfRocks 10
@@ -89,8 +91,9 @@ private:
 	//GameObj
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* CamObj;
-	GameObject* Rock[NUM_GEOMETRY];
-
+	GameObject* Rock[numOfRocks];
+	GameObject* TriggerBox[2];
+	Item* Keys[2];
 
 	string deltaTime;
 	string cordx, cordy, cordz;
