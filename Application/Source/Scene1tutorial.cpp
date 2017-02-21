@@ -228,7 +228,7 @@ void Scene1tutorial::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
-	// camera.Update(dt);
+	camera.Update(dt);
 	if (Application::IsKeyPressed(VK_F1))
 	{
 		SceneManager::instance()->changeScene(2);
@@ -608,11 +608,11 @@ void Scene1tutorial::Render()
 	modelStack.LoadIdentity();
 
 	//-------------------------------------------------------------------------------------
-	//skyBox();
-	modelStack.PushMatrix();
-	RenderMesh(meshList[GEO_ROCK], true);
-	modelStack.PopMatrix();
-	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
+	skyBox();
+	Rocks();
+	EnemyField();
+
+	/*RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);*/
 
 
 
