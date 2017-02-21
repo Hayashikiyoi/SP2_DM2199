@@ -281,8 +281,12 @@ void SceneCalvert::Update(double dt)
 		}
 	}
 	
-	if (Application::IsKeyPressed('F'))
+	if (Application::IsKeyPressed('F') )
+	{
 		lasergun->shoot();
+		//smtHappen = true;
+	}
+		
 
 	camera.Update(dt);
 	lasergun->updateBullet(dt);
@@ -346,7 +350,10 @@ void SceneCalvert::Render()
 		if (lasergun->pBullet[i]->shot())
 		{
 			modelStack.PushMatrix();
-			modelStack.Scale(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z);
+			modelStack.LoadMatrix(lasergun->pBullet[i]->rotMatrix()); //Load gun matrix
+			modelStack.Rotate(270, 0, 1, 0); //Bullet inverted
+			modelStack.Translate(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z); //Pos of cur gun
+			modelStack.Translate(0, 0, -2.5f);
 			RenderMesh(meshList[GEO_DEBUGBOX], true);
 			modelStack.PopMatrix();
 		}
@@ -356,9 +363,9 @@ void SceneCalvert::Render()
 
 	//Test gun
 	modelStack.PushMatrix();
-	modelStack.LoadMatrix(lasergun->rotateGunToCamera(camera.position, camera.up, camera.target));
-	glDisable(GL_DEPTH_TEST);
-	modelStack.Translate(lasergun->Position.x, lasergun->Position.y, lasergun->Position.z);
+	modelStack.LoadMatrix(lasergun->rotateGunToCamera(camera.position, camera.up, camera.target)); //Parent to cam
+	glDisable(GL_DEPTH_TEST); //Gun forever renders
+	modelStack.Translate(lasergun->Position.x, lasergun->Position.y, lasergun->Position.z); //Translate to a proper position
 	modelStack.Rotate(180, 0, 1, 0); //Gun is inverted
 	RenderMesh(meshList[GEO_BLASTER], true);
 	glEnable(GL_DEPTH_TEST);

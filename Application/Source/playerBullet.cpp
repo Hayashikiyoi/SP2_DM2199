@@ -3,7 +3,7 @@
 PlayerBullet::PlayerBullet()
 {
 }
-PlayerBullet::PlayerBullet(string name, Vector3 pos) : GameObject(name, pos), isShot(false)
+PlayerBullet::PlayerBullet(string name, Vector3 pos) : GameObject(name, pos), isShot(false), timer(0)
 {
 }
 PlayerBullet::~PlayerBullet()
@@ -26,6 +26,17 @@ void PlayerBullet::updateBullet(double dt)
 {
 	if (isShot)
 	{
-		Position += (10 * dt);
+		Position += (100 * dt);
+		timer += dt;
+		if (timer > 2.5)
+		{
+			timer = 0;
+			isShot = false;
+		}
 	}
+}
+
+Mtx44 PlayerBullet::rotMatrix()
+{
+	return (this->rot);
 }

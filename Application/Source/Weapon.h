@@ -1,7 +1,7 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-#define clipSize 45
+#define clipSize 150
 
 #include "GameObject.h"
 #include "Bullet.h"
@@ -28,6 +28,7 @@ private:
 	size_t clip, canister, bulletSpeed;
 	Vector3 up, forward, right;
 	Mtx44 rotation;
+	double timer;
 };
 
 #endif

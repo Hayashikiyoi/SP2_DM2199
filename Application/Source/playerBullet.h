@@ -26,5 +26,6 @@ private:
 	bool isShot;
 	//Vector3 up, forward, right; //Try to not include first
 	Mtx44 rot;
+	double timer;
 };
 #endif
