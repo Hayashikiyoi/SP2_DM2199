@@ -55,6 +55,14 @@ void Scene1tutorial::Init()
 
 	CamObj = new GameObject("camera", Vector3(0, 0, 0));
 
+	for (int i = 0; i < NUM_GEOMETRY; ++i)
+	{
+		meshList[i] = NULL;
+		object[i] = NULL;
+		VendingMachine[i] = NULL;
+		Doors[i] = NULL;
+		Boulder[i] = NULL;
+	}
 	for (int i = 0; i < numOfEnemy; ++i)
 	{
 		turret[i] = NULL;
@@ -63,6 +71,7 @@ void Scene1tutorial::Init()
 	{
 		Rock[i] = NULL;
 	}
+	
 
 	GenerateOBJ(); 
 
@@ -167,6 +176,103 @@ void Scene1tutorial::Init()
 	projectionStack.LoadMatrix(projection);
 }
 
+void Scene1tutorial::GenerateOBJ()
+{
+	////TURRETS
+	//meshList[GEO_TURRETHEAD_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_head.obj");
+	//meshList[GEO_TURRETHEAD_2]->textureID = LoadTGA("Image//Enemy//Turret_Head.tga");
+	//meshList[GEO_TURRETBODY_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_body.obj");
+	//meshList[GEO_TURRETBODY_2]->textureID = LoadTGA("Image//Enemy//Turret_Body.tga");
+	//turret[7] = new Enemy("Turret", Vector3(300, 0, 300));
+	//turret[7]->setCollider(10, 10);
+	//turret[7]->updateCurPos();
+	//turret[8] = new Enemy("Turret", Vector3(300, 0, 300));
+	////TURRETS_2
+	//turret[9] = new Enemy("Turret", Vector3(-300, 0, -300));
+	//turret[9]->setCollider(10, 10);
+	//turret[9]->updateCurPos();
+	//turret[10] = new Enemy("Turret", Vector3(-300, 0, -300));
+	////TURRETS_3
+	//turret[11] = new Enemy("Turret", Vector3(300, 0, -300));
+	//turret[11]->setCollider(10, 10);
+	//turret[11]->updateCurPos();
+	//turret[12] = new Enemy("Turret", Vector3(300, 0, -300));
+	////TURRETS_4
+	//turret[13] = new Enemy("Turret", Vector3(-300, 0, 300));
+	//turret[13]->setCollider(10, 10);
+	//turret[13]->updateCurPos();
+	//turret[14] = new Enemy("Turret", Vector3(-300, 0, 300));
+
+
+
+	meshList[GEO_ROCK] = MeshBuilder::GenerateOBJ("Rock", "OBJ//Rock1.obj");
+	meshList[GEO_ROCK]->textureID = LoadTGA("Image//model//Rock.tga");
+	Rock[1] = new GameObject("Rock", Vector3(-1.5, 6, 20));
+	Rock[1]->setCollider(10, 10);
+	Rock[1]->updateCurPos();
+	Rock[2] = new GameObject("Rock", Vector3(20, 6, 20));
+	Rock[2]->setCollider(10, 10);
+	Rock[2]->updateCurPos();
+	for (int i = 0; i < 90; i += 10)
+	{
+		Rock[3] = new GameObject("Rock", Vector3(i - 42, 6, 47));
+		Rock[3]->setCollider(10, 10);
+		Rock[3]->updateCurPos();
+
+		Rock[4] = new GameObject("Rock", Vector3(i - 42, 6, -47));
+		Rock[4]->setCollider(10, 10);
+		Rock[4]->updateCurPos();
+
+		Rock[5] = new GameObject("Rock", Vector3(-47, 6, i - 42));
+		Rock[5]->setCollider(10, 10);
+		Rock[5]->updateCurPos();
+
+		Rock[6] = new GameObject("Rock", Vector3(47, 6, i - 42));
+		Rock[6]->setCollider(10, 10);
+		Rock[6]->updateCurPos();
+
+	}
+	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//star wars doors.obj");
+	meshList[GEO_DOOR]->textureID = LoadTGA("Image//model//star wars doors.tga");
+	Doors[1] = new GameObject("Doors", Vector3(-11.5, 7, 20));
+	Doors[1]->setCollider(5, 5);
+	Doors[1]->updateCurPos();
+	Doors[2] = new GameObject("Doors", Vector3(-8.6, 7, 20));
+	Doors[2]->setCollider(5, 5);
+	Doors[2]->updateCurPos();
+	Doors[3] = new GameObject("Doors", Vector3(33.5, 7, -25));
+	Doors[3]->setCollider(5, 5);
+	Doors[3]->updateCurPos();
+	Doors[4] = new GameObject("Doors", Vector3(38, 7, -25));
+	Doors[4]->setCollider(5, 5);
+	Doors[4]->updateCurPos();
+
+	meshList[GEO_BOULDER] = MeshBuilder::GenerateOBJ("Boulder", "OBJ//boulder.obj");
+	meshList[GEO_BOULDER]->textureID = LoadTGA("Image//model//Rock.tga");
+	Boulder[1] = new GameObject("Boulder", Vector3(-10, 10.5, -38));
+	Boulder[1]->setCollider(9, 9 );
+	Boulder[1]->updateCurPos();
+	Boulder[2] = new GameObject("Boulder", Vector3(38, 10.5, 10));
+	Boulder[2]->setCollider(9, 9);
+	Boulder[2]->updateCurPos();
+
+	meshList[GEO_BLUEKEYCARD] = MeshBuilder::GenerateOBJ("keycard", "OBJ//keycard.obj");
+	meshList[GEO_BLUEKEYCARD]->textureID = LoadTGA("Image//model//bluekeycard.tga");
+	Keys[1] = new Item("Card", Vector3(0, 7, 40), "Getting a Key");
+	Keys[1]->setCollider(10, 10);
+	Keys[1]->SetCollected(false);
+	Keys[1]->updateCurPos();
+
+	meshList[GEO_VENDINGMACHINE] = MeshBuilder::GenerateOBJ("vendingmachine", "OBJ//Vending_Machine.obj");
+	meshList[GEO_VENDINGMACHINE]->textureID = LoadTGA("Image//model//Vending_Machine.tga");
+	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("vendingcover", "OBJ//Vending_Cover.obj");
+	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//model//Vending_Cover.tga");
+	//VendingMachine[1] = new GameObject("Vendingmachine", Vector3((-40, 7, -20)));
+	VendingMachine[1] = new GameObject("Vendingmachine", Vector3(-40, 7, -20));
+	VendingMachine[1]->setCollider(7, 7);
+	VendingMachine[1]->updateCurPos();
+}
+
 void Scene1tutorial::Update(double dt)
 {
 	static float translateLimit = 1;
@@ -256,41 +362,76 @@ void Scene1tutorial::Update(double dt)
 		}
 	}*/
 
-	for (int i = 0; i < numOfEnemy; ++i) // this is alright
+	for (int i = 0; i < NUM_GEOMETRY; ++i)
+	{
+		if (object[i] && CamObj->trigger(object[i]))
+		{
+			deltaTime = "Wham bam";
+			camera.position = prevpos;
+			camera.target = prevposTarget;
+			break;
+		}
+
+		if (VendingMachine[i] && CamObj->trigger(VendingMachine[i]))
+		{
+			deltaTime = "Wham bam";
+			camera.position = prevpos;
+			camera.target = prevposTarget;
+			break;
+		}
+
+		if (Doors[i] && CamObj->trigger(Doors[i]))
+		{
+			deltaTime = "Wham bam";
+			camera.position = prevpos;
+			camera.target = prevposTarget;
+			break;
+		}
+
+		if (Boulder[i] && CamObj->trigger(Boulder[i]))
+		{
+			deltaTime = "Wham bam";
+			camera.position = prevpos;
+			camera.target = prevposTarget;
+			break;
+		}
+		/*else if (i == (NUM_GEOMETRY - 1))
+		{
+			prevpos = camera.position;
+			prevposTarget = camera.target;
+		}*/
+	}
+	for (int i = 0; i < numOfEnemy; ++i)
 	{
 		if (turret[i] && CamObj->trigger(turret[i]))
 		{
-			//if you need to get pushed out of the collider
 			deltaTime = "Wham bam";
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
 		}
-		else if (i == (numOfEnemy - 1))//Max value thx
+		/*else if (i == (numOfEnemy - 1))
 		{
 			prevpos = camera.position;
 			prevposTarget = camera.target;
-		}
+		}*/
 	}
-
-	for (int i = 0; i < numOfRocks; ++i) // this is alright
+	for (int i = 0; i < numOfRocks; ++i)
 	{
 		if (Rock[i] && CamObj->trigger(Rock[i]))
 		{
-			//if you need to get pushed out of the collider
 			deltaTime = "Wham bam";
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
 		}
-		else if (i == (numOfEnemy - 1))//Max value thx
+		else if (i == (numOfRocks - 1))
 		{
 			prevpos = camera.position;
 			prevposTarget = camera.target;
 		}
 	}
-
-
+	
 
 	camera.Update(dt);
 	 
@@ -428,18 +569,7 @@ void Scene1tutorial::Rocks()
 		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCK], true);
 		modelStack.PopMatrix();
-		
-		modelStack.PushMatrix();
-	    modelStack.Translate(-1.5, 6, 20);
-	    modelStack.Scale(10.f, 10.f, 10.f);
-	    RenderMesh(meshList[GEO_ROCK], true);
-	    modelStack.PopMatrix();
-
-	    modelStack.PushMatrix();
-	    modelStack.Translate(20, 6, 20);
-	    modelStack.Scale(10.f, 10.f, 10.f);
-	    RenderMesh(meshList[GEO_ROCK], true);
-	    modelStack.PopMatrix();
+	}
 		
 		for (int i = 0; i < 40; i += 10)
 		{
@@ -459,107 +589,54 @@ void Scene1tutorial::Rocks()
 		    modelStack.PopMatrix();
 	    }
 
-	for (int i = 0; i < 30; i += 10)
-	{
+	    for (int i = 0; i < 30; i += 10)
+	    {
+		    modelStack.PushMatrix();
+		    modelStack.Translate(-10, 6, i - 30);
+		    modelStack.Scale(10.f, 10.f, 10.f);
+		    RenderMesh(meshList[GEO_ROCK], true);
+		    modelStack.PopMatrix();
+	    }
+
+	    for (int i = 0; i < 20; i += 10)
+	    {
+		    modelStack.PushMatrix();
+		    modelStack.Translate(28, 6, i - 38);
+		    modelStack.Scale(10.f, 10.f, 10.f);
+		    RenderMesh(meshList[GEO_ROCK], true);
+		    modelStack.PopMatrix();
+	    }
+
 		modelStack.PushMatrix();
-		modelStack.Translate(-10, 6, i - 30);
-		modelStack.Scale(10.f, 10.f, 10.f);
-		RenderMesh(meshList[GEO_ROCK], true);
-		modelStack.PopMatrix();
-	}
+	    modelStack.Translate(-1.5, 6, 20);
+	    modelStack.Scale(10.f, 10.f, 10.f);
+	    RenderMesh(meshList[GEO_ROCK], true);
+	    modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(-10, 10.5, -38);
-	modelStack.Scale(4.f, 4.f, 4.f);
-	RenderMesh(meshList[GEO_BOULDER], true);
-	modelStack.PopMatrix();
+	    modelStack.PushMatrix();
+	    modelStack.Translate(20, 6, 20);
+	    modelStack.Scale(10.f, 10.f, 10.f);
+	    RenderMesh(meshList[GEO_ROCK], true);
+	    modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(38, 10.5, 10);
-	modelStack.Scale(4.f, 4.f, 4.f);
-	RenderMesh(meshList[GEO_BOULDER], true);
-	modelStack.PopMatrix();
+	    modelStack.PushMatrix();
+	    modelStack.Translate(-10, 10.5, -38);
+	    modelStack.Scale(4.f, 4.f, 4.f);
+	    RenderMesh(meshList[GEO_BOULDER], true);
+	    modelStack.PopMatrix();
 
-	for (int i = 0; i < 20; i += 10)
-	{
-		modelStack.PushMatrix();
-		modelStack.Translate(28, 6, i - 38);
-		modelStack.Scale(10.f, 10.f, 10.f);
-		RenderMesh(meshList[GEO_ROCK], true);
-		modelStack.PopMatrix();
-	}
-
-	}
-}
+	    modelStack.PushMatrix();
+	    modelStack.Translate(38, 10.5, 10);
+	    modelStack.Scale(4.f, 4.f, 4.f);
+	    RenderMesh(meshList[GEO_BOULDER], true);
+	    modelStack.PopMatrix();
 
 
-void Scene1tutorial::GenerateOBJ()
-{
-	////TURRETS
-	//meshList[GEO_TURRETHEAD_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_head.obj");
-	//meshList[GEO_TURRETHEAD_2]->textureID = LoadTGA("Image//Enemy//Turret_Head.tga");
-	//meshList[GEO_TURRETBODY_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_body.obj");
-	//meshList[GEO_TURRETBODY_2]->textureID = LoadTGA("Image//Enemy//Turret_Body.tga");
-	//turret[7] = new Enemy("Turret", Vector3(300, 0, 300));
-	//turret[7]->setCollider(10, 10);
-	//turret[7]->updateCurPos();
-	//turret[8] = new Enemy("Turret", Vector3(300, 0, 300));
-	////TURRETS_2
-	//turret[9] = new Enemy("Turret", Vector3(-300, 0, -300));
-	//turret[9]->setCollider(10, 10);
-	//turret[9]->updateCurPos();
-	//turret[10] = new Enemy("Turret", Vector3(-300, 0, -300));
-	////TURRETS_3
-	//turret[11] = new Enemy("Turret", Vector3(300, 0, -300));
-	//turret[11]->setCollider(10, 10);
-	//turret[11]->updateCurPos();
-	//turret[12] = new Enemy("Turret", Vector3(300, 0, -300));
-	////TURRETS_4
-	//turret[13] = new Enemy("Turret", Vector3(-300, 0, 300));
-	//turret[13]->setCollider(10, 10);
-	//turret[13]->updateCurPos();
-	//turret[14] = new Enemy("Turret", Vector3(-300, 0, 300));
-
-
-
-	meshList[GEO_ROCK] = MeshBuilder::GenerateOBJ("Rock", "OBJ//Rock1.obj");
-	meshList[GEO_ROCK]->textureID = LoadTGA("Image//model//Rock.tga");
-	Rock[1] = new GameObject("Vendingmachine", Vector3((-40, 7, -20)));
-	Rock[1]->setCollider(10, 10);
-	Rock[1]->updateCurPos();
-	Rock[2] = new GameObject("Vendingmachine", Vector3((-40, 7, -20)));
-
-	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//star wars doors.obj");
-	meshList[GEO_DOOR]->textureID = LoadTGA("Image//model//star wars doors.tga");
-
-	meshList[GEO_BOULDER] = MeshBuilder::GenerateOBJ("Boulder", "OBJ//boulder.obj");
-	meshList[GEO_BOULDER]->textureID = LoadTGA("Image//model//Rock.tga");
-
-	meshList[GEO_BLUEKEYCARD] = MeshBuilder::GenerateOBJ("keycard", "OBJ//keycard.obj");
-	meshList[GEO_BLUEKEYCARD]->textureID = LoadTGA("Image//model//bluekeycard.tga");
-	Keys[1] = new Item("Card", Vector3(0, 7, 40), "Getting a Key");
-	Keys[1]->setCollider(10, 10);
-	Keys[1]->SetCollected(false);
-	Keys[1]->updateCurPos();
-
-	meshList[GEO_VENDINGMACHINE] = MeshBuilder::GenerateOBJ("vendingmachine", "OBJ//Vending_Machine.obj");
-	meshList[GEO_VENDINGMACHINE]->textureID = LoadTGA("Image//model//Vending_Machine.tga");
-	object[1] = new GameObject("Vendingmachine", Vector3((-40, 7, -20)));
-	object[1]->setCollider(100, 100);
-	object[1]->updateCurPos();
-	object[2] = new GameObject("Vendingmachine", Vector3((-40, 7, -20)));
-
-	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("vendingcover", "OBJ//Vending_Cover.obj");
-	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//model//Vending_Cover.tga");
-	object[3] = new GameObject("Vendingcover", Vector3((-40, 7, -20)));
-	object[3]->setCollider(100, 100);
-	object[3]->updateCurPos();
-	object[4] = new GameObject("Vendingcover", Vector3((-40, 7, -20)));
+	
 }
 
 void Scene1tutorial::EnemyField()
 {
-	
 	//TURRETS_2
 	/*modelStack.PushMatrix();
 	modelStack.Translate(turret[9]->Position.x, turret[9]->Position.y, turret[9]->Position.z);
@@ -649,7 +726,7 @@ void Scene1tutorial::EnemyField()
 	}*/
 
 	modelStack.PushMatrix();
-	modelStack.Translate(-40, 7, -20);
+	modelStack.Translate(VendingMachine[1]->Position.x, VendingMachine[1]->Position.y, VendingMachine[1]->Position.z);
 	modelStack.Scale(0.5, 0.5, 0.5);
 	modelStack.Rotate(270, 0, 1, 0);
 	RenderMesh(meshList[GEO_VENDINGMACHINE], true);
@@ -707,8 +784,6 @@ void Scene1tutorial::Render()
 	//No transform needed
 	/*RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);*/
 	//-------------------------------------------------------------------------------------
-
-
 
 }
 
@@ -856,13 +931,21 @@ void Scene1tutorial::Exit()
 	{
 		if (meshList[i] != NULL)
 			delete meshList[i];
+		if (VendingMachine[i] != NULL)
+			delete VendingMachine[i];
+		if (Doors[i] != NULL)
+			delete Doors[i];
+		if (Boulder[i] != NULL)
+			delete Boulder[i];
 	}
 
 	for (int i = 0; i < numOfRocks; ++i)
 	{
-		if (Rock[i] != 0)
+		if (Rock[i] != NULL)
 			delete Rock[i];
 	}
+
+	
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 
