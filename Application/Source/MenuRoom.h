@@ -15,6 +15,7 @@ using std::string;
 #include "Enemy.h"
 #include "GameObject.h"
 #include "Item.h"
+#undef numOfEnemy
 #define numOfEnemy 20
 
 class Menu_Room : public Scene

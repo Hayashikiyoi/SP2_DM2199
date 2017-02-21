@@ -36,7 +36,7 @@ public:
 	void addScene(Scene* sceneName);
 
 	//Update scene
-	void sceneUpdate(float dt);
+	void sceneUpdate(double dt);
 	void loadingScene();
 
 	//End Game bool

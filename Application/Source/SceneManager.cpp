@@ -21,7 +21,7 @@ void SceneManager::addScene(Scene* sceneName)
 	nextLevel++;
 }
 
-void SceneManager::sceneUpdate(float dt)
+void SceneManager::sceneUpdate(double dt)
 {
 	sceneManager[currentLevel]->Update(dt);
 }

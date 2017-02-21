@@ -27,19 +27,4 @@ private:
 	//Vector3 up, forward, right; //Try to not include first
 	Mtx44 rot;
 };
-
-PlayerBullet::PlayerBullet()
-{
-}
-PlayerBullet::PlayerBullet(string name, Vector3 pos) : GameObject(name, pos), isShot(false)
-{
-}
-PlayerBullet::~PlayerBullet()
-{
-}
-
-bool PlayerBullet::shot(void)
-{
-	return isShot;
-}
 #endif

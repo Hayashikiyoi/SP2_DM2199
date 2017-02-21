@@ -17,6 +17,8 @@ using std::string;
 #include "Item.h"
 #include "Player.h"
 
+#undef numOfEnemy
+
 #define numOfEnemy 20
 #define numOfRocks 10
 
@@ -92,6 +94,9 @@ private:
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* CamObj;
 	GameObject* Rock[numOfRocks];
+	GameObject* VendingMachine[NUM_GEOMETRY];
+	GameObject* Doors[NUM_GEOMETRY];
+	GameObject* Boulder[NUM_GEOMETRY];
 	GameObject* TriggerBox[2];
 	Item* Keys[2];
 

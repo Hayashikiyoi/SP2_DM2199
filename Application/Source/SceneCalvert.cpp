@@ -281,8 +281,11 @@ void SceneCalvert::Update(double dt)
 		}
 	}
 	
+	if (Application::IsKeyPressed('F'))
+		lasergun->shoot();
+
 	camera.Update(dt);
-	
+	lasergun->updateBullet(dt);
 }
 
 void SceneCalvert::Render()
@@ -337,10 +340,19 @@ void SceneCalvert::Render()
 	RenderText(meshList[GEO_TEXT], "Bye Bye World", Color(0, 1, 0));
 	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Scale(5, 20, 5);
-	RenderMesh(meshList[GEO_DEBUGBOX], true);
-	modelStack.PopMatrix();
+
+	for (size_t i = 0; i < clipSize; i++)
+	{
+		if (lasergun->pBullet[i]->shot())
+		{
+			modelStack.PushMatrix();
+			modelStack.Scale(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z);
+			RenderMesh(meshList[GEO_DEBUGBOX], true);
+			modelStack.PopMatrix();
+		}
+		
+	}
+	
 
 	//Test gun
 	modelStack.PushMatrix();
