@@ -20,7 +20,7 @@ float Enemy::RotateToPlayer(Vector3 player)
 
 bool Enemy::isdead()
 {
-	if (health <= 0);
+	return (health <= 0);
 }
 
 void Enemy::dmgToEnemy(size_t dmg)
