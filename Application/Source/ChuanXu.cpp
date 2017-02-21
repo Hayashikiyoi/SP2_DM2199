@@ -92,11 +92,11 @@ void ChuanXu::Init()
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 
 	GenerateObj();
-	meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//Vending_Machine.obj");
-	meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//Vending_Machine.tga");
+	meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//NPC//Vending_Machine.obj");
+	meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//NPC//Vending_Machine.tga");
 
-	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//Vending_Cover.obj");
-	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//Vending_Cover.tga");
+	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//NPC//Vending_Cover.obj");
+	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//NPC//Vending_Cover.tga");
 	
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateText("Cross hair", 16, 16);
 	meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//UI//Cross_Hair");
@@ -181,13 +181,13 @@ void ChuanXu::Init()
 }
 void ChuanXu::GenerateObj()
 {
-	meshList[GEO_BOSSHEAD] = MeshBuilder::GenerateOBJ("Boss head", "OBJ//Boss_head.obj");
+	meshList[GEO_BOSSHEAD] = MeshBuilder::GenerateOBJ("Boss head", "OBJ//Enemy//Boss_head.obj");
 	meshList[GEO_BOSSHEAD]->textureID = LoadTGA("Image//Enemy//Boss_Head.tga");
-	meshList[GEO_BOSSBODY] = MeshBuilder::GenerateOBJ("Boss body", "OBJ//Boss_body.obj");
+	meshList[GEO_BOSSBODY] = MeshBuilder::GenerateOBJ("Boss body", "OBJ//Enemy//Boss_body.obj");
 	meshList[GEO_BOSSBODY]->textureID = LoadTGA("Image//Enemy//Boss_body.tga");
-	meshList[GEO_TURRETBODY] = MeshBuilder::GenerateOBJ("TurretBody", "OBJ//Turret_body.obj");
+	meshList[GEO_TURRETBODY] = MeshBuilder::GenerateOBJ("TurretBody", "OBJ//Enemy//Turret_body.obj");
 	meshList[GEO_TURRETBODY]->textureID = LoadTGA("Image//Enemy//Turret_Body.tga");
-	meshList[GEO_TURRETHEAD] = MeshBuilder::GenerateOBJ("TurretHead", "OBJ//Turret_head.obj");
+	meshList[GEO_TURRETHEAD] = MeshBuilder::GenerateOBJ("TurretHead", "OBJ//Enemy//Turret_head.obj");
 	meshList[GEO_TURRETHEAD]->textureID = LoadTGA("Image//Enemy//Turret_Head.tga");
 	turret[1] = new Enemy("Turret_1", Vector3(10, 0, 10));
 	turret[1]->setCollider(0, 0);
@@ -198,7 +198,7 @@ void ChuanXu::GenerateObj()
 	turret[2]->updateCurPos();
 
 	//Bullet
-	meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Bullet", "OBJ//Bullet.obj");
+	meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Bullet", "OBJ//Enemy//Bullet.obj");
 	meshList[GEO_BULLET]->textureID = LoadTGA("Image//Enemy//Bullet.tga");
 
 	bullet[1] = new Bullet("Bullet_1", Vector3(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z));
@@ -210,10 +210,10 @@ void ChuanXu::GenerateObj()
 	bullet[2]->updateCurPos();
 
 	//Robot
-	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("RoboBody", "OBJ//Robot_body.obj");
+	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("RoboBody", "OBJ//NPC//Robot_body.obj");
 	meshList[GEO_ROBOBODY]->textureID = LoadTGA("Image//NPC//Robot_Body.tga");
 
-	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//Robot_Arm.obj");
+	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//NPC//Robot_Arm.obj");
 	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image//NPC//Robot_Arms.tga");
 	object[1] = new GameObject("Robot", Vector3(10, 0, 10));
 	object[1]->setCollider(5, 5);
