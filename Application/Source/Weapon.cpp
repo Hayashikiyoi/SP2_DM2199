@@ -1,4 +1,5 @@
 #include "Weapon.h"
+#include "Mtx44.h"
 
 Weapon::Weapon()
 {
@@ -39,14 +40,27 @@ void Weapon::reload()
 
 void Weapon::shoot() //Wait for bullets
 {
-
+	for (int i = 0; i < clipSize; ++i) //Lock rotation 
+	{
+		
+	}
 }
 void Weapon::updateBullet(double dt)
 {
 	for (int i = 0; i < clipSize; ++i)
 	{
 		//Add shoot here
-		//Position.x += (float)(bulletSpeed * sin(Math::DegreeToRadian(rotation)) *dt);
-		//Position.z += (float)(bulletSpeed * cos(Math::DegreeToRadian(rotation)) *dt);
 	}
+}
+
+Mtx44 Weapon::rotateGunToCamera(Vector3 CameraPos, Vector3 CameraUp, Vector3 CameraTarget)
+{
+	forward = (CameraTarget - CameraPos).Normalized();
+	up = Vector3(0, 1, 0);
+	right = forward.Cross(up);
+	right.Normalize();
+	right.y = 0;
+	up = right.Cross(forward).Normalized();
+
+	return Mtx44(right.x, right.y, right.z, 0, up.x, up.y, up.z, 0, forward.x, forward.y, forward.z, 0, CameraPos.x, CameraPos.y, CameraPos.z, 1);
 }
