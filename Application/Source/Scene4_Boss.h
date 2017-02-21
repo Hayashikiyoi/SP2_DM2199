@@ -14,8 +14,10 @@ using std::string;
 //GameObject Folder
 #include "Enemy.h"
 #include "GameObject.h"
+#include "Item.h"
+#include "Player.h"
 
-#define numOfEnemy 20
+#define numOfEnemy 25
 
 class Scene4_Boss : public Scene
 {
@@ -95,6 +97,8 @@ private:
 	//GameObj
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* CamObj;
+	GameObject* TriggerBox[2];
+	Item* Keys[2];
 
 	string deltaTime;
 	string cordx, cordy, cordz;

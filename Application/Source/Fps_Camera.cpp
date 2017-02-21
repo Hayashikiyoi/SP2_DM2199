@@ -24,6 +24,7 @@ void Fps_Camera::Init(const Vector3& pos, const Vector3& target, const Vector3& 
 	right.y = 0;
 	right.Normalize();
 	this->up = defaultUp = right.Cross(view).Normalized();
+	this->rotate.SetToIdentity(); //I added this
 }
 
 void Fps_Camera::Update(double dt)
@@ -71,7 +72,6 @@ void Fps_Camera::Update(double dt)
 	float vertMovement = Math::DegreeToRadian((float)(mid_y - ypos) * 10);
 
 	Mtx44 camYaw, camPitch;
-	Mtx44 rotation;
 
 	camYaw.SetToIdentity();
 	camPitch.SetToIdentity();
@@ -85,10 +85,10 @@ void Fps_Camera::Update(double dt)
 	}
 	camYaw.SetToRotation(horizMovement, 0, 1, 0);
 	
-	rotation = camPitch*camYaw;
-	view = (rotation)*view;
+	rotate = camPitch*camYaw;
+	view = (rotate)*view;
 	target = position + view;
-	up = (rotation)* up;
+	up = (rotate)* up;
 
 	if (Application::IsKeyPressed('R'))
 	{
