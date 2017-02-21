@@ -48,7 +48,7 @@ void SceneCalvert::Init()
 		object[i] = 0;
 	}
 	player = new Player("camera", Vector3(0, 0, 0));
-	lasergun = new Weapon("Blaster", Vector3(-0.5f, 9.5f, 1), 50);
+	lasergun = new Weapon("Blaster", Vector3(0.5, -0.750, 2), 50);
 
 	//Enemy
 	for (int i = 0; i < NumOfEnemy; ++i)
@@ -337,23 +337,7 @@ void SceneCalvert::Render()
 	RenderText(meshList[GEO_TEXT], "Bye Bye World", Color(0, 1, 0));
 	modelStack.PopMatrix();
 
-	//Bike test [0]
-	//for (int i = 0; i < NumOfEnemy; ++i)
-	//{
-	//	if (enemy[i] != 0)
-	//	{
-	//		modelStack.PushMatrix();
-	//		modelStack.Translate(enemy[i]->Position.x, enemy[i]->Position.y, enemy[i]->Position.z);
-	//		modelStack.Rotate(enemy[i]->RotateToPlayer(camera.position), 0, 1, 0);
-	//		modelStack.Rotate(90, 0, -1, 0);
-	//		//RenderMesh(meshList[GEO_BIKE], true);
-	//		modelStack.PopMatrix();
-	//	}
-	//}
-
 	modelStack.PushMatrix();
-	modelStack.LoadMatrix(camera.rotate);
-	//modelStack.Translate(camera.target.x, camera.target.y, camera.target.z);
 	modelStack.Scale(5, 20, 5);
 	RenderMesh(meshList[GEO_DEBUGBOX], true);
 	modelStack.PopMatrix();
@@ -362,12 +346,11 @@ void SceneCalvert::Render()
 	modelStack.PushMatrix();
 	modelStack.LoadMatrix(lasergun->rotateGunToCamera(camera.position, camera.up, camera.target));
 	glDisable(GL_DEPTH_TEST);
-	modelStack.Translate(0.5, -0.750, 2);
-	modelStack.Rotate(180, 0, 1, 0);//Gun is inverted
+	modelStack.Translate(lasergun->Position.x, lasergun->Position.y, lasergun->Position.z);
+	modelStack.Rotate(180, 0, 1, 0); //Gun is inverted
 	RenderMesh(meshList[GEO_BLASTER], true);
 	glEnable(GL_DEPTH_TEST);
 	modelStack.PopMatrix();
-
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 2.5f, 0, 0);
 

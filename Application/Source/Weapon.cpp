@@ -1,5 +1,4 @@
 #include "Weapon.h"
-#include "Mtx44.h"
 
 Weapon::Weapon()
 {
@@ -40,17 +39,9 @@ void Weapon::reload()
 
 void Weapon::shoot() //Wait for bullets
 {
-	for (int i = 0; i < clipSize; ++i) //Lock rotation 
-	{
-		
-	}
 }
 void Weapon::updateBullet(double dt)
 {
-	for (int i = 0; i < clipSize; ++i)
-	{
-		//Add shoot here
-	}
 }
 
 Mtx44 Weapon::rotateGunToCamera(Vector3 CameraPos, Vector3 CameraUp, Vector3 CameraTarget)

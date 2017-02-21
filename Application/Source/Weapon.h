@@ -5,6 +5,7 @@
 
 #include "GameObject.h"
 #include "Bullet.h"
+#include "Mtx44.h"
 
 class Weapon : public GameObject
 {
