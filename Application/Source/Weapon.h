@@ -6,6 +6,7 @@
 #include "GameObject.h"
 #include "Bullet.h"
 #include "Mtx44.h"
+#include "playerBullet.h"
 
 class Weapon : public GameObject
 {
@@ -22,10 +23,11 @@ public:
 	unsigned bulletLeft();
 	unsigned canisterLeft();
 
+	PlayerBullet* pBullet[clipSize];
 private:
-	Bullet* pBullet[clipSize];
 	size_t clip, canister, bulletSpeed;
 	Vector3 up, forward, right;
+	Mtx44 rotation;
 };
 
 #endif

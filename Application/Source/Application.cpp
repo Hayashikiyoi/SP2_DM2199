@@ -118,7 +118,7 @@ void Application::Run()
 	//SceneManager::instance()->addScene(new Menu_Room);
 	/*SceneManager::instance()->addScene(new Wilson);*/
 	//SceneManager::instance()->addScene(new Scene1tutorial);
-	SceneManager::instance()->addScene(new ChuanXu);
+	//SceneManager::instance()->addScene(new ChuanXu);
 	//SceneManager::instance()->addScene(new SceneGameOver);
 	//SceneManager::instance()->addScene(new Scene_Level2);
 	SceneManager::instance()->addScene(new SceneCalvert);

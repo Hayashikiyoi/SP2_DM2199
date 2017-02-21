@@ -103,6 +103,7 @@
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshBuilder.cpp" />
     <ClCompile Include="Source\Player.cpp" />
+    <ClCompile Include="Source\playerBullet.cpp" />
     <ClCompile Include="Source\Scene1tutorial.cpp" />
     <ClCompile Include="Source\Scene4_Boss.cpp" />
     <ClCompile Include="Source\SceneCalvert.cpp" />

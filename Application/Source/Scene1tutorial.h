@@ -17,6 +17,8 @@ using std::string;
 #include "Item.h"
 #include "Player.h"
 
+#undef numOfEnemy
+
 #define numOfEnemy 20
 #define numOfRocks 10
 

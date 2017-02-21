@@ -14,7 +14,7 @@ using std::string;
 //GameObject Folder
 #include "Enemy.h"
 #include "GameObject.h"
-
+#undef numOfEnemy
 #define numOfEnemy 20
 
 class Menu_Room : public Scene
