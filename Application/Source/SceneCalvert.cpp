@@ -32,7 +32,7 @@ void SceneCalvert::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	//Initialise camera
-	camera.Init(Vector3(0, 0, 0), Vector3(0, 0, -10), Vector3(0, 1, 0));
+	camera.Init(Vector3(0, 10, 0), Vector3(0.01f, 10, 10), Vector3(0, 1, 0));
 
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -48,11 +48,16 @@ void SceneCalvert::Init()
 		object[i] = 0;
 	}
 	player = new Player("camera", Vector3(0, 0, 0));
+	lasergun = new Weapon("Blaster", Vector3(0.5, -0.750, 2), 50);
 
 	//Enemy
 	for (int i = 0; i < NumOfEnemy; ++i)
 	{
 		enemy[i] = 0; //Initialise enemy obj
+	}
+	for (int i = 0; i < 5; ++i)
+	{
+		triggerbox[i] = 0; //Initialise enemy obj
 	}
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
@@ -64,6 +69,9 @@ void SceneCalvert::Init()
 	object[GEO_DEBUGBOX] = new GameObject("Debug", Vector3(-20, 0, -20));
 	object[GEO_DEBUGBOX]->setCollider(2, 2);
 	object[GEO_DEBUGBOX]->updateCurPos();
+	triggerbox[0] = new GameObject("DebugTrigger", Vector3(-20, 0, -20));
+	triggerbox[0]->setCollider(4, 4);
+	triggerbox[0]->updateCurPos();
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 
@@ -188,6 +196,14 @@ void SceneCalvert::Update(double dt)
 		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	}
 
+	//This will be edited further when more levels are added
+	if (Application::IsKeyPressed(VK_F1))
+	{
+		SceneManager::instance()->changeScene(3);//Test Scene
+		return;
+	}
+		
+
 	//Cull back face
 	if (Application::IsKeyPressed('1'))
 		glEnable(GL_CULL_FACE);
@@ -198,16 +214,13 @@ void SceneCalvert::Update(double dt)
 	if (Application::IsKeyPressed('3'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	if (Application::IsKeyPressed('4'))
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	//This will be edited further when more levels are added
-	if (Application::IsKeyPressed(VK_F1))
-		SceneManager::instance()->EndGame(true);//Test Scene
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	
 
 	//Test Test Colliderbox
 	//Player collider
 	player->Position = camera.position;
 	player->updateCurPos();
+	//lasergun->rotateGunToCamera(camera.position, camera.rotate);
 
 	static Vector3 prevpos;
 	static Vector3 prevposTarget;
@@ -225,6 +238,14 @@ void SceneCalvert::Update(double dt)
 			}
 			camera.position = prevpos;
 			camera.target = prevposTarget;
+			break;
+		}
+	}
+	for (int i = 0; i < 5; ++i)
+	{
+		if (triggerbox[i] && player->trigger(triggerbox[i]))
+		{
+			deltaTime = "Press E";
 			break;
 		}
 	}
@@ -261,6 +282,7 @@ void SceneCalvert::Update(double dt)
 	}
 	
 	camera.Update(dt);
+	
 }
 
 void SceneCalvert::Render()
@@ -315,24 +337,19 @@ void SceneCalvert::Render()
 	RenderText(meshList[GEO_TEXT], "Bye Bye World", Color(0, 1, 0));
 	modelStack.PopMatrix();
 
-	//Bike test [0]
-	for (int i = 0; i < NumOfEnemy; ++i)
-	{
-		if (enemy[i] != 0)
-		{
-			modelStack.PushMatrix();
-			modelStack.Translate(enemy[i]->Position.x, enemy[i]->Position.y, enemy[i]->Position.z);
-			modelStack.Rotate(enemy[i]->RotateToPlayer(camera.position), 0, 1, 0);
-			modelStack.Rotate(90, 0, -1, 0);
-			RenderMesh(meshList[GEO_BIKE], true);
-			modelStack.PopMatrix();
-		}
-	}
-	
-
 	modelStack.PushMatrix();
-	modelStack.Translate(object[GEO_DEBUGBOX]->Position.x, object[GEO_DEBUGBOX]->Position.y, object[GEO_DEBUGBOX]->Position.z);
+	modelStack.Scale(5, 20, 5);
 	RenderMesh(meshList[GEO_DEBUGBOX], true);
+	modelStack.PopMatrix();
+
+	//Test gun
+	modelStack.PushMatrix();
+	modelStack.LoadMatrix(lasergun->rotateGunToCamera(camera.position, camera.up, camera.target));
+	glDisable(GL_DEPTH_TEST);
+	modelStack.Translate(lasergun->Position.x, lasergun->Position.y, lasergun->Position.z);
+	modelStack.Rotate(180, 0, 1, 0); //Gun is inverted
+	RenderMesh(meshList[GEO_BLASTER], true);
+	glEnable(GL_DEPTH_TEST);
 	modelStack.PopMatrix();
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 2.5f, 0, 0);
@@ -436,8 +453,8 @@ void SceneCalvert::GenerateOBJ()
 	enemy[0] = new Enemy("Bike", Vector3(10,0,10));
 	enemy[0]->setCollider(3, 3);
 	enemy[0]->updateCurPos();
-	meshList[GEO_BIKE] = MeshBuilder::GenerateOBJ("Bike", "OBJ//bike.obj");
-	meshList[GEO_BIKE]->textureID = LoadTGA("Image//model//Vehicle.tga");
+	meshList[GEO_BLASTER] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//blaster.obj");
+	//meshList[GEO_BLASTER]->textureID = LoadTGA("Image//model//Vehicle.tga");
 
 	enemy[1] = new Enemy("Bike", Vector3(10, 0, -20));
 	enemy[1]->setCollider(3, 3);
@@ -593,6 +610,12 @@ void SceneCalvert::Exit()
 	{
 		if (enemy[i] != 0)
 			delete enemy[i];
+	}
+
+	for (int i = 0; i < 5; ++i)
+	{
+		if (triggerbox[i] != 0)
+			delete triggerbox[i];
 	}
 	delete player;
 	// Cleanup VBO here

@@ -11,6 +11,12 @@ public:
 	Enemy(string Name, Vector3 Position);
 	virtual ~Enemy();
 	float RotateToPlayer(Vector3 player);
+
+	bool isdead();
+	void dmgToEnemy(size_t dmg);
+
+private:
+	size_t health;
 };
 
 #endif
