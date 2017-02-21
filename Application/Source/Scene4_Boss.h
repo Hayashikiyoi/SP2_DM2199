@@ -16,8 +16,11 @@ using std::string;
 #include "GameObject.h"
 #include "Item.h"
 #include "Player.h"
+#include "Bullet.h"
 
 #define numOfEnemy 25
+#define numOfBullets 5
+#define numOfWalls 10
 
 class Scene4_Boss : public Scene
 {
@@ -99,19 +102,23 @@ private:
 	GameObject* CamObj;
 	GameObject* TriggerBox[2];
 	Item* Keys[2];
+	GameObject* WallsObj[numOfWalls];
+	Player* player;
 
 	string deltaTime;
 	string cordx, cordy, cordz;
 	Vector3 Robot;
-	Vector3 Bullet;
 
+	//Vector3 Bullet;
+	Bullet bullet_1;
 	Enemy* turret[numOfEnemy];
-	
+	Bullet* bullet[numOfBullets];
+
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
 	float openCover = 0;
-
+	float DelayTimer = 0;
 	void skyBox();
 	bool shootBullet = false;
 

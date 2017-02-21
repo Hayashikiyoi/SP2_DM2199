@@ -138,6 +138,7 @@
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\MeshBuilder.h" />
     <ClInclude Include="Source\Player.h" />
+    <ClInclude Include="Source\playerBullet.h" />
     <ClInclude Include="Source\Scene.h" />
     <ClInclude Include="Source\Scene1tutorial.h" />
     <ClInclude Include="Source\Scene4_Boss.h" />

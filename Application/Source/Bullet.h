@@ -1,7 +1,6 @@
 #ifndef BULLET_H
 #define BULLET_H
 #include"GameObject.h"
-#include"Enemy.h"
 
 class Bullet : public GameObject
 {	
@@ -11,10 +10,7 @@ public:
 	virtual ~Bullet();
 	void shootBullet(float rotate, Vector3 turretPos);
 	void bulletUpdate(double dt);
-	bool shoot ;
-private:
-	
-
+	bool shoot;
 };
 
 #endif 

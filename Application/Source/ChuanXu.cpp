@@ -58,6 +58,10 @@ void ChuanXu::Init()
 	{
 		turret[i] = NULL;
 	}
+	for (int i = 0; i < numOfBullet; ++i)
+	{
+		bullet[i] = NULL;
+	}
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
@@ -88,13 +92,16 @@ void ChuanXu::Init()
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 
 	GenerateObj();
-	meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//Vending_Machine.obj");
-	meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//Vending_Machine.tga");
+	meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//NPC//Vending_Machine.obj");
+	meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//NPC//Vending_Machine.tga");
 
-	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//Vending_Cover.obj");
-	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//Vending_Cover.tga");
+	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//NPC//Vending_Cover.obj");
+	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//NPC//Vending_Cover.tga");
 	
-
+	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateText("Cross hair", 16, 16);
+	meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//UI//Cross_Hair");
+	meshList[GEO_WALL] = MeshBuilder::GenerateQuad("wall", Color(1, 1, 1), 10, 10);
+	meshList[GEO_WALL]->textureID = LoadTGA("Image//CX_Scene//Wall_Texture.tga");
 
 
 
@@ -174,50 +181,51 @@ void ChuanXu::Init()
 }
 void ChuanXu::GenerateObj()
 {
-	meshList[GEO_BOSSHEAD] = MeshBuilder::GenerateOBJ("Boss head", "OBJ//Boss_head.obj");
+	meshList[GEO_BOSSHEAD] = MeshBuilder::GenerateOBJ("Boss head", "OBJ//Enemy//Boss_head.obj");
 	meshList[GEO_BOSSHEAD]->textureID = LoadTGA("Image//Enemy//Boss_Head.tga");
-	meshList[GEO_BOSSBODY] = MeshBuilder::GenerateOBJ("Boss body", "OBJ//Boss_body.obj");
+	meshList[GEO_BOSSBODY] = MeshBuilder::GenerateOBJ("Boss body", "OBJ//Enemy//Boss_body.obj");
 	meshList[GEO_BOSSBODY]->textureID = LoadTGA("Image//Enemy//Boss_body.tga");
-	meshList[GEO_TURRETBODY] = MeshBuilder::GenerateOBJ("TurretBody", "OBJ//Turret_body.obj");
+	meshList[GEO_TURRETBODY] = MeshBuilder::GenerateOBJ("TurretBody", "OBJ//Enemy//Turret_body.obj");
 	meshList[GEO_TURRETBODY]->textureID = LoadTGA("Image//Enemy//Turret_Body.tga");
-	meshList[GEO_TURRETHEAD] = MeshBuilder::GenerateOBJ("TurretHead", "OBJ//Turret_head.obj");
+	meshList[GEO_TURRETHEAD] = MeshBuilder::GenerateOBJ("TurretHead", "OBJ//Enemy//Turret_head.obj");
 	meshList[GEO_TURRETHEAD]->textureID = LoadTGA("Image//Enemy//Turret_Head.tga");
 	turret[1] = new Enemy("Turret_1", Vector3(10, 0, 10));
-	turret[1]->setCollider(10, 10);
+	turret[1]->setCollider(0, 0);
 	turret[1]->updateCurPos();
 	
 	turret[2] = new Enemy("Turret_2", Vector3(20, 0.20));
-	turret[2]->setCollider(10, 10);
+	turret[2]->setCollider(0, 0);
 	turret[2]->updateCurPos();
 
 	//Bullet
-	meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Bullet", "OBJ//Bullet.obj");
+	meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Bullet", "OBJ//Enemy//Bullet.obj");
 	meshList[GEO_BULLET]->textureID = LoadTGA("Image//Enemy//Bullet.tga");
 
 	bullet[1] = new Bullet("Bullet_1", Vector3(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z));
-	bullet[1]->setCollider(5, 5);
+	bullet[1]->setCollider(1, 1);
 	bullet[1]->updateCurPos();
 
 	bullet[2] = new Bullet("Bullet_1", Vector3(turret[2]->Position.x, turret[2]->Position.y, turret[2]->Position.z));
-	bullet[2]->setCollider(5, 5);
+	bullet[2]->setCollider(1, 1);
 	bullet[2]->updateCurPos();
 
 	//Robot
-	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("RoboBody", "OBJ//Robot_body.obj");
+	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("RoboBody", "OBJ//NPC//Robot_body.obj");
 	meshList[GEO_ROBOBODY]->textureID = LoadTGA("Image//NPC//Robot_Body.tga");
 
-	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//Robot_Arm.obj");
+	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//NPC//Robot_Arm.obj");
 	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image//NPC//Robot_Arms.tga");
-	
-
+	object[1] = new GameObject("Robot", Vector3(10, 0, 10));
+	object[1]->setCollider(5, 5);
+	object[1]->updateCurPos();
+ 
 }
 void ChuanXu::Update(double dt)
 {		
 	static float translateLimit = 1;
 	static Vector3 prevpos;
 	static Vector3 prevposTarget;
-	static float lockRotation[numOfBullet] = { 0 };
-	Robot.Set(Robot.x, Robot.y, Robot.z);
+	//Robot.Set(Robot.x, Robot.y, Robot.z);
 	deltaTime = "FPS:" + std::to_string(1 / dt);
 	if (Application::IsKeyPressed('F'))
 	{
@@ -229,13 +237,13 @@ void ChuanXu::Update(double dt)
 	}
 	if (Application::IsKeyPressed('T'))
 	{
-		Robot.x -= (float)(5 * sin(Math::DegreeToRadian(rotateAngle))*dt);
-		Robot.z -= (float)(5 * cos(Math::DegreeToRadian(rotateAngle))*dt);
+		object[1]->Position.x -= (float)(5 * sin(Math::DegreeToRadian(rotateAngle))*dt);
+		object[1]->Position.z -= (float)(5 * cos(Math::DegreeToRadian(rotateAngle))*dt);
 	}
 	if (Application::IsKeyPressed('G'))
 	{
-		Robot.x += (float)(5 * sin(Math::DegreeToRadian(rotateAngle))*dt);
-		Robot.z += (float)(5 * cos(Math::DegreeToRadian(rotateAngle))*dt);
+		object[1]->Position.x += (float)(5 * sin(Math::DegreeToRadian(rotateAngle))*dt);
+		object[1]->Position.z += (float)(5 * cos(Math::DegreeToRadian(rotateAngle))*dt);
 	}
 
 
@@ -260,24 +268,23 @@ void ChuanXu::Update(double dt)
 		bullet[2]->shoot = true;
 	}
 	
-
-
-	//if (bullet[1]->shoot)
-	//bullet[1]->bulletUpdate(dt);
-	//if (bullet[1]->shoot == false)
-	//	bullet[1]->shootBullet(turret[1]->RotateToPlayer(Robot), turret[1]->Position);
-
-	//if (bullet[2]->shoot)
-	//	bullet[2]->bulletUpdate(dt);
-	//if (bullet[2]->shoot == false)
-	//	bullet[2]->shootBullet(turret[1]->RotateToPlayer(Robot), turret[1]->Position);
+	CrossHair.x = camera.target.x;
+	CrossHair.z = camera.defaultTarget.z;
 
 	for (int i = 1; i <= 2; ++i)
 	{
 		if (bullet[i]->shoot)
 			bullet[i]->bulletUpdate(dt);
 		if (bullet[i]->shoot == false)
-			bullet[i]->shootBullet(turret[i]->RotateToPlayer(Robot), turret[i]->Position);
+			bullet[i]->shootBullet(turret[i]->RotateToPlayer(camera.position), turret[i]->Position);
+		
+		if (object[1]->trigger(bullet[i]))
+		{
+			bullet[i]->shoot = false;
+			deltaTime = "hiiiiiiiiiiiiiiiiiiiiiiiiiT";
+		}
+		
+		bullet[i]->updateCurPos();
 	}
 
 	if (coverOpened)
@@ -343,6 +350,7 @@ void ChuanXu::Update(double dt)
 			camera.target = prevposTarget;
 			break;
 		}
+
 	}
 	for (int i = 0; i < numOfEnemy; ++i)
 	{
@@ -360,9 +368,107 @@ void ChuanXu::Update(double dt)
 		}
 	}
 
+	for (int i = 0; i < numOfBullet; ++i)
+	{
+		if (bullet[i] && CamObj->trigger(bullet[i]))
+		{
+			deltaTime = "HIIIIIIIIIIIIIIIIIIIIIT";
+			camera.position = prevpos;
+			camera.target = prevposTarget;
+			break;
+		}
+		else if (i == (numOfEnemy - 1))
+		{
+			prevpos = camera.position;
+			prevposTarget = camera.target;
+		}
+	}
+
+
 	camera.Update(dt);
 }
 
+void ChuanXu::RenderWalls()
+{	
+	//side 1
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 10, -50);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(20, 10, -50);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(40, 10, -50);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-20, 10,-50);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-40, 10, -50);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	//side 2
+	modelStack.PushMatrix();
+	modelStack.Translate(-50, 10, 0);
+	modelStack.Rotate(90, 0, 1 , 0);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-50, 10, 20);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-50, 10, 40);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-50, 10, -20);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-50, 10, -40);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	
+}
 
 void ChuanXu::skyBox()
 {
@@ -467,10 +573,10 @@ void ChuanXu::Render()
 
 	//-------------------------------------------------------------------------------------
 	 skyBox();
-
+	 RenderWalls();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(Robot.x, Robot.y, Robot.z);
+	modelStack.Translate(object[1]->Position.x, object[1]->Position.y, object[1]->Position.z);
 	modelStack.Rotate(rotateAngle, 0, 1, 0);
 	RenderMesh(meshList[GEO_ROBOBODY], true);
 	modelStack.PushMatrix();
@@ -478,15 +584,15 @@ void ChuanXu::Render()
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
-	// Turret 1 
-	modelStack.PushMatrix();
-	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
-	RenderMesh(meshList[GEO_TURRETBODY], true);
-	modelStack.PushMatrix();
-	modelStack.Rotate(turret[1]->RotateToPlayer(Robot), 0, 1, 0);
-	RenderMesh(meshList[GEO_TURRETHEAD], true);
-	modelStack.PopMatrix();
-	modelStack.PopMatrix();
+	//// Turret 1 
+	//modelStack.PushMatrix();
+	//modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
+	//RenderMesh(meshList[GEO_TURRETBODY], true);
+	//modelStack.PushMatrix();
+	//modelStack.Rotate(turret[1]->RotateToPlayer(Robot), 0, 1, 0);
+	//RenderMesh(meshList[GEO_TURRETHEAD], true);
+	//modelStack.PopMatrix();
+	//modelStack.PopMatrix();
 	if (bullet[1]->shoot)
 	{
 		modelStack.PushMatrix();
@@ -497,14 +603,14 @@ void ChuanXu::Render()
 	}
 
 	//Turret 2
-	modelStack.PushMatrix();
-	modelStack.Translate(turret[2]->Position.x, turret[2]->Position.y, turret[2]->Position.z);
-		RenderMesh(meshList[GEO_TURRETBODY], true);
-		modelStack.PushMatrix();
-		modelStack.Rotate(turret[2]->RotateToPlayer(Robot), 0, 1, 0);
-		RenderMesh(meshList[GEO_TURRETHEAD], true);
-		modelStack.PopMatrix();
-		modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//modelStack.Translate(turret[2]->Position.x, turret[2]->Position.y, turret[2]->Position.z);
+	//	RenderMesh(meshList[GEO_TURRETBODY], true);
+	//	modelStack.PushMatrix();
+	//	modelStack.Rotate(turret[2]->RotateToPlayer(Robot), 0, 1, 0);
+	//	RenderMesh(meshList[GEO_TURRETHEAD], true);
+	//	modelStack.PopMatrix();
+	//	modelStack.PopMatrix();
 
 		if (bullet[2]->shoot)
 		{
@@ -528,20 +634,15 @@ void ChuanXu::Render()
 	modelStack.Translate(0, openCover, 0);
 	RenderMesh(meshList[GEO_VENDINGCOVER], true);
 	modelStack.PopMatrix();
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(Robot.x, 0, Robot.z);
-	RenderMesh(meshList[GEO_BOSSBODY], true);
-	modelStack.PushMatrix();
-	modelStack.Rotate(rotateAngle, 0, 1, 0);
-	RenderMesh(meshList[GEO_BOSSHEAD], true);
-	modelStack.PopMatrix();
 	modelStack.PopMatrix();*/
+
+
+
 
 	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(bullet[1]->Position.x), Color(1, 1, 1), 4, 1, 2);
 	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(bullet[1]->Position.z), Color(1, 1, 1), 4, 1, 1);
 	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(DelayTimer), Color(1, 1, 1), 4, 1, 3);
+	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], CrossHair.x, CrossHair.z, 3, 3);
 }
 
 void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)
