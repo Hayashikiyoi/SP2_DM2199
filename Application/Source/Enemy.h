@@ -14,6 +14,7 @@ public:
 
 	bool isdead();
 	void dmgToEnemy(size_t dmg);
+	size_t showHP();
 
 private:
 	size_t health;

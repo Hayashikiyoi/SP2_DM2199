@@ -35,3 +35,8 @@ void Enemy::dmgToEnemy(size_t dmg)
 		this->health -= dmg;
 	}
 }
+
+size_t Enemy::showHP()
+{
+	return (this->health);
+}

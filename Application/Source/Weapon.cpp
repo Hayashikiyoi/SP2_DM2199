@@ -49,7 +49,13 @@ void Weapon::shoot() //Wait for bullets
 }
 void Weapon::updateBullet(double dt)
 {
-
+	for (int i = 0; i < clipSize; ++i)
+	{
+		if (pBullet[i]->shot() && pBullet[i])
+		{
+			pBullet[i]->updateBullet(dt);
+		}
+	}
 }
 
 Mtx44 Weapon::rotateGunToCamera(Vector3 CameraPos, Vector3 CameraUp, Vector3 CameraTarget)
