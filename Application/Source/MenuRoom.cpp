@@ -22,7 +22,7 @@ Menu_Room::~Menu_Room()
 void Menu_Room::Init()
 {
 	// Init VBO here
-	rotateAngle = 0;
+	rotateAngle = 3;
 	translateX[0] = 0;
 	translateX[1] = 0;
 	translateX[2] = 0;
@@ -37,7 +37,7 @@ void Menu_Room::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Initialise camera
-	camera.Init(Vector3(0, 0, 0), Vector3(0, 0, -10), Vector3(0, 1, 0));
+	camera.Init(Vector3(0, 0, -400), Vector3(0, 0, -10), Vector3(0, 1, 0));
 
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -89,6 +89,12 @@ void Menu_Room::Init()
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_LEFT]->textureID = LoadTGA("Image//skybox//left.tga");
 
+	meshList[GEO_VOTEX] = MeshBuilder::GenerateQuad("Votex", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_VOTEX]->textureID = LoadTGA("Image//skybox//Portal.tga");
+
+	meshList[GEO_BOTTOMVOTEX] = MeshBuilder::GenerateQuad("VoxtexBottom", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_BOTTOMVOTEX]->textureID = LoadTGA("Image//skybox//Portal2.tga");
+
 	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("Floor", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor//floor.tga");
 
@@ -103,20 +109,9 @@ void Menu_Room::Init()
 	meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//NPC//Vending_Machine.tga");
 
 	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//NPC//Vending_Cover.obj");
-	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//NPC//Vending_Cover.tga");
-
-	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("RoboBody", "OBJ//NPC//Robot_body.obj");
-	meshList[GEO_ROBOBODY]->textureID = LoadTGA("Image//NPC//Robot_Body.tga");
-
-	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//NPC//Robot_Arm.obj");
-	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image//NPC//Robot_Arms.tga");
-	
-	meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Bullet", "OBJ//Enemy//Bullet.obj");
-	meshList[GEO_BULLET]->textureID = LoadTGA("Image//Enemy//Bullet.tga");*/
+	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//NPC//Vending_Cover.tga");*/
 
 	GenerateOBJ();
-
-
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -196,8 +191,9 @@ void Menu_Room::Update(double dt)
 
 	deltaTime = "FPS:" + std::to_string(1 / dt);
 
-	cordx = "X: " + std::to_string(camera.position.x);;
+	cordx = "X: " + std::to_string(camera.position.x);
 	cordz = "Z: " + std::to_string(camera.position.z);
+	rotateAngle += (float)dt;
 	static float LSPEED = 10;
 
 
@@ -399,14 +395,44 @@ void Menu_Room::skyBox()
 	RenderMesh(meshList[GEO_BACK], false);
 	modelStack.PopMatrix();
 
-	//Bottom
+	//Plane
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(0, 0, 0);
+	modelStack.Translate(0, 0, -600);
 	modelStack.Rotate(90, 0, -1, 0);
 	modelStack.Rotate(90, -1, 0, 0);
 	modelStack.Scale(1000.f, 1000.f, 1000.f);
 	RenderMesh(meshList[GEO_FLOOR], false);
+	modelStack.PopMatrix();
+
+	//Plane 
+	modelStack.PushMatrix();
+	//to do: transformation code here
+	modelStack.Translate(0, 0, 600);
+	modelStack.Rotate(90, 0, -1, 0);
+	modelStack.Rotate(90, -1, 0, 0);
+	modelStack.Scale(1000.f, 1000.f, 1000.f);
+	RenderMesh(meshList[GEO_FLOOR], false);
+	modelStack.PopMatrix();
+
+	//TOP
+	modelStack.PushMatrix();
+	//to do: transformation code here
+	modelStack.Translate(0, 300, 0);
+	modelStack.Rotate(90 * -rotateAngle, 0, -1, 0);
+	modelStack.Rotate(90 , 1, 0, 0);
+	modelStack.Scale(500.f, 500.f, 500.f);
+	RenderMesh(meshList[GEO_VOTEX], false);
+	modelStack.PopMatrix();
+
+	//BOT
+	modelStack.PushMatrix();
+	//to do: transformation code here
+	modelStack.Translate(0, -300.f, 0);
+	modelStack.Rotate(90 * - rotateAngle, 0, -1, 0);
+	modelStack.Rotate(90, -1, 0, 0);
+	modelStack.Scale(1000.f, 1000.f, 1000.f);
+	RenderMesh(meshList[GEO_BOTTOMVOTEX], false);
 	modelStack.PopMatrix();
 
 }
@@ -467,45 +493,52 @@ void Menu_Room::GenerateOBJ()
 	meshList[GEO_ROBOBODY] ->textureID = LoadTGA("Image//NPC//Robot_Body.tga");
 	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("Robot", "OBJ//NPC//Robot_Arm.obj");
 	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image/NPC//Robot_Arms.tga");
-	turret[5] = new Enemy("Robot", Vector3(100, 0, -100));
+	turret[5] = new Enemy("Robot", Vector3(100, 0, -300));
 	turret[5]->setCollider(10, 10);
 	turret[5]->updateCurPos();
-	TriggerBox[0] = new GameObject("Trigger", Vector3(100,0,-100));
+	TriggerBox[0] = new GameObject("Trigger", Vector3(100,0,-300));
 	TriggerBox[0]->setCollider(20, 20);
 	TriggerBox[0]->updateCurPos();
-	turret[6] = new Enemy("Robot", Vector3(100, 0, -100));
+	turret[6] = new Enemy("Robot", Vector3(100, 0, -300));
 	turret[6]->setCollider(10, 10);
 	turret[6]->updateCurPos();
 	//Robot_2
-	turret[7] = new Enemy("RobotLock", Vector3(100, 0, 100));
+	turret[7] = new Enemy("RobotLock", Vector3(100, 0, -400));
 	turret[7]->setCollider(10, 10);
 	turret[7]->updateCurPos();
-	TriggerBox[1] = new GameObject("Trigger", Vector3(100,0,100));
+	TriggerBox[1] = new GameObject("Trigger", Vector3(100,0,-400));
 	TriggerBox[1]->setCollider(20,20);
 	TriggerBox[1]->updateCurPos();
-	turret[8] = new Enemy("RobotLock", Vector3(100, 0, 100));
+	turret[8] = new Enemy("RobotLock", Vector3(100, 0, -400));
 	turret[8]->setCollider(10, 10);
 	turret[8]->updateCurPos();
 	//Robot_3
-	turret[9] = new Enemy("Robot", Vector3(-100, 0, -100));
+	turret[9] = new Enemy("Robot", Vector3(-100, 0, -300));
 	turret[9]->setCollider(10, 10);
 	turret[9]->updateCurPos();
-	TriggerBox[2] = new GameObject("Trigger", Vector3(-100,0,-100));
+	TriggerBox[2] = new GameObject("Trigger", Vector3(-100,0,-300));
 	TriggerBox[2]->setCollider(20, 20);
 	TriggerBox[2]->updateCurPos();
-	turret[10] = new Enemy("Robot", Vector3(-100, 0,-100));
+	turret[10] = new Enemy("Robot", Vector3(-100, 0,-300));
 	turret[10]->setCollider(10, 10);
 	turret[10]->updateCurPos();
 	//Robot_4
-	turret[11] = new Enemy("Robot", Vector3(-100, 0, 100));
+	turret[11] = new Enemy("Robot", Vector3(-100, 0, -400));
 	turret[11]->setCollider(10, 10);
 	turret[11]->updateCurPos();
-	TriggerBox[3] = new GameObject("Trigger", Vector3(-100,0,100));
+	TriggerBox[3] = new GameObject("Trigger", Vector3(-100,0,-400));
 	TriggerBox[3]->setCollider(20,20);
 	TriggerBox[3]->updateCurPos();
-	turret[12] = new Enemy("Robot", Vector3(-100, 0, 100));
+	turret[12] = new Enemy("Robot", Vector3(-100, 0, -400));
 	turret[12]->setCollider(10, 10);
 	turret[12]->updateCurPos();
+
+	//Computer
+	meshList[GEO_COMPUTER] = MeshBuilder::GenerateOBJ("RobotLock", "OBJ//Objects//computer.obj");
+	meshList[GEO_COMPUTER]->textureID = LoadTGA("Image//model//computer.tga");
+	turret[13] = new Enemy("Robot", Vector3(0, 0, 400));
+	turret[13]->setCollider(10, 10);
+	turret[13]->updateCurPos();
 }
 
 void Menu_Room::EnemyField()
@@ -564,6 +597,13 @@ void Menu_Room::EnemyField()
 	modelStack.Rotate(turret[12]->RotateToPlayer(camera.position), 0, 1, 0);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_ROBOARMSLOCKED], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[13]->Position.x, turret[13]->Position.y, turret[13]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_COMPUTER], false);
 	modelStack.PopMatrix();
 }
 
