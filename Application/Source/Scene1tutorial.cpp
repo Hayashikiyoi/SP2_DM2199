@@ -213,25 +213,7 @@ void Scene1tutorial::GenerateOBJ()
 	Rock[2] = new GameObject("Rock", Vector3(20, 6, 20));
 	Rock[2]->setCollider(10, 10);
 	Rock[2]->updateCurPos();
-	for (int i = 0; i < 90; i += 10)
-	{
-		Rock[3] = new GameObject("Rock", Vector3(i - 42, 6, 47));
-		Rock[3]->setCollider(10, 10);
-		Rock[3]->updateCurPos();
-
-		Rock[4] = new GameObject("Rock", Vector3(i - 42, 6, -47));
-		Rock[4]->setCollider(10, 10);
-		Rock[4]->updateCurPos();
-
-		Rock[5] = new GameObject("Rock", Vector3(-47, 6, i - 42));
-		Rock[5]->setCollider(10, 10);
-		Rock[5]->updateCurPos();
-
-		Rock[6] = new GameObject("Rock", Vector3(47, 6, i - 42));
-		Rock[6]->setCollider(10, 10);
-		Rock[6]->updateCurPos();
-
-	}
+	
 	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//star wars doors.obj");
 	meshList[GEO_DOOR]->textureID = LoadTGA("Image//model//star wars doors.tga");
 	Doors[1] = new GameObject("Doors", Vector3(-11.5, 7, 20));
@@ -597,7 +579,7 @@ void Scene1tutorial::Rocks()
 		    RenderMesh(meshList[GEO_ROCK], true);
 		    modelStack.PopMatrix();
 	    }
-
+		 
 	    for (int i = 0; i < 20; i += 10)
 	    {
 		    modelStack.PushMatrix();
@@ -737,6 +719,11 @@ void Scene1tutorial::EnemyField()
 
 }
 
+void Scene1tutorial::tutorialtext()
+{
+	RenderTextOnScreen(meshList[GEO_TEXT], "Hello and welcome", Color(1, 0, 0), 3, 5, 5);
+}
+
 
 void Scene1tutorial::Render()
 {
@@ -776,13 +763,14 @@ void Scene1tutorial::Render()
 	skyBox();
     Rocks();
 	EnemyField();
+	tutorialtext();
 
-	/*RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);*/
+	//RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
 
-
+	RenderTextOnScreen(meshList[GEO_TEXT], "Hello and welcome", Color(1, 0, 0), 3, 1, 1);
 
 	//No transform needed
-	/*RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);*/
+	//RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
 	//-------------------------------------------------------------------------------------
 
 }
