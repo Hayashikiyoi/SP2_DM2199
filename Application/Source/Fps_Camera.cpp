@@ -16,7 +16,6 @@ Fps_Camera::~Fps_Camera()
 void Fps_Camera::Init(const Vector3& pos, const Vector3& target, const Vector3& up)
 {
 	glfwSetInputMode(m_window, GLFW_CURSOR,GLFW_CURSOR_HIDDEN);//hide the cursor
-
 	this->position = defaultPosition = pos;
 	this->target = defaultTarget = target;
 	Vector3 view = (target - position).Normalized();
@@ -95,7 +94,6 @@ void Fps_Camera::Update(double dt)
 		Reset();
 	}
 }
-
 void Fps_Camera::Reset()
 {
 	position = defaultPosition;

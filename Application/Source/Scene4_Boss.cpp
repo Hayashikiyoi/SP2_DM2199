@@ -39,6 +39,7 @@ void Scene4_Boss::Init()
 	//Initialise camera
 	camera.Init(Vector3(400, 0, 0), Vector3(0, 0, 0), Vector3(0, 1, 0));
 	player = new Player("camera", Vector3(400, 0, 0));
+	lasergun = new Weapon("Blaster", Vector3(0.5, -0.750, 2), 50);
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
@@ -78,22 +79,22 @@ void Scene4_Boss::Init()
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox3//space2__right.tga");
 
 	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//skybox//back.tga");
+	meshList[GEO_BACK]->textureID = LoadTGA("Image//skybox3//space2__left.tga");
 
 	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//skybox//bottom.tga");
+	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//skybox3//space2__down.tga");
 
 	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//skybox//top.tga");
+	meshList[GEO_TOP]->textureID = LoadTGA("Image//skybox3//space2__up.tga");
 
 	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//skybox//right.tga");
+	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//skybox3//space2__front.tga");
 
 	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//skybox//left.tga");
+	meshList[GEO_LEFT]->textureID = LoadTGA("Image//skybox3//space2__back.tga");
 
 	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("Floor", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor//floor.tga");
@@ -149,7 +150,7 @@ void Scene4_Boss::Init()
 	lightingfunc();
 
 	Mtx44 projection;
-	projection.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 2000.0f);
+	projection.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 4000.0f);
 	projectionStack.LoadMatrix(projection);
 }
 
@@ -168,9 +169,9 @@ void Scene4_Boss::lightingfunc()
 	light[0].spotDirection.Set(0.f, 1.f, 0.f);
 
 	light[1].type = Light::LIGHT_SPOT;
-	light[1].position.Set(0, 20, 0);
-	light[1].color.Set(1, 1, 1);
-	light[1].power = 1;
+	light[1].position.Set(0, 50, 0);
+	light[1].color.Set(1, 0, 0);
+	light[1].power = 10;
 	light[1].kC = 1.f;
 	light[1].kL = 0.01f;
 	light[1].kQ = 0.001f;
@@ -213,7 +214,7 @@ void Scene4_Boss::lightingfunc()
 	glUniform1f(m_parameters[U_LIGHT1_COSINNER], light[1].cosInner);
 	glUniform1f(m_parameters[U_LIGHT1_EXPONENT], light[1].exponent);
 
-	glUniform1i(m_parameters[U_NUMLIGHTS], 2);
+	glUniform1i(m_parameters[U_NUMLIGHTS], 6);
 
 }
 
@@ -224,14 +225,17 @@ void Scene4_Boss::Update(double dt)
 	static Vector3 prevposTarget;
 	static bool smtHappen = false;
 	static float time;
-	//deltaTime = "FPS:" + std::to_string(1 / dt);
+
 	deltaTime = "Health:" + std::to_string(player->getHealth());
 
-	//cordx = "X: " + std::to_string(camera.position.x);
-	//cordz = "Z: " + std::to_string(camera.position.z);
 	static float LSPEED = 10;
 
 	DelayTimer += (float)dt;
+
+	if (Application::IsKeyPressed(VK_LBUTTON))
+	{
+		lasergun->shoot();
+	}
 
 	if (DelayTimer > 5)
 	{
@@ -381,8 +385,9 @@ void Scene4_Boss::Update(double dt)
 			prevposTarget = camera.target;
 		}
 	}
-	
+
 	camera.Update(dt);
+	lasergun->updateBullet(dt);
 
 	for (int i = 0; i < 1; ++i)
 	{
@@ -415,56 +420,56 @@ void Scene4_Boss::skyBox()
 	//Bottom
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(0, - 498.f, 0);
+	modelStack.Translate(0, - 996.f, 0);
 	modelStack.Rotate(90, 0, -1, 0);
 	modelStack.Rotate(90, -1, 0, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
+	modelStack.Scale(2000.f, 2000.f, 2000.f);
 	RenderMesh(meshList[GEO_BOTTOM], false);
 	modelStack.PopMatrix();
 
 	//Top
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(0, 498.f, 0);
+	modelStack.Translate(0, 996.f, 0);
 	modelStack.Rotate(90, 0, -1, 0);
 	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
+	modelStack.Scale(2000.f, 2000.f, 2000.f);
 	RenderMesh(meshList[GEO_TOP], false);
 	modelStack.PopMatrix();
 
 	//Front
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(0, 0, - 498.f);
+	modelStack.Translate(0, 0, - 996.f);
 	//modelStack.Rotate(90, -1, 0, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
+	modelStack.Scale(2000.f, 2000.f, 2000.f);
 	RenderMesh(meshList[GEO_FRONT], false);
 	modelStack.PopMatrix();
 
 	//Right
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(498.f, 0, 0);
+	modelStack.Translate(996.f, 0, 0);
 	modelStack.Rotate(90, 0, -1, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
+	modelStack.Scale(2000.f, 2000.f, 2000.f);
 	RenderMesh(meshList[GEO_RIGHT], false);
 	modelStack.PopMatrix();
 
 	//Left
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(- 498.f,0,0);
+	modelStack.Translate(- 996.f,0,0);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
+	modelStack.Scale(2000.f, 2000.f, 2000.f);
 	RenderMesh(meshList[GEO_LEFT], false);
 	modelStack.PopMatrix();
 
 	//Back
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(0,0, 498.f);
+	modelStack.Translate(0,0, 996.f);
 	modelStack.Rotate(180, 0, 1, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
+	modelStack.Scale(2000.f, 2000.f, 2000.f);
 	RenderMesh(meshList[GEO_BACK], false);
 	modelStack.PopMatrix();
 
@@ -568,10 +573,10 @@ void Scene4_Boss::GenerateOBJ()
 	meshList[GEO_TURRETHEAD]->textureID = LoadTGA("Image//Enemy//Boss_head.tga");
 	meshList[GEO_TURRETBODY] = MeshBuilder::GenerateOBJ("Boss_body", "OBJ//Enemy//Boss_body.obj");
 	meshList[GEO_TURRETBODY]->textureID = LoadTGA("Image//Enemy//Boss_body.tga");
-	turret[9] = new Enemy("Boss_head", Vector3(8,0,8));
+	turret[9] = new Enemy("Boss_head", Vector3(0,0,0));
 	turret[9]->setCollider(100, 100);
 	turret[9]->updateCurPos();
-	turret[10] = new Enemy("Boss_body", Vector3(8,0,8));
+	turret[10] = new Enemy("Boss_body", Vector3(0,0,0));
 
 	//WALLS
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall", "OBJ//Wall//Wall.obj");
@@ -665,7 +670,17 @@ void Scene4_Boss::GenerateOBJ()
 	bullet[4]->setCollider(5, 5);
 	bullet[4]->updateCurPos();
 
-
+	meshList[GEO_BLASTER] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//blaster.obj");
+	meshList[GEO_BLASTER]->textureID = LoadTGA("Image//Player//blaster.tga");
+	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//Player_Bullet.obj");
+	meshList[GEO_DEBUGBOX]->textureID = LoadTGA("Image//Player//Player_Bullet.tga");
+	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
+	object[GEO_DEBUGBOX] = new GameObject("Debug", Vector3(-20, 0, -20));
+	object[GEO_DEBUGBOX]->setCollider(2, 2);
+	object[GEO_DEBUGBOX]->updateCurPos();
+	/*TriggerBox[3] = new GameObject("DebugTrigger", Vector3(-20, 0, -20));
+	TriggerBox[3]->setCollider(4, 4);
+	TriggerBox[3]->updateCurPos();*/
 }
 
 void Scene4_Boss::EnemyField()
@@ -795,7 +810,7 @@ void Scene4_Boss::Render()
 		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
 		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
 	}
-	else if (light[0].type == Light::LIGHT_SPOT)
+	/*else if (light[0].type == Light::LIGHT_SPOT)
 	{
 		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
 		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
@@ -806,8 +821,16 @@ void Scene4_Boss::Render()
 	{
 		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
 		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
+	}*/
+	if (light[1].type == Light::LIGHT_SPOT)
+	{
+		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
+		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[1].spotDirection;
+		glUniform3fv(m_parameters[U_LIGHT1_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+		glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
 
+	}
 	//Initialize
 	Mtx44 MVP;
 
@@ -821,7 +844,7 @@ void Scene4_Boss::Render()
 		camera.up.x, camera.up.y, camera.up.z);
 	modelStack.LoadIdentity();
 
-	//-------------------------------------------------------------------------------------
+	//-------------------------------------------------------------------------------------	
 	skyBox();
 	Walls();
 	EnemyField();
@@ -829,6 +852,30 @@ void Scene4_Boss::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
 	RenderTextOnScreen(meshList[GEO_TEXT], cordx ,Color(0,1,0),3,0,3);
 	RenderTextOnScreen(meshList[GEO_TEXT], cordz, Color(0, 1, 0), 3, 0, 5);
+	
+	//GUN Bullets
+	for (size_t i = 0; i < clipSize; i++)
+	{
+		if (lasergun->pBullet[i]->shot())
+		{
+			modelStack.PushMatrix();
+			modelStack.LoadMatrix(lasergun->pBullet[i]->rotMatrix()); //Load gun matrix
+			modelStack.Rotate(270, 0, 1, 0); //Bullet inverted
+			modelStack.Translate(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z); //Pos of cur gun
+			modelStack.Translate(0, 0, -2.5f);
+			RenderMesh(meshList[GEO_DEBUGBOX], true);
+			modelStack.PopMatrix();
+		}
+	}
+	//Test gun
+	modelStack.PushMatrix();
+	modelStack.LoadMatrix(lasergun->rotateGunToCamera(camera.position, camera.up, camera.target)); //Parent to cam
+	glDisable(GL_DEPTH_TEST); //Gun forever renders
+	modelStack.Translate(lasergun->Position.x, lasergun->Position.y, lasergun->Position.z); //Translate to a proper position
+	modelStack.Rotate(180, 0, 1, 0); //Gun is inverted
+	RenderMesh(meshList[GEO_BLASTER], true);
+	glEnable(GL_DEPTH_TEST);
+	modelStack.PopMatrix();
 	//No transform needed
 	//-------------------------------------------------------------------------------------
 }
@@ -993,6 +1040,7 @@ void Scene4_Boss::Exit()
 			delete TriggerBox[i];
 	}
 	delete player;
+	delete lasergun;
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 

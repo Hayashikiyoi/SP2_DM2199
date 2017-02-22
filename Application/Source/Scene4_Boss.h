@@ -17,10 +17,12 @@ using std::string;
 #include "Item.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "Weapon.h"
 
 #define numOfEnemy 25
 #define numOfBullets 5
 #define numOfWalls 10
+#define numOfGun 5
 
 class Scene4_Boss : public Scene
 {
@@ -100,6 +102,7 @@ class Scene4_Boss : public Scene
 		GEO_DOOR_FRAME,
 		GEO_DOOR,
 		GEO_DOOR_2,
+		GEO_BLASTER,
 		NUM_GEOMETRY,
 	};
 
@@ -127,6 +130,9 @@ private:
 	Enemy* turret[numOfEnemy];
 	Bullet* bullet[numOfBullets];
 
+	//Weapon for Player
+	Weapon* lasergun;
+
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
@@ -151,7 +157,6 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
-	
 	//Game Object
 	void GenerateOBJ();
 

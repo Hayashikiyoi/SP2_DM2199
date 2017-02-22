@@ -182,7 +182,7 @@ void Aloy_Scene::Render()
 	RenderMeshOnScreen(meshList[GEO_TITLE], 40, 30, 50, 50);
 
 	modelStack.PushMatrix();
-	RenderTextOnScreen(meshList[GEO_TEXT_1], "Press Any Button", Color(0, 1, 0), TextSize, 5, 4);
+	RenderTextOnScreen(meshList[GEO_TEXT_1], "ENTER TO START", Color(0, 1, 0), TextSize, 6, 4);
 	RenderTextOnScreen(meshList[GEO_TEXT_1], "Start Game" , Color(0, 1, 0), TextSize_2, 8, 4);
 	RenderTextOnScreen(meshList[GEO_TEXT_2], "Quit Game", Color(0,1,0), TextSize_3 ,8.5,4);
 	modelStack.PopMatrix();
