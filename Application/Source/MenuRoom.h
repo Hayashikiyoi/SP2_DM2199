@@ -15,6 +15,7 @@ using std::string;
 #include "Enemy.h"
 #include "GameObject.h"
 #include "Item.h"
+#undef numOfEnemy
 #define numOfEnemy 20
 
 class Menu_Room : public Scene
@@ -42,6 +43,20 @@ class Menu_Room : public Scene
 		U_LIGHT0_COSCUTOFF,
 		U_LIGHT0_COSINNER,
 		U_LIGHT0_EXPONENT,
+
+		//Lighting 2
+		U_LIGHT1_POSITION,
+		U_LIGHT1_COLOR,
+		U_LIGHT1_POWER,
+		U_LIGHT1_KC,
+		U_LIGHT1_KL,
+		U_LIGHT1_KQ,
+		U_LIGHT1_TYPE,
+		U_LIGHT1_SPOTDIRECTION,
+		U_LIGHT1_COSCUTOFF,
+		U_LIGHT1_COSINNER,
+		U_LIGHT1_EXPONENT,
+
 		U_COLOR_TEXTURE_ENABLED,
 		U_COLOR_TEXTURE,
 
@@ -73,6 +88,9 @@ class Menu_Room : public Scene
 		GEO_ROBOLOCKED,
 		GEO_ROBOARMSLOCKED,
 		GEO_BULLET,
+		GEO_VOTEX,
+		GEO_BOTTOMVOTEX,
+		GEO_COMPUTER,
 		GEO_WALL,
 		GEO_WALL_2,
 		GEO_DOOR_FRAME,
@@ -114,7 +132,7 @@ private:
 
 	bool lightEnable;
 	bool coverOpened = false;
-	Light light[1];
+	Light light[2];
 	void RenderMesh(Mesh *mesh, bool enableLight);
 
 	void RenderSkybox();

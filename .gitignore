@@ -49,3 +49,4 @@ glfw/lib-msvc120/glfw3dll.lib
 Application/Release/
 Release/OBJ/
 Release/
+*.orig

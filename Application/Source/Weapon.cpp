@@ -16,7 +16,11 @@ Weapon::Weapon(string name, Vector3 pos, size_t BulletSpeed) :
 GameObject(name, pos), clip(45), canister(0), bulletSpeed(BulletSpeed)
 {
 	for (int i = 0; i < clipSize; ++i) //Initialize player bullet
-		pBullet[i] = 0;
+	{
+		pBullet[i] = new PlayerBullet("Bullet", pos);
+		pBullet[i]->setCollider(2, 2);
+	}
+		
 }
 
 unsigned Weapon::canisterLeft()
@@ -34,14 +38,36 @@ void Weapon::pickupClip()
 }
 void Weapon::reload()
 {
-	clip = clipSize;
+	if (canister > 0)
+	{
+		clip = clipSize;
+		canister--;
+	}
 }
 
-void Weapon::shoot() //Wait for bullets
+void Weapon::shoot()
 {
+	for (int i = 0; i < clipSize; ++i)
+	{
+		if (!pBullet[i]->shot() && pBullet[i] && clip>0)
+		{
+			pBullet[i]->shooting(true, rotation);
+			pBullet[i]->Position = this->Position;
+			clip--;
+			break;
+		}
+	}
 }
 void Weapon::updateBullet(double dt)
 {
+	for (int i = 0; i < clipSize; ++i)
+	{
+		if (pBullet[i]->shot() && pBullet[i])
+		{
+			pBullet[i]->updateBullet(dt);
+			pBullet[i]->updateCurPos();
+		}
+	}
 }
 
 Mtx44 Weapon::rotateGunToCamera(Vector3 CameraPos, Vector3 CameraUp, Vector3 CameraTarget)
@@ -52,6 +78,6 @@ Mtx44 Weapon::rotateGunToCamera(Vector3 CameraPos, Vector3 CameraUp, Vector3 Cam
 	right.Normalize();
 	right.y = 0;
 	up = right.Cross(forward).Normalized();
-
-	return Mtx44(right.x, right.y, right.z, 0, up.x, up.y, up.z, 0, forward.x, forward.y, forward.z, 0, CameraPos.x, CameraPos.y, CameraPos.z, 1);
+	rotation = Mtx44(right.x, right.y, right.z, 0, up.x, up.y, up.z, 0, forward.x, forward.y, forward.z, 0, CameraPos.x, CameraPos.y, CameraPos.z, 1);
+	return rotation;
 }
