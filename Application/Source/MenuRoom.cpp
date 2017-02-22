@@ -429,7 +429,7 @@ void Menu_Room::skyBox()
 	modelStack.PushMatrix();
 	//to do: transformation code here
 	modelStack.Translate(0, -300.f, 0);
-	modelStack.Rotate(90 * - rotateAngle, 0, -1, 0);
+	modelStack.Rotate(90 * rotateAngle, 0, -1, 0);
 	modelStack.Rotate(90, -1, 0, 0);
 	modelStack.Scale(1000.f, 1000.f, 1000.f);
 	RenderMesh(meshList[GEO_BOTTOMVOTEX], false);
