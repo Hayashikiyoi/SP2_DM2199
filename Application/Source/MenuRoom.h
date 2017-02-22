@@ -15,6 +15,8 @@ using std::string;
 #include "Enemy.h"
 #include "GameObject.h"
 #include "Item.h"
+#include "Player.h"
+#include "Weapon.h"
 #undef numOfEnemy
 #define numOfEnemy 20
 
@@ -96,6 +98,7 @@ class Menu_Room : public Scene
 		GEO_DOOR_FRAME,
 		GEO_DOOR,
 		GEO_DOOR_2,
+		GEO_BLASTER,
 		NUM_GEOMETRY,
 	};
 
@@ -106,28 +109,9 @@ private:
 	unsigned m_parameters[U_TOTAL];
 	Mesh* meshList[NUM_GEOMETRY];
 
-	//GameObj
-	GameObject* object[NUM_GEOMETRY];
-	GameObject* CamObj;
-	GameObject* TriggerBox[5];
-	Item* Locked[4];
-
 	string deltaTime;
 	string cordx, cordy, cordz;
-	Vector3 Robot;
-	Vector3 Bullet;
 
-	Enemy* turret[numOfEnemy];
-
-	float rotateAngle;
-	float translateX[3]; //Original code : float translateX; added [] to make 3 array
-	float scaleAll;
-	float openCover = 0;
-
-	void skyBox();
-	bool shootBullet = false;
-
-	Fps_Camera camera;
 	MS modelStack, viewStack, projectionStack;
 
 	bool lightEnable;
@@ -135,16 +119,35 @@ private:
 	Light light[2];
 	void RenderMesh(Mesh *mesh, bool enableLight);
 
-	void RenderSkybox();
-	void Walls();
-	void EnemyField();
-
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
-	//Game Object
+	//Call Game Object
 	void GenerateOBJ();
+	void GenerateGEOMESH();
+	void GenerateSkybox();
+
+	//GameObj
+	GameObject* object[NUM_GEOMETRY];
+	GameObject* TriggerBox[5];
+	Item* Locked[4];
+
+	//Initialize
+	void initializeObjects();
+
+	//Render
+	void RenderSkybox();
+	void Walls();
+	void EnemyField();
+
+	//Player
+	Fps_Camera camera;
+	Player* player;
+	Weapon* lasergun;
+
+	//Enemy
+	Enemy* turret[numOfEnemy]; //NPC Need rename
 
 public:
 	Menu_Room();

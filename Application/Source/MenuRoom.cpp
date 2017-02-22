@@ -22,11 +22,6 @@ Menu_Room::~Menu_Room()
 void Menu_Room::Init()
 {
 	// Init VBO here
-	rotateAngle = 3;
-	translateX[0] = 0;
-	translateX[1] = 0;
-	translateX[2] = 0;
-	scaleAll = 1;
 	lightEnable = true;
 
 	//Emable depth test
@@ -38,79 +33,20 @@ void Menu_Room::Init()
 
 	//Initialise camera
 	camera.Init(Vector3(0, 0, -400), Vector3(0, 0, -10), Vector3(0, 1, 0));
+	player = new Player("camera", Vector3(0, 0, -400));
+	lasergun = new Weapon("Blaster", Vector3(0.5, -0.750, 2), 50);
 
 	//Set background color to dark blue
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	//Generate a default VAO for now
 	glGenVertexArrays(1, &m_vertexArrayID);
 	glBindVertexArray(m_vertexArrayID);
 
-	//Initialise ur objects here
-	for (int i = 0; i < NUM_GEOMETRY; ++i)
-	{
-		meshList[i] = NULL;
-		object[i] = 0;
-	}
-	for (int i = 0; i < 5; ++i)
-	{
-		TriggerBox[i] = 0;
-	}
-	for (int i = 0; i < 4; ++i)
-	{
-		Locked[i] = 0;
-	}
-	CamObj = new GameObject("camera", Vector3(0, 0, 0));
-
-	for (int i = 0; i < numOfEnemy; ++i)
-	{
-		turret[i] = NULL;
-	}
-
-	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
-	meshList[GEO_QUAD]->textureID = LoadTGA("Image//Text//zelda.tga");
-
-	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");
-
-	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BACK]->textureID = LoadTGA("Image//skybox//back.tga");
-
-	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//skybox//bottom.tga");
-
-	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_TOP]->textureID = LoadTGA("Image//skybox//top.tga");
-
-	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//skybox//right.tga");
-
-	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_LEFT]->textureID = LoadTGA("Image//skybox//left.tga");
-
-	meshList[GEO_VOTEX] = MeshBuilder::GenerateQuad("Votex", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_VOTEX]->textureID = LoadTGA("Image//skybox//Portal.tga");
-
-	meshList[GEO_BOTTOMVOTEX] = MeshBuilder::GenerateQuad("VoxtexBottom", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BOTTOMVOTEX]->textureID = LoadTGA("Image//skybox//Portal2.tga");
-
-	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("Floor", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor//floor.tga");
-
-	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
-
-	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
-
-	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
-
-	/*meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//NPC//Vending_Machine.obj");
-	meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//NPC//Vending_Machine.tga");
-
-	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//NPC//Vending_Cover.obj");
-	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//NPC//Vending_Cover.tga");*/
-
+	//They are moved to 
+	initializeObjects();
+	GenerateSkybox();
+	GenerateGEOMESH();
 	GenerateOBJ();
 
 	//Load vertex and fragment shaders
@@ -179,11 +115,11 @@ void Menu_Room::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
-
 	Mtx44 projection;
 	projection.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 2000.0f);
 	projectionStack.LoadMatrix(projection);
 }
+
 
 void Menu_Room::Update(double dt)
 {
@@ -193,7 +129,6 @@ void Menu_Room::Update(double dt)
 
 	cordx = "X: " + std::to_string(camera.position.x);
 	cordz = "Z: " + std::to_string(camera.position.z);
-	rotateAngle += (float)dt;
 	static float LSPEED = 10;
 
 
@@ -204,15 +139,6 @@ void Menu_Room::Update(double dt)
 
 	if (Application::IsKeyPressed('Y'))
 		coverOpened = true;
-
-
-	if (coverOpened)
-	{
-		if (translateLimit<-10)
-			translateLimit *= -1;
-		if (openCover <6)
-			openCover += (float)(10 * translateLimit*dt);
-	}
 
 	if (Application::IsKeyPressed('I'))
 		light[0].position.z -= (float)(LSPEED * dt);
@@ -255,18 +181,17 @@ void Menu_Room::Update(double dt)
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	CamObj->Position = camera.position;
-	CamObj->updateCurPos();
+//----------------------------------------------------------------------------
+	player->Position = camera.position;
+	player->updateCurPos();
 
 	static Vector3 prevpos;
 	static Vector3 prevposTarget;
 	//Run checker
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
-		if (object[i] && CamObj->trigger(object[i]))
+		if (object[i] && player->trigger(object[i]))
 		{
-			//if you need to get pushed out of the collider
-			deltaTime = "Wham bam";
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
@@ -276,7 +201,7 @@ void Menu_Room::Update(double dt)
 
 	for (int i = 0; i < numOfEnemy; ++i)
 	{
-		if (turret[i] && CamObj->trigger(turret[i]))
+		if (turret[i] && player->trigger(turret[i]))
 		{
 			//if you need to get pushed out of the collider
 			deltaTime = "Wham bam";
@@ -290,24 +215,13 @@ void Menu_Room::Update(double dt)
 			prevposTarget = camera.target;
 		}
 	}
+//----------------------------------------------------------------------------
+	object[GEO_BOTTOMVOTEX]->rotation += (float)dt;
+	object[GEO_VOTEX]->rotation -= (float)dt;
 	
-	//for (int i = 0; i < 4; ++i)
-	//{
-	//	if (Locked[i] && CamObj->trigger(Locked[i]))
-	//	{
-	//		if (!Locked[1]->isCollected())
-	//		{
-	//			turret[7]->Position.x = -1000;
-	//			turret[8]->Position.x = -1000;
-	//			break;
-	//		}
-	//	}
-	//}
-
-	camera.Update(dt);
 	for (int i = 0; i < 5; ++i)
 	{
-		if (TriggerBox[i] && CamObj->trigger(TriggerBox[i]))
+		if (TriggerBox[i] && player->trigger(TriggerBox[i]))
 		{
 			if (i == 0)
 				deltaTime = "Press E: Level_1";
@@ -328,9 +242,236 @@ void Menu_Room::Update(double dt)
 			break;
 		}
 	}
+	if (Application::IsKeyPressed(VK_LBUTTON))
+	{
+		lasergun->shoot();
+	}
+	camera.Update(dt);
+	lasergun->updateBullet(dt);
 }
 
-void Menu_Room::skyBox()
+void Menu_Room::Render()
+{
+	if (light[0].type == Light::LIGHT_DIRECTIONAL)
+	{
+		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
+		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
+	}
+	else if (light[0].type == Light::LIGHT_SPOT)
+	{
+		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
+		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+	}
+	else
+	{
+		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+	}
+
+	//Initialize
+	Mtx44 MVP;
+
+	//Clear color buffer every frame
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	//Setup the view for camera
+	viewStack.LoadIdentity();
+	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
+		camera.target.x, camera.target.y, camera.target.z,
+		camera.up.x, camera.up.y, camera.up.z);
+	modelStack.LoadIdentity();
+
+	//-------------------------------------------------------------------------------------
+	//RenderSkybox();
+	Walls();
+	EnemyField();
+
+	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
+	RenderTextOnScreen(meshList[GEO_TEXT], cordx, Color(0, 1, 0), 3, 0, 3);
+	RenderTextOnScreen(meshList[GEO_TEXT], cordz, Color(0, 1, 0), 3, 0, 5);
+
+	for (size_t i = 0; i < clipSize; i++)
+	{
+		if (lasergun->pBullet[i]->shot())
+		{
+			modelStack.PushMatrix();
+			modelStack.LoadMatrix(lasergun->pBullet[i]->rotMatrix()); //Load gun matrix
+			modelStack.Rotate(270, 0, 1, 0); //Bullet inverted
+			modelStack.Translate(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z); //Pos of cur gun
+			modelStack.Translate(0, 0, -2.5f);
+			RenderMesh(meshList[GEO_DEBUGBOX], true);
+			modelStack.PopMatrix();
+		}
+
+	}
+
+
+	//Test gun
+	modelStack.PushMatrix();
+	modelStack.LoadMatrix(lasergun->rotateGunToCamera(camera.position, camera.up, camera.target)); //Parent to cam
+	glDisable(GL_DEPTH_TEST); //Gun forever renders
+	modelStack.Translate(lasergun->Position.x, lasergun->Position.y, lasergun->Position.z); //Translate to a proper position
+	modelStack.Rotate(180, 0, 1, 0); //Gun is inverted
+	RenderMesh(meshList[GEO_BLASTER], true);
+	glEnable(GL_DEPTH_TEST);
+	modelStack.PopMatrix();
+
+	//No transform needed
+	//RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
+	//-------------------------------------------------------------------------------------
+}
+
+void Menu_Room::GenerateGEOMESH()
+{
+	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+
+	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
+	meshList[GEO_QUAD]->textureID = LoadTGA("Image//Text//zelda.tga");
+
+	meshList[GEO_VOTEX] = MeshBuilder::GenerateQuad("Votex", Color(1, 1, 1), 1.f, 1.f);
+	//meshList[GEO_VOTEX]->textureID = LoadTGA("Image//skybox//Portal.tga");
+	meshList[GEO_VOTEX]->textureID = LoadTGA("Image//skybox//testTop1.tga");
+	object[GEO_VOTEX] = new GameObject("Top Portal", Vector3(0, 0, 0));
+
+	meshList[GEO_BOTTOMVOTEX] = MeshBuilder::GenerateQuad("VoxtexBottom", Color(1, 1, 1), 1.f, 1.f);
+	//meshList[GEO_BOTTOMVOTEX]->textureID = LoadTGA("Image//skybox//Portal2.tga");
+	meshList[GEO_BOTTOMVOTEX]->textureID = LoadTGA("Image//skybox//testBot1.tga");
+	object[GEO_BOTTOMVOTEX] = new GameObject("Bottom Portal", Vector3(0, 0, 0));
+
+	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("Floor", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor//floor.tga");
+
+	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
+
+	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
+
+	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
+}
+void Menu_Room::GenerateSkybox()
+{
+	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");
+
+	meshList[GEO_BACK] = MeshBuilder::GenerateQuad("back", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_BACK]->textureID = LoadTGA("Image//skybox//back.tga");
+
+	meshList[GEO_BOTTOM] = MeshBuilder::GenerateQuad("bottom", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_BOTTOM]->textureID = LoadTGA("Image//skybox//bottom.tga");
+
+	meshList[GEO_TOP] = MeshBuilder::GenerateQuad("top", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_TOP]->textureID = LoadTGA("Image//skybox//top.tga");
+
+	meshList[GEO_RIGHT] = MeshBuilder::GenerateQuad("right", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_RIGHT]->textureID = LoadTGA("Image//skybox//right.tga");
+
+	meshList[GEO_LEFT] = MeshBuilder::GenerateQuad("left", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_LEFT]->textureID = LoadTGA("Image//skybox//left.tga");
+}
+void Menu_Room::GenerateOBJ()
+{
+	meshList[GEO_BLASTER] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//blaster.obj");
+
+	//WALLS
+	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall", "OBJ//Wall//Wall.obj");
+	meshList[GEO_WALL]->textureID = LoadTGA("Image//Wall//Wall.tga");
+	turret[1] = new Enemy("Wall", Vector3(0, 0, -450));
+	turret[1]->setCollider(1000, 15);
+	turret[1]->updateCurPos();
+	turret[2] = new Enemy("Wall", Vector3(0, 0, 450));
+	turret[2]->setCollider(1000, 15);
+	turret[2]->updateCurPos();
+	turret[3] = new Enemy("Wall", Vector3(-450, 0, 0));
+	turret[3]->setCollider(15, 1000);
+	turret[3]->updateCurPos();
+	turret[4] = new Enemy("Wall", Vector3(450, 0, 0));
+	turret[4]->setCollider(15, 1000);
+	turret[4]->updateCurPos();
+
+	//ROBOT'S
+	meshList[GEO_ROBOLOCKED] = MeshBuilder::GenerateOBJ("RobotLock", "OBJ//NPC//Robot_body.obj");
+	meshList[GEO_ROBOLOCKED]->textureID = LoadTGA("Image//NPC//Robot_Body_Locked.tga");
+	meshList[GEO_ROBOARMSLOCKED] = MeshBuilder::GenerateOBJ("RobotLock", "OBJ//NPC//Robot_Arm.obj");
+	meshList[GEO_ROBOARMSLOCKED]->textureID = LoadTGA("Image/NPC//Robot_Locked.tga");
+	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("Robot", "OBJ//NPC//Robot_body.obj");
+	meshList[GEO_ROBOBODY]->textureID = LoadTGA("Image//NPC//Robot_Body.tga");
+	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("Robot", "OBJ//NPC//Robot_Arm.obj");
+	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image/NPC//Robot_Arms.tga");
+	turret[5] = new Enemy("Robot", Vector3(100, 0, -300));
+	turret[5]->setCollider(10, 10);
+	turret[5]->updateCurPos();
+	TriggerBox[0] = new GameObject("Trigger", Vector3(100, 0, -300));
+	TriggerBox[0]->setCollider(20, 20);
+	TriggerBox[0]->updateCurPos();
+	turret[6] = new Enemy("Robot", Vector3(100, 0, -300));
+	turret[6]->setCollider(10, 10);
+	turret[6]->updateCurPos();
+	//Robot_2
+	turret[7] = new Enemy("RobotLock", Vector3(100, 0, -400));
+	turret[7]->setCollider(10, 10);
+	turret[7]->updateCurPos();
+	TriggerBox[1] = new GameObject("Trigger", Vector3(100, 0, -400));
+	TriggerBox[1]->setCollider(20, 20);
+	TriggerBox[1]->updateCurPos();
+	turret[8] = new Enemy("RobotLock", Vector3(100, 0, -400));
+	turret[8]->setCollider(10, 10);
+	turret[8]->updateCurPos();
+	//Robot_3
+	turret[9] = new Enemy("Robot", Vector3(-100, 0, -300));
+	turret[9]->setCollider(10, 10);
+	turret[9]->updateCurPos();
+	TriggerBox[2] = new GameObject("Trigger", Vector3(-100, 0, -300));
+	TriggerBox[2]->setCollider(20, 20);
+	TriggerBox[2]->updateCurPos();
+	turret[10] = new Enemy("Robot", Vector3(-100, 0, -300));
+	turret[10]->setCollider(10, 10);
+	turret[10]->updateCurPos();
+	//Robot_4
+	turret[11] = new Enemy("Robot", Vector3(-100, 0, -400));
+	turret[11]->setCollider(10, 10);
+	turret[11]->updateCurPos();
+	TriggerBox[3] = new GameObject("Trigger", Vector3(-100, 0, -400));
+	TriggerBox[3]->setCollider(20, 20);
+	TriggerBox[3]->updateCurPos();
+	turret[12] = new Enemy("Robot", Vector3(-100, 0, -400));
+	turret[12]->setCollider(10, 10);
+	turret[12]->updateCurPos();
+
+	//Computer
+	meshList[GEO_COMPUTER] = MeshBuilder::GenerateOBJ("RobotLock", "OBJ//Objects//computer.obj");
+	meshList[GEO_COMPUTER]->textureID = LoadTGA("Image//model//computer.tga");
+	turret[13] = new Enemy("Robot", Vector3(0, 0, 400));
+	turret[13]->setCollider(10, 10);
+	turret[13]->updateCurPos();
+}
+
+void Menu_Room::initializeObjects()
+{
+	//Initialise ur objects here
+	for (int i = 0; i < NUM_GEOMETRY; ++i)
+	{
+		meshList[i] = NULL;
+		object[i] = 0;
+	}
+	for (int i = 0; i < 5; ++i)
+	{
+		TriggerBox[i] = 0;
+	}
+	for (int i = 0; i < 4; ++i)
+	{
+		Locked[i] = 0;
+	}
+
+	for (int i = 0; i < numOfEnemy; ++i)
+	{
+		turret[i] = NULL;
+	}
+}
+
+void Menu_Room::RenderSkybox()
 {
 	RenderMesh(meshList[GEO_AXES], false);
 
@@ -394,7 +535,9 @@ void Menu_Room::skyBox()
 	modelStack.Scale(1000.f, 1000.f, 1000.f);
 	RenderMesh(meshList[GEO_BACK], false);
 	modelStack.PopMatrix();
-
+}
+void Menu_Room::Walls()
+{
 	//Plane
 	modelStack.PushMatrix();
 	//to do: transformation code here
@@ -415,30 +558,6 @@ void Menu_Room::skyBox()
 	RenderMesh(meshList[GEO_FLOOR], false);
 	modelStack.PopMatrix();
 
-	//TOP
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(0, 300, 0);
-	modelStack.Rotate(90 * -rotateAngle, 0, -1, 0);
-	modelStack.Rotate(90 , 1, 0, 0);
-	modelStack.Scale(500.f, 500.f, 500.f);
-	RenderMesh(meshList[GEO_VOTEX], false);
-	modelStack.PopMatrix();
-
-	//BOT
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(0, -300.f, 0);
-	modelStack.Rotate(90 * rotateAngle, 0, -1, 0);
-	modelStack.Rotate(90, -1, 0, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
-	RenderMesh(meshList[GEO_BOTTOMVOTEX], false);
-	modelStack.PopMatrix();
-
-}
-
-void Menu_Room::Walls()
-{
 	modelStack.PushMatrix();
 	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
 	modelStack.Scale(10, 10, 10);
@@ -464,83 +583,27 @@ void Menu_Room::Walls()
 	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_WALL], false);
 	modelStack.PopMatrix();
+
+	//TOP portal
+	modelStack.PushMatrix();
+	//to do: transformation code here
+	modelStack.Translate(0, 300, 0);
+	modelStack.Rotate(90 * (object[GEO_VOTEX]->rotation), 0, -1, 0);
+	modelStack.Rotate(90, 1, 0, 0);
+	modelStack.Scale(500.f, 500.f, 500.f);
+	RenderMesh(meshList[GEO_VOTEX], false);
+	modelStack.PopMatrix();
+
+	//BOTtom portal
+	modelStack.PushMatrix();
+	//to do: transformation code here
+	modelStack.Translate(0, -300.f, 0);
+	modelStack.Rotate(90 * (object[GEO_BOTTOMVOTEX]->rotation), 0, -1, 0);
+	modelStack.Rotate(90, -1, 0, 0);
+	modelStack.Scale(1000.f, 1000.f, 1000.f);
+	RenderMesh(meshList[GEO_BOTTOMVOTEX], false);
+	modelStack.PopMatrix();
 }
-
-void Menu_Room::GenerateOBJ()
-{
-	//WALLS
-	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall", "OBJ//Wall//Wall.obj");
-	meshList[GEO_WALL]->textureID = LoadTGA("Image//Wall//Wall.tga");
-	turret[1] = new Enemy("Wall", Vector3(0, 0, -450));
-	turret[1]->setCollider(1000, 15);
-	turret[1]->updateCurPos();
-	turret[2] = new Enemy("Wall", Vector3(0, 0, 450));
-	turret[2]->setCollider(1000, 15);
-	turret[2]->updateCurPos();
-	turret[3] = new Enemy("Wall", Vector3(-450, 0, 0));
-	turret[3]->setCollider(15, 1000);
-	turret[3]->updateCurPos();
-	turret[4] = new Enemy("Wall", Vector3(450, 0, 0));
-	turret[4]->setCollider(15, 1000);
-	turret[4]->updateCurPos();
-
-	//ROBOT'S
-	meshList[GEO_ROBOLOCKED] = MeshBuilder::GenerateOBJ("RobotLock", "OBJ//NPC//Robot_body.obj");
-	meshList[GEO_ROBOLOCKED]->textureID = LoadTGA("Image//NPC//Robot_Body_Locked.tga");
-	meshList[GEO_ROBOARMSLOCKED] = MeshBuilder::GenerateOBJ("RobotLock", "OBJ//NPC//Robot_Arm.obj");
-	meshList[GEO_ROBOARMSLOCKED]->textureID = LoadTGA("Image/NPC//Robot_Locked.tga");
-	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("Robot", "OBJ//NPC//Robot_body.obj");
-	meshList[GEO_ROBOBODY] ->textureID = LoadTGA("Image//NPC//Robot_Body.tga");
-	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("Robot", "OBJ//NPC//Robot_Arm.obj");
-	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image/NPC//Robot_Arms.tga");
-	turret[5] = new Enemy("Robot", Vector3(100, 0, -300));
-	turret[5]->setCollider(10, 10);
-	turret[5]->updateCurPos();
-	TriggerBox[0] = new GameObject("Trigger", Vector3(100,0,-300));
-	TriggerBox[0]->setCollider(20, 20);
-	TriggerBox[0]->updateCurPos();
-	turret[6] = new Enemy("Robot", Vector3(100, 0, -300));
-	turret[6]->setCollider(10, 10);
-	turret[6]->updateCurPos();
-	//Robot_2
-	turret[7] = new Enemy("RobotLock", Vector3(100, 0, -400));
-	turret[7]->setCollider(10, 10);
-	turret[7]->updateCurPos();
-	TriggerBox[1] = new GameObject("Trigger", Vector3(100,0,-400));
-	TriggerBox[1]->setCollider(20,20);
-	TriggerBox[1]->updateCurPos();
-	turret[8] = new Enemy("RobotLock", Vector3(100, 0, -400));
-	turret[8]->setCollider(10, 10);
-	turret[8]->updateCurPos();
-	//Robot_3
-	turret[9] = new Enemy("Robot", Vector3(-100, 0, -300));
-	turret[9]->setCollider(10, 10);
-	turret[9]->updateCurPos();
-	TriggerBox[2] = new GameObject("Trigger", Vector3(-100,0,-300));
-	TriggerBox[2]->setCollider(20, 20);
-	TriggerBox[2]->updateCurPos();
-	turret[10] = new Enemy("Robot", Vector3(-100, 0,-300));
-	turret[10]->setCollider(10, 10);
-	turret[10]->updateCurPos();
-	//Robot_4
-	turret[11] = new Enemy("Robot", Vector3(-100, 0, -400));
-	turret[11]->setCollider(10, 10);
-	turret[11]->updateCurPos();
-	TriggerBox[3] = new GameObject("Trigger", Vector3(-100,0,-400));
-	TriggerBox[3]->setCollider(20,20);
-	TriggerBox[3]->updateCurPos();
-	turret[12] = new Enemy("Robot", Vector3(-100, 0, -400));
-	turret[12]->setCollider(10, 10);
-	turret[12]->updateCurPos();
-
-	//Computer
-	meshList[GEO_COMPUTER] = MeshBuilder::GenerateOBJ("RobotLock", "OBJ//Objects//computer.obj");
-	meshList[GEO_COMPUTER]->textureID = LoadTGA("Image//model//computer.tga");
-	turret[13] = new Enemy("Robot", Vector3(0, 0, 400));
-	turret[13]->setCollider(10, 10);
-	turret[13]->updateCurPos();
-}
-
 void Menu_Room::EnemyField()
 {
 	modelStack.PushMatrix();
@@ -607,59 +670,6 @@ void Menu_Room::EnemyField()
 	modelStack.PopMatrix();
 }
 
-void Menu_Room::Render()
-{
-	if (light[0].type == Light::LIGHT_DIRECTIONAL)
-	{
-		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[0].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
-
-	//Initialize
-	Mtx44 MVP;
-
-	//Clear color buffer every frame
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//Setup the view for camera
-	viewStack.LoadIdentity();
-	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
-		camera.target.x, camera.target.y, camera.target.z,
-		camera.up.x, camera.up.y, camera.up.z);
-	modelStack.LoadIdentity();
-
-	//-------------------------------------------------------------------------------------
-	skyBox();
-	Walls();
-	EnemyField();
-
-
-	/*modelStack.PushMatrix();
-	RenderMesh(meshList[GEO_BULLET], false);
-	modelStack.PopMatrix();*/
-
-
-	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
-	RenderTextOnScreen(meshList[GEO_TEXT], cordx, Color(0, 1, 0), 3, 0, 3);
-	RenderTextOnScreen(meshList[GEO_TEXT], cordz, Color(0, 1, 0), 3, 0, 5);
-	//No transform needed
-	//RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
-	//-------------------------------------------------------------------------------------
-}
-
 void Menu_Room::RenderMesh(Mesh *mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
@@ -702,7 +712,6 @@ void Menu_Room::RenderMesh(Mesh *mesh, bool enableLight)
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
-
 void Menu_Room::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
@@ -729,7 +738,6 @@ void Menu_Room::RenderText(Mesh* mesh, std::string text, Color color)
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
 	glEnable(GL_DEPTH_TEST);
 }
-
 void Menu_Room::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
@@ -774,7 +782,6 @@ void Menu_Room::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 
 	glEnable(GL_DEPTH_TEST);
 }
-
 void Menu_Room::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 {
 	glDisable(GL_DEPTH_TEST);
@@ -796,7 +803,6 @@ void Menu_Room::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int size
 	glEnable(GL_DEPTH_TEST);
 
 }
-
 void Menu_Room::Exit()
 {
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
@@ -817,7 +823,8 @@ void Menu_Room::Exit()
 		if (Locked[i] != 0)
 			delete Locked[i];
 	}
-	delete CamObj;
+	delete player;
+	delete lasergun;
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 
