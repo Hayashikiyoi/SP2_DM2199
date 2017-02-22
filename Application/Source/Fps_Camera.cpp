@@ -79,7 +79,7 @@ void Fps_Camera::Update(double dt)
 	float angleofElevation = (view.y < 0 ? -1.0f : 1.0f)*Math::RadianToDegree(acos(Vector3(view.x, 0, view.z).Normalized().Dot(view)));
 
 	//looking up to 45 degreed and look down to 45 degree not more not less
-	if (angleofElevation + vertMovement < 45.0f && angleofElevation + vertMovement>-45.0f)
+	if (angleofElevation + vertMovement < 88.0f && angleofElevation + vertMovement>-88.0f)
 	{
 		camPitch.SetToRotation(vertMovement, right.x, right.y, right.z);
 	}
