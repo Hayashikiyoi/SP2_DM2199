@@ -10,13 +10,14 @@
 #include "Enemy.h"
 #include "Bullet.h"
 #include"Fps_Camera.h"
+#include"Player.h"
 
 #include <string>
 using std::string;
 
 #define numOfEnemy 5
 #define numOfBullet 5
-#define Walls 40
+#define Walls 4
 class ChuanXu : public Scene 
 {
 
@@ -76,6 +77,7 @@ class ChuanXu : public Scene
 		GEO_BOSSBODY,
 		GEO_CROSSHAIR,
 		GEO_WALL,
+		GEO_FLOOR,
 		NUM_GEOMETRY,
 	};
 
@@ -93,6 +95,7 @@ private:
 	GameObject* Wall[Walls];
 	Enemy* turret[numOfEnemy];
 	Bullet* bullet[numOfBullet];
+	GameObject * WallsObj[Walls];
 	string deltaTime;
 	//Vector3 Robot;
 	Bullet bullet_1;
@@ -102,13 +105,13 @@ private:
 	float scaleAll;
 	float openCover = 0;
 	float DelayTimer=0;
-	
 	void skyBox();
 	void RenderWalls();
 	void GenerateObj();
 
 	Fps_Camera camera;
 	MS modelStack, viewStack, projectionStack;
+	Player* player;
 
 	bool shootBullet = false;
 	bool lightEnable;
