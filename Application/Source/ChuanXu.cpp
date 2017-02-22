@@ -40,6 +40,7 @@ void ChuanXu::Init()
 
 	//Initialise camera
 	camera.Init(Vector3(40, 30, 30), Vector3(0, 0, -10), Vector3(0, 1, 0));
+	player = new Player("camera", Vector3(40, 30, 30));
 
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -61,6 +62,10 @@ void ChuanXu::Init()
 	for (int i = 0; i < numOfBullet; ++i)
 	{
 		bullet[i] = NULL;
+	}
+	for (int i = 0; i < Walls; ++i)
+	{
+		WallsObj[i] = 0;
 	}
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
@@ -100,8 +105,9 @@ void ChuanXu::Init()
 	
 	meshList[GEO_CROSSHAIR] = MeshBuilder::GenerateText("Cross hair", 16, 16);
 	meshList[GEO_CROSSHAIR]->textureID = LoadTGA("Image//UI//Cross_Hair");
-	meshList[GEO_WALL] = MeshBuilder::GenerateQuad("wall", Color(1, 1, 1), 10, 10);
 	meshList[GEO_WALL]->textureID = LoadTGA("Image//CX_Scene//Wall_Texture.tga");
+	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("Floor", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor//floor.tga");
 
 
 
@@ -190,11 +196,11 @@ void ChuanXu::GenerateObj()
 	meshList[GEO_TURRETHEAD] = MeshBuilder::GenerateOBJ("TurretHead", "OBJ//Enemy//Turret_head.obj");
 	meshList[GEO_TURRETHEAD]->textureID = LoadTGA("Image//Enemy//Turret_Head.tga");
 	turret[1] = new Enemy("Turret_1", Vector3(10, 0, 10));
-	turret[1]->setCollider(0, 0);
+	turret[1]->setCollider(5, 5);
 	turret[1]->updateCurPos();
 	
 	turret[2] = new Enemy("Turret_2", Vector3(20, 0.20));
-	turret[2]->setCollider(0, 0);
+	turret[2]->setCollider(5, 5);
 	turret[2]->updateCurPos();
 
 	//Bullet
@@ -202,11 +208,11 @@ void ChuanXu::GenerateObj()
 	meshList[GEO_BULLET]->textureID = LoadTGA("Image//Enemy//Bullet.tga");
 
 	bullet[1] = new Bullet("Bullet_1", Vector3(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z));
-	bullet[1]->setCollider(1, 1);
+	bullet[1]->setCollider(10, 10);
 	bullet[1]->updateCurPos();
 
 	bullet[2] = new Bullet("Bullet_1", Vector3(turret[2]->Position.x, turret[2]->Position.y, turret[2]->Position.z));
-	bullet[2]->setCollider(1, 1);
+	bullet[2]->setCollider(10, 10);
 	bullet[2]->updateCurPos();
 
 	//Robot
@@ -218,15 +224,34 @@ void ChuanXu::GenerateObj()
 	object[1] = new GameObject("Robot", Vector3(10, 0, 10));
 	object[1]->setCollider(5, 5);
 	object[1]->updateCurPos();
- 
+	
+	//walls
+	meshList[GEO_WALL] = MeshBuilder::GenerateQuad("wall", Color(1, 1, 1), 10, 10);
+	WallsObj[1] = new GameObject("Front wall", Vector3(0, 0, -50));
+	WallsObj[1]->setCollider(50, 3);
+	WallsObj[1]->updateCurPos();
+
+	WallsObj[2] = new GameObject("left wall", Vector3(50, 0, 0));
+	WallsObj[2]->setCollider(3, 50);
+	WallsObj[2]->updateCurPos();
+
+	WallsObj[3] = new GameObject("back wall", Vector3(0, 0, 50));
+	WallsObj[3]->setCollider(50, 3);
+	WallsObj[3]->updateCurPos();
+
+	WallsObj[4] = new GameObject("right wall", Vector3(-50, 0, 0));
+	WallsObj[4]->setCollider(3, 50);
+	WallsObj[4]->updateCurPos();
 }
 void ChuanXu::Update(double dt)
 {		
 	static float translateLimit = 1;
+	static float time;
+	static bool smtHappen = false;
 	static Vector3 prevpos;
 	static Vector3 prevposTarget;
 	//Robot.Set(Robot.x, Robot.y, Robot.z);
-	deltaTime = "FPS:" + std::to_string(1 / dt);
+	deltaTime = "Health" + std::to_string(player->getHealth()); //"FPS:" + std::to_string(1 / dt);
 	if (Application::IsKeyPressed('F'))
 	{
 		rotateAngle += (float)(100 * dt);
@@ -256,36 +281,9 @@ void ChuanXu::Update(double dt)
 
 	DelayTimer += (float)dt;
 
-	if (DelayTimer > 5)
-	{	
-		DelayTimer = 0;
-		bullet[1]->shoot = false;
-		bullet[2]->shoot = false;
-	}
-	else if (DelayTimer < 0.5)
-	{	
-		bullet[1]->shoot = true;
-		bullet[2]->shoot = true;
-	}
-	
-	CrossHair.x = camera.target.x;
-	CrossHair.z = camera.defaultTarget.z;
 
-	for (int i = 1; i <= 2; ++i)
-	{
-		if (bullet[i]->shoot)
-			bullet[i]->bulletUpdate(dt);
-		if (bullet[i]->shoot == false)
-			bullet[i]->shootBullet(turret[i]->RotateToPlayer(camera.position), turret[i]->Position);
-		
-		if (object[1]->trigger(bullet[i]))
-		{
-			bullet[i]->shoot = false;
-			deltaTime = "hiiiiiiiiiiiiiiiiiiiiiiiiiT";
-		}
-		
-		bullet[i]->updateCurPos();
-	}
+
+
 
 	if (coverOpened)
 	{	
@@ -338,8 +336,10 @@ void ChuanXu::Update(double dt)
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	CamObj->Position = camera.position;
-	CamObj->updateCurPos();
+	/*CamObj->Position = camera.position;
+	CamObj->updateCurPos();*/
+	player->Position = camera.position;
+	player->updateCurPos();
 
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
@@ -370,20 +370,45 @@ void ChuanXu::Update(double dt)
 
 	for (int i = 0; i < numOfBullet; ++i)
 	{
-		if (bullet[i] && CamObj->trigger(bullet[i]))
-		{
-			deltaTime = "HIIIIIIIIIIIIIIIIIIIIIT";
-			camera.position = prevpos;
-			camera.target = prevposTarget;
-			break;
-		}
-		else if (i == (numOfEnemy - 1))
-		{
-			prevpos = camera.position;
-			prevposTarget = camera.target;
+		if (bullet[i] && player->trigger(bullet[i]))		{
+			if (!smtHappen)
+			{
+				player->DmgPlayer(1);
+				smtHappen = true;
+				camera.position = prevpos;
+				camera.target = prevposTarget;
+				break;
+			}
+			bullet[i]->shoot = false;	//stop rendering of bullet after contact with player
 		}
 	}
 
+	if (DelayTimer > 5)		// to ensure that bullet will stop rendering even if it doesnt hit player
+	{
+		DelayTimer = 0;
+		for (int i = 1; i <= 2; ++i)
+				bullet[i]->shoot = false;
+	}
+	if (DelayTimer > 0.5)	//shoot bullet after updating pos and rotation after 0.5s
+		for (int i = 1; i <= 2; ++i)
+		{
+			bullet[i]->bulletUpdate(dt);
+			bullet[i]->updateCurPos();
+		}
+	else	//if DelayTimer !> (0.5 || 5), update bullet post and rotation 
+	{	
+		for (int i = 1; i <= 2; ++i)
+			bullet[i]->shootBullet(turret[i]->RotateToPlayer(player->Position), turret[i]->Position);
+	}
+	if (smtHappen)
+	{
+		time += dt;
+		if (time > 5)
+		{
+			time = 0;
+			smtHappen = false;
+		}
+	}
 
 	camera.Update(dt);
 }
@@ -467,7 +492,88 @@ void ChuanXu::RenderWalls()
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
-	
+	//side 3
+	modelStack.PushMatrix();
+	modelStack.Translate(0, 10, 50);
+	modelStack.Rotate(90, 0, 0, -1);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(20, 10, 50);
+	modelStack.Rotate(90, 0, 0, -1);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(40, 10, 50);
+	modelStack.Rotate(90, 0, 0, -1);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-20, 10,50);
+	modelStack.Rotate(90, 0, 0, -1);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-40, 10, 50);
+	modelStack.Rotate(90, 0, 0,-1);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	//side 4
+	modelStack.PushMatrix();
+	modelStack.Translate(50, 10, 0);
+	modelStack.Rotate(90, 0, -1, 0);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(50, 10, 20);
+	modelStack.Rotate(90, 0,-1, 0);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(50, 10, 40);
+	modelStack.Rotate(90, 0, -1, 0);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(50, 10, -20);
+	modelStack.Rotate(90, 0, -1, 0);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(50, 10, -40);
+	modelStack.Rotate(90, 0, -1, 0);
+	modelStack.Rotate(90, 0, 0, 1);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
 }
 
 void ChuanXu::skyBox()
@@ -535,6 +641,11 @@ void ChuanXu::skyBox()
 	RenderMesh(meshList[GEO_BACK], false);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Rotate(90, -1, 0, 0);
+	modelStack.Scale(100, 100, 100);
+	RenderMesh(meshList[GEO_FLOOR], true);
+	modelStack.PopMatrix();
 }
 
 void ChuanXu::Render()
@@ -584,38 +695,38 @@ void ChuanXu::Render()
 	modelStack.PopMatrix();
 	modelStack.PopMatrix();
 
-	//// Turret 1 
-	//modelStack.PushMatrix();
-	//modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
-	//RenderMesh(meshList[GEO_TURRETBODY], true);
-	//modelStack.PushMatrix();
-	//modelStack.Rotate(turret[1]->RotateToPlayer(Robot), 0, 1, 0);
-	//RenderMesh(meshList[GEO_TURRETHEAD], true);
-	//modelStack.PopMatrix();
-	//modelStack.PopMatrix();
+	// Turret 1 
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
+	RenderMesh(meshList[GEO_TURRETBODY], true);
+	modelStack.PushMatrix();
+	modelStack.Rotate(turret[1]->RotateToPlayer(player->Position), 0, 1, 0);
+	RenderMesh(meshList[GEO_TURRETHEAD], true);
+	modelStack.PopMatrix();
+	modelStack.PopMatrix();
 	if (bullet[1]->shoot)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(bullet[1]->Position.x, bullet[1]->Position.y+3.5, bullet[1]->Position.z);
+		modelStack.Translate(bullet[1]->Position.x, bullet[1]->Position.y, bullet[1]->Position.z);
 		modelStack.Rotate(bullet[1]->rotation, 0, 1, 0);
 		RenderMesh(meshList[GEO_BULLET], false);
 		modelStack.PopMatrix();
 	}
 
 	//Turret 2
-	//modelStack.PushMatrix();
-	//modelStack.Translate(turret[2]->Position.x, turret[2]->Position.y, turret[2]->Position.z);
-	//	RenderMesh(meshList[GEO_TURRETBODY], true);
-	//	modelStack.PushMatrix();
-	//	modelStack.Rotate(turret[2]->RotateToPlayer(Robot), 0, 1, 0);
-	//	RenderMesh(meshList[GEO_TURRETHEAD], true);
-	//	modelStack.PopMatrix();
-	//	modelStack.PopMatrix();
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[2]->Position.x, turret[2]->Position.y, turret[2]->Position.z);
+		RenderMesh(meshList[GEO_TURRETBODY], true);
+		modelStack.PushMatrix();
+		modelStack.Rotate(turret[2]->RotateToPlayer(player->Position), 0, 1, 0);
+		RenderMesh(meshList[GEO_TURRETHEAD], true);
+		modelStack.PopMatrix();
+		modelStack.PopMatrix();
 
 		if (bullet[2]->shoot)
 		{
 			modelStack.PushMatrix();
-			modelStack.Translate(bullet[2]->Position.x, bullet[2]->Position.y + 3.5, bullet[2]->Position.z);
+			modelStack.Translate(bullet[2]->Position.x, bullet[2]->Position.y , bullet[2]->Position.z);
 			modelStack.Rotate(bullet[2]->rotation, 0, 1, 0);
 			RenderMesh(meshList[GEO_BULLET], false);
 			modelStack.PopMatrix();
@@ -642,7 +753,7 @@ void ChuanXu::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(bullet[1]->Position.x), Color(1, 1, 1), 4, 1, 2);
 	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(bullet[1]->Position.z), Color(1, 1, 1), 4, 1, 1);
 	RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(DelayTimer), Color(1, 1, 1), 4, 1, 3);
-	RenderMeshOnScreen(meshList[GEO_CROSSHAIR], CrossHair.x, CrossHair.z, 3, 3);
+	//RenderMeshOnScreen(meshList[GEO_CROSSHAIR], CrossHair.x, CrossHair.z, 3, 3);
 }
 
 void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)
