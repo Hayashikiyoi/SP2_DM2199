@@ -197,7 +197,6 @@ void Menu_Room::Update(double dt)
 		}
 	}
 
-
 	for (int i = 0; i < numOfEnemy; ++i)
 	{
 		if (turret[i] && player->trigger(turret[i]))
@@ -213,7 +212,25 @@ void Menu_Room::Update(double dt)
 			prevpos = camera.position;
 			prevposTarget = camera.target;
 		}
+<<<<<<< HEAD
 		
+=======
+
+		
+	}
+
+	for (int i = 0; i < clipSize; ++i)
+	{
+		if (turret[1] && lasergun->pBullet[i]->trigger(turret[1]))
+		{
+			//if you need to get pushed out of the collider
+			std::cout << "HITHITHIT" << std::endl;
+			/*deltaTime = "Wham bam";
+			camera.position = prevpos;
+			camera.target = prevposTarget;*/
+			break;
+		}
+>>>>>>> d9421611b4ba380b4f5df5e2a2b44b26c0bf7d83
 	}
 //----------------------------------------------------------------------------
 	object[GEO_BOTTOMVOTEX]->rotation += (float)dt;
@@ -251,10 +268,10 @@ void Menu_Room::Update(double dt)
 	}
 	if (Application::IsKeyPressed(VK_LBUTTON))
 	{
-		lasergun->shoot();
+//		lasergun->shoot(camera.position);
 	}
 	camera.Update(dt);
-	lasergun->updateBullet(dt);
+//	lasergun->updateBullet(dt);
 
 	//if ()
 	//if (test2 > 18.7f)
@@ -325,9 +342,10 @@ void Menu_Room::Render()
 		if (lasergun->pBullet[i]->shot())
 		{
 			modelStack.PushMatrix();
-			modelStack.LoadMatrix(lasergun->pBullet[i]->rotMatrix()); //Load gun matrix
+			//modelStack.LoadMatrix(lasergun->pBullet[i]->rotMatrix()); //Load gun matrix
 			modelStack.Rotate(270, 0, 1, 0); //Bullet inverted
 			modelStack.Translate(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z); //Pos of cur gun
+			
 			modelStack.Translate(2, 0, -2.5f);
 			modelStack.Scale(0.2f, 0.2f, 0.2f);
 			glDisable(GL_CULL_FACE);

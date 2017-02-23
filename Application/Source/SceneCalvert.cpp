@@ -283,13 +283,13 @@ void SceneCalvert::Update(double dt)
 	
 	if (Application::IsKeyPressed('F') )
 	{
-		lasergun->shoot();
+//		lasergun->shoot(camera.position);
 		//smtHappen = true;
 	}
 		
 
 	camera.Update(dt);
-	lasergun->updateBullet(dt);
+//	lasergun->updateBullet(dt);
 }
 
 void SceneCalvert::Render()
@@ -350,7 +350,7 @@ void SceneCalvert::Render()
 		if (lasergun->pBullet[i]->shot())
 		{
 			modelStack.PushMatrix();
-			modelStack.LoadMatrix(lasergun->pBullet[i]->rotMatrix()); //Load gun matrix
+			//modelStack.LoadMatrix(lasergun->pBullet[i]->rotMatrix()); //Load gun matrix
 			modelStack.Rotate(270, 0, 1, 0); //Bullet inverted
 			modelStack.Translate(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z); //Pos of cur gun
 			modelStack.Translate(0, 0, -2.5f);
@@ -472,7 +472,7 @@ void SceneCalvert::GenerateOBJ()
 	enemy[0] = new Enemy("Bike", Vector3(10,0,10));
 	enemy[0]->setCollider(3, 3);
 	enemy[0]->updateCurPos();
-	meshList[GEO_BLASTER] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//blaster.obj");
+	//meshList[GEO_BLASTER] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//blaster.obj");
 	//meshList[GEO_BLASTER]->textureID = LoadTGA("Image//model//Vehicle.tga");
 
 	enemy[1] = new Enemy("Bike", Vector3(10, 0, -20));

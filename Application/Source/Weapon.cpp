@@ -17,7 +17,7 @@ GameObject(name, pos), clip(45), canister(0), bulletSpeed(BulletSpeed)
 {
 	for (int i = 0; i < clipSize; ++i) //Initialize player bullet
 	{
-		pBullet[i] = new PlayerBullet("Bullet", Vector3(1000,1000,1000));
+		pBullet[i] = new PlayerBullet("Bullet", Vector3(1000, 1000, 1000));
 		pBullet[i]->setCollider(2, 2);
 		pBullet[i]->updateCurPos();
 	}
@@ -46,14 +46,18 @@ void Weapon::reload()
 	}
 }
 
-void Weapon::shoot()
+void Weapon::shoot(Fps_Camera *camera)
 {
 	for (int i = 0; i < clipSize; ++i)
 	{
 		if (!pBullet[i]->shot() && pBullet[i])
 		{
-			pBullet[i]->Position = this->Position;
-			pBullet[i]->shooting(true, rotation);
+			pBullet[i]->velcocity = camera->view;
+			pBullet[i]->Position = (camera->position);
+			/*pBullet[i]->Position.x = camera->position.x - 2.f;
+			pBullet[i]->Position.y = camera->position.y - .8f;
+			pBullet[i]->Position.z = camera->position.z + 2.f;*/
+			pBullet[i]->shooting();
 			clip--;
 			break;
 		}
@@ -65,7 +69,11 @@ void Weapon::updateBullet(double dt)
 	{
 		if (pBullet[i]->shot() && pBullet[i])
 		{
-			pBullet[i]->updateBullet(dt);
+			pBullet[i]->updateBullet(dt, bulletSpeed);
+		}
+		if (!pBullet[i]->shot() && pBullet[i])
+		{
+			pBullet[i]->Position = Vector3(1000, 1000, 1000);
 			pBullet[i]->updateCurPos();
 		}
 	}
