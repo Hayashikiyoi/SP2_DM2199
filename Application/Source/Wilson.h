@@ -2,7 +2,7 @@
 #define WILSON_H
 
 #include "Scene.h"
-#include "Camera3.h"
+#include "Fps_Camera.h"
 #include "Mesh.h"
 #include "MatrixStack.h"
 #include "Light.h"
@@ -10,6 +10,17 @@
 
 #include <string>
 using std::string;
+
+// GameObject Folder
+#include "Enemy.h"
+#include "GameObject.h"
+#include "Item.h"
+#include "Player.h"
+
+#undef numOfEnemy
+
+#define numOfEnemy 20
+#define numOfRocks 10
 
 class Wilson : public Scene
 {
@@ -64,6 +75,10 @@ class Wilson : public Scene
 		GEO_ROCK,
 		GEO_GROUND,
 		GEO_BOULDER,
+		GEO_DOOR,
+		GEO_BLUEKEYCARD,
+		GEO_VENDINGMACHINE,
+		GEO_VENDINGCOVER,
 		NUM_GEOMETRY,
 	};
 
@@ -75,25 +90,52 @@ private:
 
 	Mesh* meshList[NUM_GEOMETRY];
 
-	string deltaTime;
+	//GameObj
+	GameObject* object[NUM_GEOMETRY];
+	GameObject* CamObj;
+	GameObject* Rock[numOfRocks];
+	GameObject* VendingMachine[NUM_GEOMETRY];
+	GameObject* Doors[NUM_GEOMETRY];
+	GameObject* Boulder[NUM_GEOMETRY];
+	GameObject* TriggerBox[2];
+	Item* Keys[2];
 
+	string deltaTime;
+	string cordx, cordy, cordz;
+	Vector3 Robot;
+	Vector3 Bullet;
+
+	Enemy* turret[numOfEnemy];
 
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
-	Camera3 camera;
+	float openCover = 0;
+
+	void skyBox();
+	bool shootBullet = false;
+
+
+	Fps_Camera camera;
 	MS modelStack, viewStack, projectionStack;
+	Player* player;
 
 	bool lightEnable;
+	bool coverOpened = false;
 	Light light[1];
 	void RenderMesh(Mesh *mesh, bool enableLight);
 
 	void RenderSkybox();
+	void Rocks();
+	void EnemyField();
+	void tutorialtext();
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
+	//Game Object
+	void GenerateOBJ();
 
 
 public:

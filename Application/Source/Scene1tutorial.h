@@ -11,7 +11,7 @@
 #include "Bullet.h"
 #include"Fps_Camera.h"
 #include"Player.h"
-#include "Item.h"
+#include"Item.h"
 
 #include <string>
 using std::string;
@@ -19,8 +19,9 @@ using std::string;
 
 #define numOfEnemy 5
 #define numOfBullet 5
-#define numOfRocks 10
 #define Walls 4
+#define numOfRocks 10
+
 class Scene1tutorial : public Scene
 {
 
@@ -67,16 +68,19 @@ class Scene1tutorial : public Scene
 		GEO_BOTTOM,
 		GEO_FRONT,
 		GEO_BACK,
-		GEO_BIKE,
 		GEO_TEXT,
 		GEO_DEBUGBOX,
-		GEO_ROCK,
-		GEO_GROUND,
+		GEO_VENDINGBODY,
+		GEO_VENDINGCOVER,
+		GEO_ROBOBODY,
+		GEO_ROBOARMS,
+		GEO_BOSSHEAD,
+		GEO_BOSSBODY,
+		GEO_FLOOR,
+		GEO_ROCKWALL,
 		GEO_BOULDER,
 		GEO_DOOR,
 		GEO_BLUEKEYCARD,
-		GEO_VENDINGMACHINE,
-		GEO_VENDINGCOVER,
 		NUM_GEOMETRY,
 	};
 
@@ -91,15 +95,13 @@ private:
 	//GameObj
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* CamObj;
-	GameObject* Wall[Walls];
-	Enemy* turret[numOfEnemy];
-	Bullet* bullet[numOfBullet];
 	GameObject* Rock[numOfRocks];
 	GameObject* VendingMachine[NUM_GEOMETRY];
 	GameObject* Doors[NUM_GEOMETRY];
 	GameObject* Boulder[NUM_GEOMETRY];
 	GameObject* TriggerBox[2];
 	Item* Keys[2];
+
 	string deltaTime;
 	//Vector3 Robot;
 	Bullet bullet_1;
@@ -110,12 +112,7 @@ private:
 	float openCover = 0;
 	float DelayTimer = 0;
 	void skyBox();
-	void RenderWalls();
-	void Rocks();
-	void EnemyField();
-	void tutorialtext();
-	void GenerateOBJ();
-	
+	void GenerateObj();
 
 	Fps_Camera camera;
 	MS modelStack, viewStack, projectionStack;
@@ -132,7 +129,8 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
-
+	void RenderWall();
+	void RenderObjects();
 
 
 public:
@@ -143,6 +141,11 @@ public:
 	virtual void Update(double dt);
 	virtual void Render();
 	virtual void Exit();
+
+	float translate_DoorLeft;
+	int counterForDrink;
+	 
+	std::string coords;
 };
 
 #endif
