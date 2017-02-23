@@ -112,6 +112,8 @@ void Scene4_Boss::Init()
 
 	GenerateOBJ();
 
+	GUI();
+
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
@@ -227,16 +229,42 @@ void Scene4_Boss::Update(double dt)
 	static float time;
 
 	deltaTime = "Health:" + std::to_string(player->getHealth());
+	BossH = "BossHealth:" + std::to_string(turret[9]->showHP());
 
 	static float LSPEED = 10;
 
 	DelayTimer += (float)dt;
-
+	for (int i = 0; i < clipSize; ++i)
+	{
+		if (turret[9] && turret[9]->trigger(lasergun->pBullet[i])&&!smtHappen)
+		{
+			std::cout << "HT" << std::endl;
+			std::cout << turret[9]->Position.x << std::endl;
+			std::cout << turret[9]->Position.y << std::endl;
+			std::cout << turret[9]->Position.z << std::endl;
+			std::cout << "bullet" << std::endl;
+			std::cout << lasergun->pBullet[i]->Position.x << std::endl;
+			std::cout << lasergun->pBullet[i]->Position.y << std::endl;
+			std::cout << lasergun->pBullet[i]->Position.z << std::endl;
+			//turret[9]->dmgToEnemy(5);
+			smtHappen = true;
+			break;
+		}
+	}
 	if (Application::IsKeyPressed(VK_LBUTTON))
 	{
 		lasergun->shoot();
 	}
-
+	if (turret[9]->showHP() == 0)
+	{
+		turret[9]->isdead();
+		turret[9]->Position.z = 1000;
+		turret[9]->Position.x = 1000;
+		turret[9]->updateCurPos();
+		turret[10]->Position.z = 1000;
+		turret[10]->Position.x = 1000;
+		turret[10]->updateCurPos();
+	}
 	if (DelayTimer > 5)
 	{
 		DelayTimer = 0;
@@ -341,19 +369,28 @@ void Scene4_Boss::Update(double dt)
 	}
 	for (int i = 0; i < 2; ++i)
 	{
-		if (Keys[i] && player->trigger(Keys[i]))
-		{
-			if (i == 0)
-				deltaTime = "Press E";
-			if (Application::IsKeyPressed('E') && i==1)
+		if (turret[9]->isdead()){
+			Keys[1]->Position.z = 0;
+			Keys[1]->updateCurPos();
+			if (Keys[i] && player->trigger(Keys[i]))
 			{
-				Keys[1]->SetCollected(true);
-				WallsObj[8]->Position.z = 100;
-				WallsObj[8]->updateCurPos();
-				WallsObj[9]->Position.z = -100;
-				WallsObj[9]->updateCurPos();
-				break;
+				if (i == 0)
+					deltaTime = "Press E";
+				if (Application::IsKeyPressed('E') && i == 1)
+				{
+					Keys[1]->SetCollected(true);
+					WallsObj[8]->Position.z = 100;
+					WallsObj[8]->updateCurPos();
+					WallsObj[9]->Position.z = -100;
+					WallsObj[9]->updateCurPos();
+					break;
+				}
 			}
+		}
+		else
+		{
+			Keys[1]->Position.z = 1000;
+			Keys[1]->updateCurPos();
 		}
 	}
 
@@ -406,6 +443,18 @@ void Scene4_Boss::Update(double dt)
 			smtHappen = false;
 		}
 	}
+}
+
+void Scene4_Boss::GUI()
+{
+	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_HEALTH]->textureID = LoadTGA("Image//UI//Health_Bar.tga");
+
+	meshList[GEO_STAMINA] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_STAMINA]->textureID = LoadTGA("Image//UI//Stamina_Bar.tga");
+
+	meshList[GEO_BAR] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_BAR]->textureID = LoadTGA("Image//UI//Health&Stamina_Background.tga");
 }
 
 void Scene4_Boss::skyBox()
@@ -672,12 +721,11 @@ void Scene4_Boss::GenerateOBJ()
 
 	meshList[GEO_BLASTER] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//blaster.obj");
 	meshList[GEO_BLASTER]->textureID = LoadTGA("Image//Player//blaster.tga");
-	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//Player_Bullet.obj");
-	meshList[GEO_DEBUGBOX]->textureID = LoadTGA("Image//Player//Player_Bullet.tga");
-	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
-	object[GEO_DEBUGBOX] = new GameObject("Debug", Vector3(-20, 0, -20));
-	object[GEO_DEBUGBOX]->setCollider(2, 2);
-	object[GEO_DEBUGBOX]->updateCurPos();
+	meshList[GEO_PBULLET] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//Player_Bullet.obj");
+	meshList[GEO_PBULLET]->textureID = LoadTGA("Image//Player//Player_Bullet.tga");
+	object[GEO_PBULLET] = new GameObject("Debug", Vector3(-20, 0, -20));
+	object[GEO_PBULLET]->setCollider(2, 2);
+	object[GEO_PBULLET]->updateCurPos();
 	/*TriggerBox[3] = new GameObject("DebugTrigger", Vector3(-20, 0, -20));
 	TriggerBox[3]->setCollider(4, 4);
 	TriggerBox[3]->updateCurPos();*/
@@ -850,9 +898,10 @@ void Scene4_Boss::Render()
 	EnemyField();
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
-	RenderTextOnScreen(meshList[GEO_TEXT], cordx ,Color(0,1,0),3,0,3);
-	RenderTextOnScreen(meshList[GEO_TEXT], cordz, Color(0, 1, 0), 3, 0, 5);
-	
+	RenderTextOnScreen(meshList[GEO_TEXT], BossH, Color(0, 1, 0), 5, 0, 5);
+
+	RenderMeshOnScreen(meshList[GEO_BAR],15,5,30,30,false);
+	RenderMeshOnScreen(meshList[GEO_HEALTH], 15, 5, 1, 1,true);
 	//GUN Bullets
 	for (size_t i = 0; i < clipSize; i++)
 	{
@@ -863,7 +912,7 @@ void Scene4_Boss::Render()
 			modelStack.Rotate(270, 0, 1, 0); //Bullet inverted
 			modelStack.Translate(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z); //Pos of cur gun
 			modelStack.Translate(0, 0, -2.5f);
-			RenderMesh(meshList[GEO_DEBUGBOX], true);
+			RenderMesh(meshList[GEO_PBULLET], true);
 			modelStack.PopMatrix();
 		}
 	}
@@ -871,10 +920,12 @@ void Scene4_Boss::Render()
 	modelStack.PushMatrix();
 	modelStack.LoadMatrix(lasergun->rotateGunToCamera(camera.position, camera.up, camera.target)); //Parent to cam
 	glDisable(GL_DEPTH_TEST); //Gun forever renders
+	glDisable(GL_CULL_FACE);
 	modelStack.Translate(lasergun->Position.x, lasergun->Position.y, lasergun->Position.z); //Translate to a proper position
 	modelStack.Rotate(180, 0, 1, 0); //Gun is inverted
 	RenderMesh(meshList[GEO_BLASTER], true);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 	modelStack.PopMatrix();
 	//No transform needed
 	//-------------------------------------------------------------------------------------
@@ -995,7 +1046,7 @@ void Scene4_Boss::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, 
 	glEnable(GL_DEPTH_TEST);
 }
 
-void Scene4_Boss::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void Scene4_Boss::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, bool isHealth)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -1004,15 +1055,32 @@ void Scene4_Boss::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int si
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();
 	viewStack.LoadIdentity(); //No need camera for ortho mode
-	modelStack.PushMatrix();
-	modelStack.LoadIdentity();
-	//to do: scale and translate accordingly
-	modelStack.Translate(x, y, 0);
-	modelStack.Scale(sizex, sizey, 1);
-	RenderMesh(mesh, false); //UI should not have light
-	projectionStack.PopMatrix();
-	viewStack.PopMatrix();
-	modelStack.PopMatrix();
+	if (!isHealth)
+	{
+		modelStack.PushMatrix();
+		modelStack.LoadIdentity();
+		//to do: scale and translate accordingly
+		modelStack.Translate(x, y, 0);
+		modelStack.Scale(sizex, sizey, 1);
+		//modelStack.Translate(x, y, 0);
+		RenderMesh(mesh, false); //UI should not have light
+		projectionStack.PopMatrix();
+		viewStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
+	else
+	{
+		modelStack.PushMatrix();
+		modelStack.LoadIdentity();
+		//to do: scale and translate accordingly
+		//modelStack.Translate(x, y, 0);
+		modelStack.Scale(sizex, sizey, 1);
+		modelStack.Translate(0, 5, 0);
+		RenderMesh(mesh, false); //UI should not have light
+		projectionStack.PopMatrix();
+		viewStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
 	glEnable(GL_DEPTH_TEST);
 
 }

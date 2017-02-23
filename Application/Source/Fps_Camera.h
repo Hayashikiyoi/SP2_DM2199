@@ -20,6 +20,7 @@ public:
 	virtual void Reset();
 	bool open;
 	double xpos, ypos;
+	//double angleY;
 };
 
 #endif

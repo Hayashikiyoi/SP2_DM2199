@@ -248,6 +248,25 @@ void Menu_Room::Update(double dt)
 	}
 	camera.Update(dt);
 	lasergun->updateBullet(dt);
+
+	/*if (test2 > 18.7f)
+	{
+		test2 = 18.7f;
+	}
+	if (test2 < 0)
+	{
+		test2 = 0;
+	}
+	if (Application::IsKeyPressed('T'))
+	{
+		test2 -= 10 * dt;
+		std::cout << test2 << std::endl;
+	}
+	if (Application::IsKeyPressed('Y'))
+	{
+		test2 += 10 * dt;
+		std::cout << test2 << std::endl;
+	}*/
 }
 
 void Menu_Room::Render()
@@ -301,8 +320,11 @@ void Menu_Room::Render()
 			modelStack.LoadMatrix(lasergun->pBullet[i]->rotMatrix()); //Load gun matrix
 			modelStack.Rotate(270, 0, 1, 0); //Bullet inverted
 			modelStack.Translate(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z); //Pos of cur gun
-			modelStack.Translate(0, 0, -2.5f);
-			RenderMesh(meshList[GEO_DEBUGBOX], true);
+			modelStack.Translate(2, 0, -2.5f);
+			modelStack.Scale(0.2f, 0.2f, 0.2f);
+			glDisable(GL_CULL_FACE);
+			RenderMesh(meshList[GEO_PBULLET], true);
+			glEnable(GL_CULL_FACE);
 			modelStack.PopMatrix();
 		}
 
@@ -313,23 +335,38 @@ void Menu_Room::Render()
 	modelStack.PushMatrix();
 	modelStack.LoadMatrix(lasergun->rotateGunToCamera(camera.position, camera.up, camera.target)); //Parent to cam
 	glDisable(GL_DEPTH_TEST); //Gun forever renders
+	glDisable(GL_CULL_FACE);
 	modelStack.Translate(lasergun->Position.x, lasergun->Position.y, lasergun->Position.z); //Translate to a proper position
 	modelStack.Rotate(180, 0, 1, 0); //Gun is inverted
 	RenderMesh(meshList[GEO_BLASTER], true);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 	modelStack.PopMatrix();
 
 	//No transform needed
-	//RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
+	//RenderMeshOnScreen(meshList[GEO_QUAD], 0, 0, 1, 1, true);
+	RenderMeshOnScreen(meshList[GEO_HEALTHBG], 15, 5, 30, 30, false);
+	RenderMeshOnScreen(meshList[GEO_HEALTH], 7.7f, 5, test, 30, true);
+	RenderMeshOnScreen(meshList[GEO_STAMINA], 7.7f, 5, test2, 30, true);
 	//-------------------------------------------------------------------------------------
 }
 
 void Menu_Room::GenerateGEOMESH()
 {
+	test = 21.5f;
+	test2 = 18.7f;
+	//Quad set to size 1 only
+	meshList[GEO_HEALTHBG] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1, 1);
+	meshList[GEO_HEALTHBG]->textureID = LoadTGA("Image//UI//healthBG.tga");
+	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("Health", Color(1, 1, 1), 1, 1);
+	meshList[GEO_HEALTH]->textureID = LoadTGA("Image//UI//healthBar.tga");
+	meshList[GEO_STAMINA] = MeshBuilder::GenerateQuad("stamina", Color(1, 1, 1), 1, 1);
+	meshList[GEO_STAMINA]->textureID = LoadTGA("Image//UI//staminaBar.tga");
+	//------------------------------------------------------------------------------------
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
-	meshList[GEO_QUAD]->textureID = LoadTGA("Image//Text//zelda.tga");
+	//meshList[GEO_QUAD]->textureID = LoadTGA("Image//Text//zelda.tga");
 
 	meshList[GEO_VOTEX] = MeshBuilder::GenerateQuad("Votex", Color(1, 1, 1), 1.f, 1.f);
 	//meshList[GEO_VOTEX]->textureID = LoadTGA("Image//skybox//Portal.tga");
@@ -373,7 +410,11 @@ void Menu_Room::GenerateSkybox()
 }
 void Menu_Room::GenerateOBJ()
 {
-	meshList[GEO_BLASTER] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//blaster.obj");
+	meshList[GEO_BLASTER] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//blaster.obj");
+	meshList[GEO_BLASTER]->textureID = LoadTGA("Image//Player//blaster.tga");
+	meshList[GEO_PBULLET] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//Player_Bullet.obj");
+	meshList[GEO_PBULLET]->textureID = LoadTGA("Image//Player//Player_Bullet.tga");
+
 
 	//WALLS
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall", "OBJ//Wall//Wall.obj");
@@ -782,7 +823,7 @@ void Menu_Room::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 
 	glEnable(GL_DEPTH_TEST);
 }
-void Menu_Room::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void Menu_Room::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey, bool isHealth)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -791,15 +832,33 @@ void Menu_Room::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int size
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();
 	viewStack.LoadIdentity(); //No need camera for ortho mode
-	modelStack.PushMatrix();
-	modelStack.LoadIdentity();
-	//to do: scale and translate accordingly
-	modelStack.Translate(x, y, 0);
-	modelStack.Scale(sizex, sizey, 1);
-	RenderMesh(mesh, false); //UI should not have light
-	projectionStack.PopMatrix();
-	viewStack.PopMatrix();
-	modelStack.PopMatrix();
+	if (isHealth)
+	{
+		modelStack.PushMatrix();
+		modelStack.LoadIdentity();
+		//to do: scale and translate accordingly
+		modelStack.Translate(x, y, 0);
+		//modelStack.Translate(sizex * 0.5f, 0, 0);
+		modelStack.Scale(sizex, sizey, 1);
+		modelStack.Translate(0.5f, 0, 0); //Size of quad pls set to 1
+		RenderMesh(mesh, false); //UI should not have light
+		projectionStack.PopMatrix();
+		viewStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
+	else
+	{
+		modelStack.PushMatrix();
+		modelStack.LoadIdentity();
+		//to do: scale and translate accordingly
+		modelStack.Translate(x, y, 0);
+		modelStack.Scale(sizex, sizey, 1);
+		RenderMesh(mesh, false); //UI should not have light
+		projectionStack.PopMatrix();
+		viewStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
+	
 	glEnable(GL_DEPTH_TEST);
 
 }

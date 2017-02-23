@@ -99,6 +99,10 @@ class Menu_Room : public Scene
 		GEO_DOOR,
 		GEO_DOOR_2,
 		GEO_BLASTER,
+		GEO_PBULLET,
+		GEO_HEALTHBG,
+		GEO_HEALTH,
+		GEO_STAMINA,
 		NUM_GEOMETRY,
 	};
 
@@ -121,7 +125,7 @@ private:
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey, bool isHealth);
 
 	//Call Game Object
 	void GenerateOBJ();
@@ -148,6 +152,9 @@ private:
 
 	//Enemy
 	Enemy* turret[numOfEnemy]; //NPC Need rename
+
+	float test;
+	float test2;
 
 public:
 	Menu_Room();
