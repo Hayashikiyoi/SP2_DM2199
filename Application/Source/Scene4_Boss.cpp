@@ -110,9 +110,8 @@ void Scene4_Boss::Init()
 	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//NPC//Vending_Cover.obj");
 	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//NPC//Vending_Cover.tga");*/
 
-	GenerateOBJ();
-
 	GUI();
+	GenerateOBJ();
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -440,14 +439,16 @@ void Scene4_Boss::Update(double dt)
 
 void Scene4_Boss::GUI()
 {
-	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_HEALTH]->textureID = LoadTGA("Image//UI//Health_Bar.tga");
+	test = 21.5f;
+	test2 = 18.7f;
+	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_HEALTH]->textureID = LoadTGA("Image//UI//healthBar.tga");
 
-	meshList[GEO_STAMINA] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_STAMINA]->textureID = LoadTGA("Image//UI//Stamina_Bar.tga");
+	meshList[GEO_STAMINA] = MeshBuilder::GenerateQuad("stamina", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_STAMINA]->textureID = LoadTGA("Image//UI//staminaBar.tga");
 
-	meshList[GEO_BAR] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_BAR]->textureID = LoadTGA("Image//UI//Health&Stamina_Background.tga");
+	meshList[GEO_HEALTHBG] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_HEALTHBG]->textureID = LoadTGA("Image//UI//healthBG.tga");
 }
 
 void Scene4_Boss::skyBox()
@@ -920,8 +921,10 @@ void Scene4_Boss::Render()
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	modelStack.PopMatrix();
-	RenderMeshOnScreen(meshList[GEO_BAR], 15, 5, 30, 30, false);
-	RenderMeshOnScreen(meshList[GEO_HEALTH], 15, 5, 1, 1, true);
+
+	RenderMeshOnScreen(meshList[GEO_HEALTHBG], 15, 5, 30, 30, false);
+	RenderMeshOnScreen(meshList[GEO_HEALTH], 8.f, 5, test, 30, true);
+	RenderMeshOnScreen(meshList[GEO_STAMINA], 8.1f, 5, camera.test2, 30, true);
 	//-------------------------------------------------------------------------------------
 }
 
@@ -1049,13 +1052,15 @@ void Scene4_Boss::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int si
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();
 	viewStack.LoadIdentity(); //No need camera for ortho mode
-	if (!isHealth)
+	if (isHealth)
 	{
 		modelStack.PushMatrix();
 		modelStack.LoadIdentity();
 		//to do: scale and translate accordingly
 		modelStack.Translate(x, y, 0);
+		//modelStack.Translate(sizex * 0.5f, 0, 0);
 		modelStack.Scale(sizex, sizey, 1);
+		modelStack.Translate(0.5f, 0, 0); //Size of quad pls set to 1
 		RenderMesh(mesh, false); //UI should not have light
 		projectionStack.PopMatrix();
 		viewStack.PopMatrix();
@@ -1066,8 +1071,8 @@ void Scene4_Boss::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int si
 		modelStack.PushMatrix();
 		modelStack.LoadIdentity();
 		//to do: scale and translate accordingly
+		modelStack.Translate(x, y, 0);
 		modelStack.Scale(sizex, sizey, 1);
-		modelStack.Translate(0, 5, 0);
 		RenderMesh(mesh, false); //UI should not have light
 		projectionStack.PopMatrix();
 		viewStack.PopMatrix();

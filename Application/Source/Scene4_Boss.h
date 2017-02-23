@@ -19,6 +19,11 @@ using std::string;
 #include "Bullet.h"
 #include "Weapon.h"
 
+#undef numOfEnemy
+#undef numOfBullets
+#undef numOfWalls
+#undef numOfGun
+
 #define numOfEnemy 25
 #define numOfBullets 5
 #define numOfWalls 10
@@ -104,9 +109,9 @@ class Scene4_Boss : public Scene
 		GEO_DOOR_2,
 		GEO_BLASTER,
 		GEO_PBULLET,
+		GEO_HEALTHBG,
 		GEO_HEALTH,
 		GEO_STAMINA,
-		GEO_BAR,
 		NUM_GEOMETRY,
 	};
 
@@ -167,7 +172,8 @@ private:
 	void GenerateOBJ();
 
 	float moveBullet;
-
+	float test;
+	float test2;
 public:
 	Scene4_Boss();
 	~Scene4_Boss();
