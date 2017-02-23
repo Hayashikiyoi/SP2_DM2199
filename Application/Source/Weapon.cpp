@@ -49,10 +49,10 @@ void Weapon::shoot()
 {
 	for (int i = 0; i < clipSize; ++i)
 	{
-		if (!pBullet[i]->shot() && pBullet[i] && clip > 0)
+		if (!pBullet[i]->shot() && pBullet[i] )
 		{
-			pBullet[i]->shooting(true, rotation);
 			pBullet[i]->Position = this->Position;
+			pBullet[i]->shooting(true, rotation);
 			clip--;
 			break;
 		}
