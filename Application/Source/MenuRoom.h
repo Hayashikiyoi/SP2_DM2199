@@ -81,6 +81,7 @@ class Menu_Room : public Scene
 		GEO_FRONT,
 		GEO_BACK,
 		GEO_FLOOR,
+		GEO_FLOOR_2,
 		GEO_TEXT,
 		GEO_DEBUGBOX,
 		GEO_VENDINGBODY,
@@ -97,7 +98,6 @@ class Menu_Room : public Scene
 		GEO_WALL_2,
 		GEO_DOOR_FRAME,
 		GEO_DOOR,
-		GEO_DOOR_2,
 		GEO_BLASTER,
 		GEO_PBULLET,
 		GEO_HEALTHBG,
@@ -134,7 +134,7 @@ private:
 
 	//GameObj
 	GameObject* object[NUM_GEOMETRY];
-	GameObject* TriggerBox[5];
+	GameObject* TriggerBox[7];
 	Item* Locked[4];
 
 	//Initialize

@@ -14,19 +14,19 @@ bool PlayerBullet::shot(void)
 {
 	return isShot;
 }
-void PlayerBullet::shooting(bool shot, Mtx44 rotation)
+void PlayerBullet::shooting()
 {
 	if (!isShot)
 	{
-		this->rot = rotation;
 		isShot = true;
 	}
 }
-void PlayerBullet::updateBullet(double dt)
+void PlayerBullet::updateBullet(double dt, size_t speed)
 {
 	if (isShot)
 	{
-		Position += (100 * dt);
+		Position += ((speed * dt) * velcocity);
+		updateCurPos();
 		timer += dt;
 		if (timer > 2.5)
 		{
@@ -34,9 +34,4 @@ void PlayerBullet::updateBullet(double dt)
 			isShot = false;
 		}
 	}
-}
-
-Mtx44 PlayerBullet::rotMatrix()
-{
-	return (this->rot);
 }

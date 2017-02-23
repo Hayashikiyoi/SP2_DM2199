@@ -120,7 +120,6 @@ void Menu_Room::Init()
 	projectionStack.LoadMatrix(projection);
 }
 
-
 void Menu_Room::Update(double dt)
 {
 	static float translateLimit = 1;
@@ -198,7 +197,6 @@ void Menu_Room::Update(double dt)
 		}
 	}
 
-
 	for (int i = 0; i < numOfEnemy; ++i)
 	{
 		if (turret[i] && player->trigger(turret[i]))
@@ -213,6 +211,20 @@ void Menu_Room::Update(double dt)
 		{
 			prevpos = camera.position;
 			prevposTarget = camera.target;
+		}
+		
+	}
+
+	for (int i = 0; i < clipSize; ++i)
+	{
+		if (turret[1] && lasergun->pBullet[i]->trigger(turret[1]))
+		{
+			//if you need to get pushed out of the collider
+			std::cout << "HITHITHIT" << std::endl;
+			/*deltaTime = "Wham bam";
+			camera.position = prevpos;
+			camera.target = prevposTarget;*/
+			break;
 		}
 	}
 //----------------------------------------------------------------------------
@@ -239,34 +251,42 @@ void Menu_Room::Update(double dt)
 				deltaTime = "Press E: Level_3";
 			if (Application::IsKeyPressed('E') && i == 3)
 				SceneManager::instance()->changeScene(6);*/
+			if (i == 4)
+				deltaTime = "Press E: Unlock";
+			if (Application::IsKeyPressed('E') && i == 4)
+			{
+				turret[17]->Position.z = 1000;
+				turret[17]->Position.y = -100;
+			}
 			break;
 		}
 	}
 	if (Application::IsKeyPressed(VK_LBUTTON))
 	{
-		lasergun->shoot();
+//		lasergun->shoot(camera.position);
 	}
 	camera.Update(dt);
-	lasergun->updateBullet(dt);
+//	lasergun->updateBullet(dt);
 
-	/*if (test2 > 18.7f)
-	{
-		test2 = 18.7f;
-	}
-	if (test2 < 0)
-	{
-		test2 = 0;
-	}
-	if (Application::IsKeyPressed('T'))
-	{
-		test2 -= 10 * dt;
-		std::cout << test2 << std::endl;
-	}
-	if (Application::IsKeyPressed('Y'))
-	{
-		test2 += 10 * dt;
-		std::cout << test2 << std::endl;
-	}*/
+	//if ()
+	//if (test2 > 18.7f)
+	//{
+	//	test2 = 18.7f;
+	//}
+	//if (test2 < 0)
+	//{
+	//	test2 = 0;
+	//}
+	//if (Application::IsKeyPressed('T'))
+	//{
+	//	test2 -= 10 * dt;
+	//	std::cout << test2 << std::endl;
+	//}
+	//if (Application::IsKeyPressed('Y'))
+	//{
+	//	test2 += 10 * dt;
+	//	std::cout << test2 << std::endl;
+	//}
 }
 
 void Menu_Room::Render()
@@ -317,9 +337,10 @@ void Menu_Room::Render()
 		if (lasergun->pBullet[i]->shot())
 		{
 			modelStack.PushMatrix();
-			modelStack.LoadMatrix(lasergun->pBullet[i]->rotMatrix()); //Load gun matrix
+			//modelStack.LoadMatrix(lasergun->pBullet[i]->rotMatrix()); //Load gun matrix
 			modelStack.Rotate(270, 0, 1, 0); //Bullet inverted
 			modelStack.Translate(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z); //Pos of cur gun
+			
 			modelStack.Translate(2, 0, -2.5f);
 			modelStack.Scale(0.2f, 0.2f, 0.2f);
 			glDisable(GL_CULL_FACE);
@@ -347,7 +368,7 @@ void Menu_Room::Render()
 	//RenderMeshOnScreen(meshList[GEO_QUAD], 0, 0, 1, 1, true);
 	RenderMeshOnScreen(meshList[GEO_HEALTHBG], 15, 5, 30, 30, false);
 	RenderMeshOnScreen(meshList[GEO_HEALTH], 7.7f, 5, test, 30, true);
-	RenderMeshOnScreen(meshList[GEO_STAMINA], 7.7f, 5, test2, 30, true);
+	RenderMeshOnScreen(meshList[GEO_STAMINA], 7.7f, 5, camera.test2, 30, true);
 	//-------------------------------------------------------------------------------------
 }
 
@@ -380,6 +401,9 @@ void Menu_Room::GenerateGEOMESH()
 
 	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("Floor", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor//floor.tga");
+
+	meshList[GEO_FLOOR_2] = MeshBuilder::GenerateQuad("Floor_2", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_FLOOR_2]->textureID = LoadTGA("Image//skybox3//Floor2.tga");
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
@@ -414,7 +438,6 @@ void Menu_Room::GenerateOBJ()
 	meshList[GEO_BLASTER]->textureID = LoadTGA("Image//Player//blaster.tga");
 	meshList[GEO_PBULLET] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//Player_Bullet.obj");
 	meshList[GEO_PBULLET]->textureID = LoadTGA("Image//Player//Player_Bullet.tga");
-
 
 	//WALLS
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall", "OBJ//Wall//Wall.obj");
@@ -487,6 +510,21 @@ void Menu_Room::GenerateOBJ()
 	turret[13] = new Enemy("Robot", Vector3(0, 0, 400));
 	turret[13]->setCollider(10, 10);
 	turret[13]->updateCurPos();
+
+	//Doors
+	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//Door//Door_Test_4.obj");
+	//meshList[GEO_DOOR]->textureID = LoadTGA("Image//Wall//Wall.tga");
+	meshList[GEO_DOOR_FRAME] = MeshBuilder::GenerateOBJ("Door_Frame", "OBJ//Door//doorframe_2.obj");
+	//meshList[GEO_DOOR_FRAME]->textureID = LoadTGA("Image//Wall//Wall.tga");
+	turret[14] = new Enemy("Door", Vector3(0, 0, 100));
+	turret[14]->setCollider(1000, 15);
+	turret[14]->updateCurPos();
+	turret[15] = new Enemy("DoorFrame", Vector3(0, 0, 100));
+	//Door 2
+	turret[16] = new Enemy("Door", Vector3(0, 0, -100));
+	turret[16]->setCollider(1000, 15);
+	turret[16]->updateCurPos();
+	turret[17] = new Enemy("DoorFrame", Vector3(0, 0, -100));
 }
 
 void Menu_Room::initializeObjects()
@@ -577,6 +615,7 @@ void Menu_Room::RenderSkybox()
 	RenderMesh(meshList[GEO_BACK], false);
 	modelStack.PopMatrix();
 }
+
 void Menu_Room::Walls()
 {
 	//Plane
@@ -644,7 +683,40 @@ void Menu_Room::Walls()
 	modelStack.Scale(1000.f, 1000.f, 1000.f);
 	RenderMesh(meshList[GEO_BOTTOMVOTEX], false);
 	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	//to do: transformation code here
+	modelStack.Translate(0, -1, -100);
+	modelStack.Rotate(90, -1, 0, 0);
+	modelStack.Scale(100.f, 100.f, 100.f);
+	RenderMesh(meshList[GEO_FLOOR_2], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	//to do: transformation code here
+	modelStack.Translate(0, -1, -50);
+	modelStack.Rotate(90, -1, 0, 0);
+	modelStack.Scale(100.f, 100.f, 100.f);
+	RenderMesh(meshList[GEO_FLOOR_2], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	//to do: transformation code here
+	modelStack.Translate(0, -1, 50);
+	modelStack.Rotate(90, -1, 0, 0);
+	modelStack.Scale(100.f, 100.f, 100.f);
+	RenderMesh(meshList[GEO_FLOOR_2], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	//to do: transformation code here
+	modelStack.Translate(0, -1, 100);
+	modelStack.Rotate(90, -1, 0, 0);
+	modelStack.Scale(100.f, 100.f, 100.f);
+	RenderMesh(meshList[GEO_FLOOR_2], false);
+	modelStack.PopMatrix();
 }
+
 void Menu_Room::EnemyField()
 {
 	modelStack.PushMatrix();
@@ -709,6 +781,35 @@ void Menu_Room::EnemyField()
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_COMPUTER], false);
 	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[14]->Position.x + 4, turret[14]->Position.y, turret[14]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(5.5, 5.5, 5.5);
+	RenderMesh(meshList[GEO_DOOR], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[15]->Position.x + 4, turret[15]->Position.y, turret[15]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(5.5, 5.5, 5.5);
+	RenderMesh(meshList[GEO_DOOR_FRAME], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[16]->Position.x+4, turret[16]->Position.y, turret[16]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_DOOR], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[17]->Position.x+4, turret[17]->Position.y, turret[17]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_DOOR_FRAME], false);
+	modelStack.PopMatrix();
+
 }
 
 void Menu_Room::RenderMesh(Mesh *mesh, bool enableLight)
