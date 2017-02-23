@@ -3,6 +3,7 @@
 
 #include "GameObject.h"
 #include "Mtx44.h"
+#include "Fps_Camera.h"
 
 class PlayerBullet : public GameObject
 {
@@ -14,14 +15,13 @@ public:
 	//return Boolean for shooting
 	bool shot(void);
 	//Set boolean and rotaion of current gun for bullet
-	void shooting(bool shot, Mtx44 rotation);
+	void shooting();
 
 	//Update for bullet (Translate bullet in the foward vector)
-	void updateBullet(double dt);
+	void updateBullet(double dt, size_t speed);
 
-	//For load matrix
-	Mtx44 rotMatrix();
-
+	//Forward Vector
+	Vector3 velcocity;
 private:
 	bool isShot;
 	//Vector3 up, forward, right; //Try to not include first

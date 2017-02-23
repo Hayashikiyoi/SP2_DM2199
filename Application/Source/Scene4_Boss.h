@@ -166,6 +166,8 @@ private:
 	//Game Object
 	void GenerateOBJ();
 
+	float moveBullet;
+
 public:
 	Scene4_Boss();
 	~Scene4_Boss();
