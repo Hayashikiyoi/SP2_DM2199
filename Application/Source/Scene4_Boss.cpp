@@ -902,7 +902,7 @@ void Scene4_Boss::Render()
 			modelStack.PushMatrix();
 			//modelStack.Translate(-2.f, -.8f, 2.f); //Pos of cur gun
 			
-			modelStack.Translate(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y-1, lasergun->pBullet[i]->Position.z); //Forward trnaslate
+			modelStack.Translate(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z); //Forward trnaslate
 			//modelStack.Translate(lasergun->Position.x, lasergun->Position.y, lasergun->Position.z);
 			modelStack.Scale(0.5f, 0.5f, 0.5f);
 			RenderMesh(meshList[GEO_PBULLET], true);

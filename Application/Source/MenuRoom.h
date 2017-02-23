@@ -103,6 +103,9 @@ class Menu_Room : public Scene
 		GEO_HEALTHBG,
 		GEO_HEALTH,
 		GEO_STAMINA,
+		GEO_AMMOBG,
+		GEO_BOSSTESTBG,
+		GEO_BOSSTEST,
 		NUM_GEOMETRY,
 	};
 
@@ -154,7 +157,7 @@ private:
 	Enemy* turret[numOfEnemy]; //NPC Need rename
 
 	float test;
-	float test2;
+	float test2, test3;
 
 public:
 	Menu_Room();

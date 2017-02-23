@@ -34,7 +34,7 @@ void Menu_Room::Init()
 	//Initialise camera
 	camera.Init(Vector3(0, 0, -400), Vector3(0, 0, -10), Vector3(0, 1, 0));
 	player = new Player("camera", Vector3(0, 0, -400));
-	lasergun = new Weapon("Blaster", Vector3(0.5, -0.750, 2), 50);
+	lasergun = new Weapon("Blaster", Vector3(-0.12f, -0.750, 2), 100);
 
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -124,7 +124,7 @@ void Menu_Room::Update(double dt)
 {
 	static float translateLimit = 1;
 
-	deltaTime = "FPS:" + std::to_string(1 / dt);
+	//deltaTime = "FPS:" + std::to_string(1 / dt);
 
 	cordx = "X: " + std::to_string(camera.position.x);
 	cordz = "Z: " + std::to_string(camera.position.z);
@@ -214,19 +214,6 @@ void Menu_Room::Update(double dt)
 		}
 		
 	}
-
-	for (int i = 0; i < clipSize; ++i)
-	{
-		if (turret[1] && lasergun->pBullet[i]->trigger(turret[1]))
-		{
-			//if you need to get pushed out of the collider
-			std::cout << "HITHITHIT" << std::endl;
-			/*deltaTime = "Wham bam";
-			camera.position = prevpos;
-			camera.target = prevposTarget;*/
-			break;
-		}
-	}
 //----------------------------------------------------------------------------
 	object[GEO_BOTTOMVOTEX]->rotation += (float)dt;
 	object[GEO_VOTEX]->rotation -= (float)dt;
@@ -263,30 +250,47 @@ void Menu_Room::Update(double dt)
 	}
 	if (Application::IsKeyPressed(VK_LBUTTON))
 	{
-//		lasergun->shoot(camera.position);
+		lasergun->shoot(&camera);
 	}
 	camera.Update(dt);
-//	lasergun->updateBullet(dt);
+	lasergun->updateBullet(dt);
 
-	//if ()
-	//if (test2 > 18.7f)
-	//{
-	//	test2 = 18.7f;
-	//}
-	//if (test2 < 0)
-	//{
-	//	test2 = 0;
-	//}
-	//if (Application::IsKeyPressed('T'))
-	//{
-	//	test2 -= 10 * dt;
-	//	std::cout << test2 << std::endl;
-	//}
-	//if (Application::IsKeyPressed('Y'))
-	//{
-	//	test2 += 10 * dt;
-	//	std::cout << test2 << std::endl;
-	//}
+	/*if (test2 > 30.f)
+	{
+		test2 = 30.f;
+	}
+	if (test2 < 0)
+	{
+		test2 = 0;
+	}
+	if (Application::IsKeyPressed('T'))
+	{
+		test2 -= 30 * dt;
+		std::cout << test2 << std::endl;
+	}
+	if (Application::IsKeyPressed('Y'))
+	{
+		test2 += 30 * dt;
+		std::cout << test2 << std::endl;
+	}
+	if (test3 > 30.f)
+	{
+		test3 = 30.f;
+	}
+	if (test3 < 0)
+	{
+		test3 = 0;
+	}
+	if (Application::IsKeyPressed('G'))
+	{
+		test3 -= 30 * dt;
+		std::cout << test2 << std::endl;
+	}
+	if (Application::IsKeyPressed('H'))
+	{
+		test3 += 30 * dt;
+		std::cout << test2 << std::endl;
+	}*/
 }
 
 void Menu_Room::Render()
@@ -334,23 +338,15 @@ void Menu_Room::Render()
 
 	for (size_t i = 0; i < clipSize; i++)
 	{
-		if (lasergun->pBullet[i]->shot())
+		if (lasergun->pBullet[i]->shot() == true)
 		{
 			modelStack.PushMatrix();
-			//modelStack.LoadMatrix(lasergun->pBullet[i]->rotMatrix()); //Load gun matrix
-			modelStack.Rotate(270, 0, 1, 0); //Bullet inverted
-			modelStack.Translate(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z); //Pos of cur gun
-			
-			modelStack.Translate(2, 0, -2.5f);
-			modelStack.Scale(0.2f, 0.2f, 0.2f);
-			glDisable(GL_CULL_FACE);
+			modelStack.Translate(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z); //Forward trnaslate
+			modelStack.Scale(0.5f, 0.5f, 0.5f);
 			RenderMesh(meshList[GEO_PBULLET], true);
-			glEnable(GL_CULL_FACE);
 			modelStack.PopMatrix();
 		}
-
 	}
-
 
 	//Test gun
 	modelStack.PushMatrix();
@@ -369,13 +365,19 @@ void Menu_Room::Render()
 	RenderMeshOnScreen(meshList[GEO_HEALTHBG], 15, 5, 30, 30, false);
 	RenderMeshOnScreen(meshList[GEO_HEALTH], 7.7f, 5, test, 30, true);
 	RenderMeshOnScreen(meshList[GEO_STAMINA], 7.7f, 5, camera.test2, 30, true);
+
+	RenderMeshOnScreen(meshList[GEO_AMMOBG], 65, 10, 30, 30, false);
+
+	/*RenderMeshOnScreen(meshList[GEO_BOSSTESTBG], 40, 55, test2, 30, false);	
+	RenderMeshOnScreen(meshList[GEO_BOSSTEST], 40, 55, test3, 30, false);*/
 	//-------------------------------------------------------------------------------------
 }
 
 void Menu_Room::GenerateGEOMESH()
 {
 	test = 21.5f;
-	test2 = 18.7f;
+	/*test2 = 30.f;
+	test3 = 30.f;*/
 	//Quad set to size 1 only
 	meshList[GEO_HEALTHBG] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1, 1);
 	meshList[GEO_HEALTHBG]->textureID = LoadTGA("Image//UI//healthBG.tga");
@@ -383,6 +385,14 @@ void Menu_Room::GenerateGEOMESH()
 	meshList[GEO_HEALTH]->textureID = LoadTGA("Image//UI//healthBar.tga");
 	meshList[GEO_STAMINA] = MeshBuilder::GenerateQuad("stamina", Color(1, 1, 1), 1, 1);
 	meshList[GEO_STAMINA]->textureID = LoadTGA("Image//UI//staminaBar.tga");
+
+	meshList[GEO_AMMOBG] = MeshBuilder::GenerateQuad("ammoBG", Color(1, 1, 1), 1, 1);
+	meshList[GEO_AMMOBG]->textureID = LoadTGA("Image//UI//ammoBG.tga");
+
+	/*meshList[GEO_BOSSTESTBG] = MeshBuilder::GenerateQuad("ammoBG", Color(1, 1, 1), 1, 1);
+	meshList[GEO_BOSSTESTBG]->textureID = LoadTGA("Image//UI//Boss//bossBG.tga");
+	meshList[GEO_BOSSTEST] = MeshBuilder::GenerateQuad("ammoBG", Color(1, 1, 1), 1, 1);
+	meshList[GEO_BOSSTEST]->textureID = LoadTGA("Image//UI//Boss//bossHP.tga");*/
 	//------------------------------------------------------------------------------------
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 

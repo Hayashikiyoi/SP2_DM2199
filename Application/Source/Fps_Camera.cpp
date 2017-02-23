@@ -31,7 +31,7 @@ void Fps_Camera::Init(const Vector3& pos, const Vector3& target, const Vector3& 
 
 void Fps_Camera::Update(double dt)
 {
-	static const float CAMERA_SPEED = 70.f;
+	static const float CAMERA_SPEED = 20.f;
 	view = (target - position).Normalized();
 	right = view.Cross(up);
 	right.y = 0;
