@@ -19,6 +19,8 @@ public:
 	virtual void Update(double dt);
 	virtual void Reset();
 	bool open;
+	float test2;
+	bool sprintcheck;
 	double xpos, ypos;
 	//double angleY;
 };

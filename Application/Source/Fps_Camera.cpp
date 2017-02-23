@@ -3,6 +3,7 @@
 #include "Mtx44.h"
 #include "GLFW\glfw3.h"
 #include "MyMath.h"
+#include "MenuRoom.h"
 extern GLFWwindow* m_window;
 
 Fps_Camera::Fps_Camera()
@@ -21,6 +22,8 @@ void Fps_Camera::Init(const Vector3& pos, const Vector3& target, const Vector3& 
 	Vector3 view = (target - position).Normalized();
 	Vector3 right = view.Cross(up);
 	right.y = 0;
+	test2 = 18.7;
+	sprintcheck = true;
 	right.Normalize();
 	this->up = defaultUp = right.Cross(view).Normalized();
 	this->rotate.SetToIdentity(); //I added this
@@ -59,7 +62,46 @@ void Fps_Camera::Update(double dt)
 		position -= view * (float)(CAMERA_SPEED * dt);
 		target = position + view * (float)(CAMERA_SPEED * dt);
 	}
-	
+	if (sprintcheck)
+	{
+		if (Application::IsKeyPressed(VK_SHIFT) && Application::IsKeyPressed('A'))
+		{
+			position -= right * (float)(CAMERA_SPEED * 2 * dt);
+			target = position + view * (float)(CAMERA_SPEED * dt);
+			test2 -= 5 * dt;
+		}
+
+		else if (Application::IsKeyPressed(VK_SHIFT) && Application::IsKeyPressed('W'))
+		{
+			position += view * (float)(CAMERA_SPEED * 2 * dt);
+			target = position + view * (float)(CAMERA_SPEED * dt);
+			test2 -= 5 * dt;
+		}
+
+		else if (Application::IsKeyPressed(VK_SHIFT) && Application::IsKeyPressed('S'))
+		{
+			position -= view * (float)(CAMERA_SPEED * 2 * dt);
+			target = position + view * (float)(CAMERA_SPEED * dt);
+			test2 -= 5 * dt;
+		}
+
+		else if (Application::IsKeyPressed(VK_SHIFT) && Application::IsKeyPressed('D'))
+		{
+			position += right * (float)(CAMERA_SPEED * 2 * dt);
+			target = position + view * (float)(CAMERA_SPEED * dt);
+			test2 -= 5 * dt;
+		}
+		else if (test2 < 18.7)
+			test2 += 6 * dt;
+		if (test2 <= 0)
+			sprintcheck = false;
+	}
+	if (!sprintcheck)
+	{
+		test2 += 6 * dt;
+		if (test2 >= 18.7)
+			sprintcheck = true;
+	}
 	glfwGetCursorPos(m_window, &xpos, &ypos);
 	
 	int mid_x = 800 / 2;
