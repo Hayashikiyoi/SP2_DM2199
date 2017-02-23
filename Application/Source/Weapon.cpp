@@ -17,8 +17,9 @@ GameObject(name, pos), clip(45), canister(0), bulletSpeed(BulletSpeed)
 {
 	for (int i = 0; i < clipSize; ++i) //Initialize player bullet
 	{
-		pBullet[i] = new PlayerBullet("Bullet", pos);
+		pBullet[i] = new PlayerBullet("Bullet", Vector3(1000,1000,1000));
 		pBullet[i]->setCollider(2, 2);
+		pBullet[i]->updateCurPos();
 	}
 		
 }
@@ -49,7 +50,7 @@ void Weapon::shoot()
 {
 	for (int i = 0; i < clipSize; ++i)
 	{
-		if (!pBullet[i]->shot() && pBullet[i] && clip > 0)
+		if (!pBullet[i]->shot() && pBullet[i])
 		{
 			pBullet[i]->shooting(true, rotation);
 			pBullet[i]->Position = this->Position;

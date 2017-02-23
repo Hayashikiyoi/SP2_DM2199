@@ -103,6 +103,10 @@ class Scene4_Boss : public Scene
 		GEO_DOOR,
 		GEO_DOOR_2,
 		GEO_BLASTER,
+		GEO_PBULLET,
+		GEO_HEALTH,
+		GEO_STAMINA,
+		GEO_BAR,
 		NUM_GEOMETRY,
 	};
 
@@ -122,6 +126,7 @@ private:
 	Player* player;
 
 	string deltaTime;
+	string BossH;
 	string cordx, cordy, cordz;
 	Vector3 Robot;
 
@@ -132,7 +137,7 @@ private:
 
 	//Weapon for Player
 	Weapon* lasergun;
-
+	
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
@@ -153,10 +158,11 @@ private:
 	void RenderSkybox();
 	void Walls();
 	void EnemyField();
+	void GUI();
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, bool isHealth);
 	//Game Object
 	void GenerateOBJ();
 
