@@ -52,8 +52,8 @@ void Weapon::shoot()
 	{
 		if (!pBullet[i]->shot() && pBullet[i])
 		{
-			pBullet[i]->shooting(true, rotation);
 			pBullet[i]->Position = this->Position;
+			pBullet[i]->shooting(true, rotation);
 			clip--;
 			break;
 		}
