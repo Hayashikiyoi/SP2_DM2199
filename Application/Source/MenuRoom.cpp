@@ -212,10 +212,6 @@ void Menu_Room::Update(double dt)
 			prevpos = camera.position;
 			prevposTarget = camera.target;
 		}
-<<<<<<< HEAD
-		
-=======
-
 		
 	}
 
@@ -230,7 +226,6 @@ void Menu_Room::Update(double dt)
 			camera.target = prevposTarget;*/
 			break;
 		}
->>>>>>> d9421611b4ba380b4f5df5e2a2b44b26c0bf7d83
 	}
 //----------------------------------------------------------------------------
 	object[GEO_BOTTOMVOTEX]->rotation += (float)dt;

@@ -113,21 +113,18 @@ void Application::Init()
 void Application::Run()
 {
 	//Main Loop
-	//SceneManager::instance()->addScene(new Aloy_Scene); //Main menu must be at first (Unless have splash screen before that)
-	//SceneManager::instance()->addScene(new LoadScene); //Must be after main menu
-	//SceneManager::instance()->addScene(new Menu_Room);
+	SceneManager::instance()->addScene(new Aloy_Scene); //Main menu must be at first (Unless have splash screen before that)
+	SceneManager::instance()->addScene(new LoadScene); //Must be after main menu
+	SceneManager::instance()->addScene(new Menu_Room);
 	//SceneManager::instance()->addScene(new Wilson);
 	//SceneManager::instance()->addScene(new Scene1tutorial);
-	SceneManager::instance()->addScene(new ChuanXu);
+	//SceneManager::instance()->addScene(new ChuanXu);
 	//SceneManager::instance()->addScene(new SceneGameOver);
 	//SceneManager::instance()->addScene(new Scene_Level2);
-<<<<<<< HEAD
-	SceneManager::instance()->addScene(new SceneCalvert);
-	SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
-=======
 	//SceneManager::instance()->addScene(new SceneCalvert);
 	//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
->>>>>>> d9421611b4ba380b4f5df5e2a2b44b26c0bf7d83
+	//SceneManager::instance()->addScene(new SceneCalvert);
+	//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
 	SceneManager::instance()->addScene(new Scene4_Boss);
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
 
