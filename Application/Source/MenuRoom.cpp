@@ -355,13 +355,14 @@ void Menu_Room::GenerateGEOMESH()
 {
 	test = 21.5f;
 	test2 = 18.7f;
+	//Quad set to size 1 only
 	meshList[GEO_HEALTHBG] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1, 1);
 	meshList[GEO_HEALTHBG]->textureID = LoadTGA("Image//UI//healthBG.tga");
 	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("Health", Color(1, 1, 1), 1, 1);
 	meshList[GEO_HEALTH]->textureID = LoadTGA("Image//UI//healthBar.tga");
 	meshList[GEO_STAMINA] = MeshBuilder::GenerateQuad("stamina", Color(1, 1, 1), 1, 1);
 	meshList[GEO_STAMINA]->textureID = LoadTGA("Image//UI//staminaBar.tga");
-
+	//------------------------------------------------------------------------------------
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
@@ -839,7 +840,7 @@ void Menu_Room::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, fl
 		modelStack.Translate(x, y, 0);
 		//modelStack.Translate(sizex * 0.5f, 0, 0);
 		modelStack.Scale(sizex, sizey, 1);
-		modelStack.Translate(0.5f, 0, 0);
+		modelStack.Translate(0.5f, 0, 0); //Size of quad pls set to 1
 		RenderMesh(mesh, false); //UI should not have light
 		projectionStack.PopMatrix();
 		viewStack.PopMatrix();
