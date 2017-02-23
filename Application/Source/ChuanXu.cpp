@@ -349,7 +349,7 @@ void ChuanXu::Update(double dt)
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
-		}
+		} 
 
 	}
 	for (int i = 0; i < numOfEnemy; ++i)
@@ -370,7 +370,8 @@ void ChuanXu::Update(double dt)
 
 	for (int i = 0; i < numOfBullet; ++i)
 	{
-		if (bullet[i] && player->trigger(bullet[i]))		{
+		if (bullet[i] && player->trigger(bullet[i]))		
+		{
 			if (!smtHappen)
 			{
 				player->DmgPlayer(1);

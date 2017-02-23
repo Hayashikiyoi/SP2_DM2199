@@ -1,27 +1,26 @@
 #ifndef SCENE1TUTORIAL_H
-#define SCENE1TURORIAL_H
+#define SCENE1TUTORIAL_H
 
 #include "Scene.h"
-#include "Fps_Camera.h"
+#include "Camera3.h"
 #include "Mesh.h"
 #include "MatrixStack.h"
 #include "Light.h"
 #include "Utility.h"
+#include "Enemy.h"
+#include "Bullet.h"
+#include"Fps_Camera.h"
+#include"Player.h"
+#include "Item.h"
 
 #include <string>
 using std::string;
-
-// GameObject Folder
-#include "Enemy.h"
-#include "GameObject.h"
-#include "Item.h"
-#include "Player.h"
-
 #undef numOfEnemy
 
-#define numOfEnemy 20
+#define numOfEnemy 5
+#define numOfBullet 5
 #define numOfRocks 10
-
+#define Walls 4
 class Scene1tutorial : public Scene
 {
 
@@ -71,7 +70,6 @@ class Scene1tutorial : public Scene
 		GEO_BIKE,
 		GEO_TEXT,
 		GEO_DEBUGBOX,
-		GEO_ROBO8,
 		GEO_ROCK,
 		GEO_GROUND,
 		GEO_BOULDER,
@@ -93,47 +91,48 @@ private:
 	//GameObj
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* CamObj;
+	GameObject* Wall[Walls];
+	Enemy* turret[numOfEnemy];
+	Bullet* bullet[numOfBullet];
 	GameObject* Rock[numOfRocks];
 	GameObject* VendingMachine[NUM_GEOMETRY];
 	GameObject* Doors[NUM_GEOMETRY];
 	GameObject* Boulder[NUM_GEOMETRY];
 	GameObject* TriggerBox[2];
 	Item* Keys[2];
-
 	string deltaTime;
-	string cordx, cordy, cordz;
-	Vector3 Robot;
-	Vector3 Bullet;
-
-	Enemy* turret[numOfEnemy];
-
+	//Vector3 Robot;
+	Bullet bullet_1;
+	Vector3 CrossHair;
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
 	float openCover = 0;
-
+	float DelayTimer = 0;
 	void skyBox();
-	bool shootBullet = false;
-
-	Fps_Camera camera;
-	MS modelStack, viewStack, projectionStack;
-
-	bool lightEnable;
-	bool coverOpened = false;
-	Light light[1];
-	void RenderMesh(Mesh *mesh, bool enableLight);
-
-	void RenderSkybox();
+	void RenderWalls();
 	void Rocks();
 	void EnemyField();
 	void tutorialtext();
+	void GenerateOBJ();
+	
+
+	Fps_Camera camera;
+	MS modelStack, viewStack, projectionStack;
+	Player* player;
+
+	bool shootBullet = false;
+	bool lightEnable;
+	bool coverOpened = false;
+	Light light[1];
+
+	void RenderMesh(Mesh *mesh, bool enableLight);
+
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
 
-	//Game Object
-	void GenerateOBJ();
 
 
 public:
