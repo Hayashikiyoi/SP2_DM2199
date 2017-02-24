@@ -43,6 +43,7 @@ public:
 	void EndGame(bool end);
 	bool EndCheck();
 	
+	size_t levelCompleted;
 private:
 	//Here be levels
 	size_t currentLevel; //Shows current level

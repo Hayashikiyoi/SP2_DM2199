@@ -32,7 +32,7 @@ void Menu_Room::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Initialise camera
-	camera.Init(Vector3(0, 0, -400), Vector3(0, 0, -10), Vector3(0, 1, 0));
+	camera.Init(Vector3(0, 10, -400), Vector3(0, 0, -10), Vector3(0, 1, 0));
 	player = new Player("camera", Vector3(0, 0, -400));
 	lasergun = new Weapon("Blaster", Vector3(-0.12f, -0.750, 2), 100);
 
@@ -217,23 +217,18 @@ void Menu_Room::Update(double dt)
 //----------------------------------------------------------------------------
 	object[GEO_BOTTOMVOTEX]->rotation += (float)dt;
 	object[GEO_VOTEX]->rotation -= (float)dt;
-	
+	deltaTime = "";
 	for (int i = 0; i < 5; ++i)
 	{
 		if (TriggerBox[i] && player->trigger(TriggerBox[i]))
 		{
-			if (i == 0)
-				deltaTime = "Press E: Level_1";
-			if (Application::IsKeyPressed('E') && i==0)
-				SceneManager::instance()->changeScene(3);
-			if (i == 1)
-				deltaTime = "Press E: Level_2";
-			if (Application::IsKeyPressed('E') && i == 1)
-				SceneManager::instance()->changeScene(4);
-			if (i == 2)
-				deltaTime = "Press E: Level_3";
-			if (Application::IsKeyPressed('E') && i == 2)
-				SceneManager::instance()->changeScene(5);
+			if (i>=0 && i<=3 && i == SceneManager::instance()->levelCompleted)
+				deltaTime = ("Press E: Level " + std::to_string(i+3));
+			if (Application::IsKeyPressed('E') && i >= 0 && i <= 3)
+			{
+				SceneManager::instance()->changeScene(i + 3);
+				return;
+			}
 			/*if (i == 3)
 				deltaTime = "Press E: Level_3";
 			if (Application::IsKeyPressed('E') && i == 3)
@@ -245,7 +240,9 @@ void Menu_Room::Update(double dt)
 				turret[17]->Position.z = 1000;
 				turret[17]->Position.y = -100;
 			}
+			std::cout << deltaTime  << std::endl;
 			break;
+			
 		}
 	}
 	if (Application::IsKeyPressed(VK_LBUTTON))
@@ -332,7 +329,7 @@ void Menu_Room::Render()
 	Walls();
 	EnemyField();
 
-	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
+	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 1, 6);
 	RenderTextOnScreen(meshList[GEO_TEXT], cordx, Color(0, 1, 0), 3, 0, 3);
 	RenderTextOnScreen(meshList[GEO_TEXT], cordz, Color(0, 1, 0), 3, 0, 5);
 

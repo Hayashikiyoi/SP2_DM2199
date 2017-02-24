@@ -54,6 +54,7 @@ void Weapon::shoot(Fps_Camera *camera)
 		{
 			pBullet[i]->velcocity = camera->view;
 			pBullet[i]->Position = (camera->position);
+			pBullet[i]->Position += (4*(camera->view));
 			pBullet[i]->Position.y -= 1;
 			pBullet[i]->shooting();
 			clip--;
