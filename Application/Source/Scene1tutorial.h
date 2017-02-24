@@ -80,6 +80,7 @@ class Scene1tutorial : public Scene
 		GEO_ROCKWALL,
 		GEO_BOULDER,
 		GEO_DOOR,
+		GEO_CANDRINK,
 		GEO_BLUEKEYCARD,
 		NUM_GEOMETRY,
 	};
@@ -143,6 +144,8 @@ public:
 	virtual void Exit();
 
 	float translate_DoorLeft;
+	float translate_DoorRight;
+	float translate_BoulderRolling;
 	int counterForDrink;
 	 
 	std::string coords;
