@@ -224,7 +224,7 @@ void Menu_Room::Update(double dt)
 		{
 			if (i>=0 && i<=3 && i == SceneManager::instance()->levelCompleted)
 				deltaTime = ("Press E: Level " + std::to_string(i+3));
-			if (Application::IsKeyPressed('E') && i >= 0 && i <= 3)
+			if (Application::IsKeyPressed('E') && i >= 0 && i <= 3 && i == SceneManager::instance()->levelCompleted)
 			{
 				SceneManager::instance()->changeScene(i + 3);
 				return;
@@ -245,49 +245,39 @@ void Menu_Room::Update(double dt)
 			
 		}
 	}
-	if (Application::IsKeyPressed(VK_LBUTTON))
+	//----------------------------------------------------------------------------
+	//Gun Stuffs------------------------------------------------------------------
+	static float ROF = 0.125f;
+	static float TP = 0;
+	static bool shoot = false;
+	if (Application::IsKeyPressed(VK_LBUTTON) && !shoot)
 	{
 		lasergun->shoot(&camera);
-	}
-	camera.Update(dt);
-	lasergun->updateBullet(dt);
-
-	/*if (test2 > 30.f)
-	{
-		test2 = 30.f;
-	}
-	if (test2 < 0)
-	{
-		test2 = 0;
+		shoot = true;
 	}
 	if (Application::IsKeyPressed('T'))
 	{
-		test2 -= 30 * dt;
-		std::cout << test2 << std::endl;
+		lasergun->reload();
 	}
-	if (Application::IsKeyPressed('Y'))
+	if (Application::IsKeyPressed('F'))
 	{
-		test2 += 30 * dt;
-		std::cout << test2 << std::endl;
+		lasergun->pickupClip();
 	}
-	if (test3 > 30.f)
+	if (shoot)
 	{
-		test3 = 30.f;
+		TP += dt;
+		if (TP > ROF)
+		{
+			TP = 0;
+			shoot = false;
+		}
 	}
-	if (test3 < 0)
-	{
-		test3 = 0;
-	}
-	if (Application::IsKeyPressed('G'))
-	{
-		test3 -= 30 * dt;
-		std::cout << test2 << std::endl;
-	}
-	if (Application::IsKeyPressed('H'))
-	{
-		test3 += 30 * dt;
-		std::cout << test2 << std::endl;
-	}*/
+	ammoLeft = std::to_string(lasergun->bulletLeft()) + "/45";
+	clipCount = std::to_string(lasergun->canisterLeft());
+	//----------------------------------------------------------------------------
+	//----------------------------------------------------------------------------
+	camera.Update(dt);
+	lasergun->updateBullet(dt);
 }
 
 void Menu_Room::Render()
@@ -329,10 +319,6 @@ void Menu_Room::Render()
 	Walls();
 	EnemyField();
 
-	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 1, 6);
-	RenderTextOnScreen(meshList[GEO_TEXT], cordx, Color(0, 1, 0), 3, 0, 3);
-	RenderTextOnScreen(meshList[GEO_TEXT], cordz, Color(0, 1, 0), 3, 0, 5);
-
 	for (size_t i = 0; i < clipSize; i++)
 	{
 		if (lasergun->pBullet[i]->shot() == true)
@@ -358,12 +344,19 @@ void Menu_Room::Render()
 	modelStack.PopMatrix();
 
 	//No transform needed
+	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 1, 6);
+	
+	//RenderTextOnScreen(meshList[GEO_TEXT], cordx, Color(0, 1, 0), 3, 0, 3);
+	//RenderTextOnScreen(meshList[GEO_TEXT], cordz, Color(0, 1, 0), 3, 0, 5);
 	//RenderMeshOnScreen(meshList[GEO_QUAD], 0, 0, 1, 1, true);
 	RenderMeshOnScreen(meshList[GEO_HEALTHBG], 15, 5, 30, 30, false);
-	RenderMeshOnScreen(meshList[GEO_HEALTH], 7.7f, 5, test, 30, true);
+	RenderMeshOnScreen(meshList[GEO_HEALTH], 7.7f, 5, HPsizeX, 30, true);
 	RenderMeshOnScreen(meshList[GEO_STAMINA], 7.7f, 5, camera.test2, 30, true);
 
 	RenderMeshOnScreen(meshList[GEO_AMMOBG], 65, 10, 30, 30, false);
+	RenderTextOnScreen(meshList[GEO_TEXT], clipCount, Color(0, 1, 0), 5, 58, 5);
+	RenderTextOnScreen(meshList[GEO_TEXT], ammoLeft, Color(0, 1, 0), 3, 65.5f, 0.5f);
+
 
 	/*RenderMeshOnScreen(meshList[GEO_BOSSTESTBG], 40, 55, test2, 30, false);	
 	RenderMeshOnScreen(meshList[GEO_BOSSTEST], 40, 55, test3, 30, false);*/
@@ -372,9 +365,7 @@ void Menu_Room::Render()
 
 void Menu_Room::GenerateGEOMESH()
 {
-	test = 21.5f;
-	/*test2 = 30.f;
-	test3 = 30.f;*/
+	HPsizeX = 21.5f;
 	//Quad set to size 1 only
 	meshList[GEO_HEALTHBG] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1, 1);
 	meshList[GEO_HEALTHBG]->textureID = LoadTGA("Image//UI//healthBG.tga");
@@ -901,9 +892,9 @@ void Menu_Room::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 	viewStack.LoadIdentity(); //No need camera for ortho mode
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity(); //Reset modelStack
-	modelStack.Scale(size, size, size);
 	modelStack.Translate(x, y, 0);
-
+	modelStack.Scale(size, size, size);
+	
 
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
 	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);

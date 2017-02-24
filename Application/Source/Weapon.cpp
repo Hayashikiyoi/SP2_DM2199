@@ -35,13 +35,14 @@ unsigned Weapon::bulletLeft()
 
 void Weapon::pickupClip()
 {
-	canister++;
+	if (canister < 9)
+		canister++;
 }
 void Weapon::reload()
 {
-	if (canister > 0)
+	if (canister > 0 && clip != 45)
 	{
-		clip = clipSize;
+		clip = 45;
 		canister--;
 	}
 }

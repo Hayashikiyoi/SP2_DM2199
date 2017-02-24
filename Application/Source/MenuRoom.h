@@ -152,12 +152,12 @@ private:
 	Fps_Camera camera;
 	Player* player;
 	Weapon* lasergun;
-
+	float HPsizeX;
+	string clipCount, ammoLeft;
 	//Enemy
 	Enemy* turret[numOfEnemy]; //NPC Need rename
 
-	float test;
-	float test2, test3;
+	
 
 public:
 	Menu_Room();
