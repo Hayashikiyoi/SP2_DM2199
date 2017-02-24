@@ -14,7 +14,7 @@ class Weapon : public GameObject
 public:
 	Weapon();
 	Weapon(string name, Vector3 pos, size_t BulletSpeed);
-	virtual ~Weapon();
+	~Weapon();
 
 	Mtx44 rotateGunToCamera(Vector3 CameraPos, Vector3 CameraUp, Vector3 CameraTarget);
 	void updateBullet(double dt);
