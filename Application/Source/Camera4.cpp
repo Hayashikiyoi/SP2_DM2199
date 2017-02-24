@@ -33,6 +33,9 @@ Initialize Camera4
 /******************************************************************************/
 void Camera4::Init(const Vector3& pos, const Vector3& target, const Vector3& up)
 {
+	view = (target - position).Normalized();
+	right = view.Cross(up);
+
 	this->position = pos;
 	this->target = target;
 	this->up = up;
@@ -58,4 +61,8 @@ To be called every frame. Camera4 will get user inputs and update its position a
 /******************************************************************************/
 void Camera4::Update(double dt)
 {
+	static const float CAMERA_SPEED = 20.f;
+
+	position += view * (float)(CAMERA_SPEED * dt);
+	target = position + view * (float)(CAMERA_SPEED * dt);
 }

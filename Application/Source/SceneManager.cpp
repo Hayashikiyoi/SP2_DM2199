@@ -1,6 +1,6 @@
 #include "SceneManager.h"
 
-SceneManager::SceneManager() :currentLevel(0), nextLevel(0), offset(0), endCheck(false)
+SceneManager::SceneManager() :currentLevel(0), nextLevel(0), offset(0), endCheck(false), levelCompleted(0)
 {
 }
 SceneManager::~SceneManager()

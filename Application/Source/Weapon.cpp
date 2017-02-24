@@ -35,13 +35,14 @@ unsigned Weapon::bulletLeft()
 
 void Weapon::pickupClip()
 {
-	canister++;
+	if (canister < 9)
+		canister++;
 }
 void Weapon::reload()
 {
-	if (canister > 0)
+	if (canister > 0 && clip != 45)
 	{
-		clip = clipSize;
+		clip = 45;
 		canister--;
 	}
 }
@@ -50,10 +51,11 @@ void Weapon::shoot(Fps_Camera *camera)
 {
 	for (int i = 0; i < clipSize; ++i)
 	{
-		if (!pBullet[i]->shot() && pBullet[i])
+		if (!pBullet[i]->shot() && pBullet[i] && clip >0)
 		{
 			pBullet[i]->velcocity = camera->view;
 			pBullet[i]->Position = (camera->position);
+			pBullet[i]->Position += (4*(camera->view));
 			pBullet[i]->Position.y -= 1;
 			pBullet[i]->shooting();
 			clip--;
