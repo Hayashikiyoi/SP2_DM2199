@@ -2,13 +2,18 @@
 #define CAMERA4_H
 
 #include "Vector3.h"
+#include "Camera2.h"
 
-class Camera4
+#include "Mtx44.h"
+
+class Camera4: public Camera
 {
 public:
 	Vector3 position;
 	Vector3 target;
 	Vector3 up;
+	Vector3 view, right;
+	Mtx44 rotate;
 
 	Camera4();
 	~Camera4();

@@ -218,6 +218,11 @@ void Scene1tutorial::GenerateObj()
 
 	meshList[GEO_BLUEKEYCARD] = MeshBuilder::GenerateOBJ("keycard", "OBJ//NPC//keycard2.obj");
 	meshList[GEO_BLUEKEYCARD]->textureID = LoadTGA("Image//model//bluekeycard.tga");
+
+	meshList[GEO_CANDRINK] = MeshBuilder::GenerateOBJ("candrink", "OBJ//Objects//candrink.obj");
+	meshList[GEO_CANDRINK]->textureID = LoadTGA("Image//model//candrink.tga");
+
+
 }
 
 void Scene1tutorial::Update(double dt)
@@ -230,25 +235,7 @@ void Scene1tutorial::Update(double dt)
 	static Vector3 prevposTarget;
 	//Robot.Set(Robot.x, Robot.y, Robot.z);
 	deltaTime = "Health" + std::to_string(player->getHealth()); //"FPS:" + std::to_string(1 / dt);
-	if (Application::IsKeyPressed('F'))
-	{
-		rotateAngle += (float)(100 * dt);
-	}
-	if (Application::IsKeyPressed('H'))
-	{
-		rotateAngle -= (float)(100 * dt);
-	}
-	if (Application::IsKeyPressed('T'))
-	{
-		object[1]->Position.x -= (float)(5 * sin(Math::DegreeToRadian(rotateAngle))*dt);
-		object[1]->Position.z -= (float)(5 * cos(Math::DegreeToRadian(rotateAngle))*dt);
-	}
-	if (Application::IsKeyPressed('G'))
-	{
-		object[1]->Position.x += (float)(5 * sin(Math::DegreeToRadian(rotateAngle))*dt);
-		object[1]->Position.z += (float)(5 * cos(Math::DegreeToRadian(rotateAngle))*dt);
-	}
-
+	
 
 	static float LSPEED = 10;
 
@@ -397,9 +384,11 @@ void Scene1tutorial::Update(double dt)
 		}
 	}
 
-	static float direction_DoorSliding = 0;
+	static float direction_DoorSlidingLeft = 0;
+	static float direction_DoorSlidingRight = 0;
 
-	translate_DoorLeft -= (float)(10 * direction_DoorSliding * dt);
+	translate_DoorLeft += (float)(10 * direction_DoorSlidingLeft * dt);
+	translate_DoorRight += (float)(10 * direction_DoorSlidingRight *dt);
 	 
 	for (int drop = 2; drop < 8.0; drop++)
 	{
@@ -409,12 +398,18 @@ void Scene1tutorial::Update(double dt)
 	{
 		if (camera.position.x > -13 && camera.position.x < -4 && camera.position.z>22 && camera.position.z < 26)
 		{
-			direction_DoorSliding = 1;
+			direction_DoorSlidingLeft = 1;
+			direction_DoorSlidingRight = 1;
 		}
+	}
+
+	if (Application::IsKeyPressed('E'))
+	{
+
 	}
 	if (translate_DoorLeft>1 && translate_DoorLeft < 5)
 	{
-		direction_DoorSliding = -1;
+		direction_DoorSlidingLeft = -1;
 	}
 
 
@@ -622,17 +617,19 @@ void Scene1tutorial::RenderObjects()
 	RenderMesh(meshList[GEO_DOOR], true);
 	modelStack.PopMatrix();
 
-	//modelStack.PushMatrix();
-	//modelStack.Translate(33.5, 7, -25);
-	//modelStack.Scale(4.f, 2.5f, 2.5f);
-	//RenderMesh(meshList[GEO_DOOR], true);
-	//modelStack.PopMatrix();
-	//
-	//modelStack.PushMatrix();
-    //modelStack.Translate(38, 7, -25);
-	//modelStack.Scale(4.f, 2.5f, 2.5f);
-	//RenderMesh(meshList[GEO_DOOR], true);
-	//modelStack.PopMatrix();
+	//left2
+	modelStack.PushMatrix();
+	modelStack.Translate(33.5, 7, -25);
+	modelStack.Scale(4.f, 2.5f, 2.5f);
+	RenderMesh(meshList[GEO_DOOR], true);
+	modelStack.PopMatrix();
+	
+	//right2
+	modelStack.PushMatrix();
+    modelStack.Translate(38, 7, -25);
+	modelStack.Scale(4.f, 2.5f, 2.5f);
+	RenderMesh(meshList[GEO_DOOR], true);
+	modelStack.PopMatrix();
 	
 	modelStack.PushMatrix();
 	modelStack.Translate(0, 7, 40);;
@@ -654,6 +651,13 @@ void Scene1tutorial::RenderObjects()
 	modelStack.PushMatrix();
 	RenderMesh(meshList[GEO_VENDINGCOVER], true);
 	modelStack.PopMatrix();
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-40, 8, -20);;
+	modelStack.Scale(1, 1, 1);
+	modelStack.Rotate(90, 1, 0, 0);
+	RenderMesh(meshList[GEO_CANDRINK], true);
 	modelStack.PopMatrix();
 }
 void Scene1tutorial::Render()
@@ -694,6 +698,7 @@ void Scene1tutorial::Render()
 	skyBox();
 	RenderWall();
 	RenderObjects();
+
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
 
 	modelStack.PushMatrix();

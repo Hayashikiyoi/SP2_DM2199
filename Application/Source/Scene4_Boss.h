@@ -25,9 +25,9 @@ using std::string;
 #undef numOfGun
 
 #define numOfEnemy 25
-#define numOfBullets 5
+#define numOfBullets 6
 #define numOfWalls 10
-#define numOfGun 5
+#define numOfGun 6
 
 class Scene4_Boss : public Scene
 {
@@ -112,6 +112,9 @@ class Scene4_Boss : public Scene
 		GEO_HEALTHBG,
 		GEO_HEALTH,
 		GEO_STAMINA,
+		GEO_AMMOBG,
+		GEO_BOSSTESTBG,
+		GEO_BOSSTEST,
 		NUM_GEOMETRY,
 	};
 
@@ -125,8 +128,8 @@ private:
 	//GameObj
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* CamObj;
-	GameObject* TriggerBox[2];
-	Item* Keys[2];
+	GameObject* TriggerBox[1];
+	Item* Keys[1];
 	GameObject* WallsObj[numOfWalls];
 	Player* player;
 
@@ -144,7 +147,7 @@ private:
 	Weapon* lasergun;
 	
 	float rotateAngle;
-	float translateX[3]; //Original code : float translateX; added [] to make 3 array
+	//float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
 	float openCover = 0;
 	float DelayTimer = 0;
@@ -174,6 +177,7 @@ private:
 	float moveBullet;
 	float test;
 	float test2;
+	float test3;
 public:
 	Scene4_Boss();
 	~Scene4_Boss();

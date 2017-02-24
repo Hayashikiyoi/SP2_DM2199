@@ -23,9 +23,6 @@ void Scene4_Boss::Init()
 {
 	// Init VBO here
 	rotateAngle = 0;
-	translateX[0] = 0;
-	translateX[1] = 0;
-	translateX[2] = 0;
 	scaleAll = 2;
 	lightEnable = true;
 
@@ -39,7 +36,7 @@ void Scene4_Boss::Init()
 	//Initialise camera
 	camera.Init(Vector3(400, 0, 0), Vector3(0, 0, 0), Vector3(0, 1, 0));
 	player = new Player("camera", Vector3(400, 0, 0));
-	lasergun = new Weapon("Blaster", Vector3(-0.12f, -0.750, 2), 50);
+	lasergun = new Weapon("Blaster", Vector3(-0.12f, -0.750, 2), 100);
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
@@ -53,20 +50,10 @@ void Scene4_Boss::Init()
 		meshList[i] = NULL;
 		object[i] = 0;
 	}
-	for (int i = 0; i < 2; ++i)
-	{
-		Keys[i] = 0;
-	}
-	for (int i = 0; i < 1; ++i)
-	{
-		TriggerBox[i] = 0;
-	}
 	for (int i = 0; i < numOfWalls; ++i)
 	{
 		WallsObj[i] = NULL;
 	}
-	
-	
 	for (int i = 0; i < numOfEnemy; ++i)
 	{
 		turret[i] = NULL;
@@ -76,6 +63,9 @@ void Scene4_Boss::Init()
 	{
 		bullet[i] = NULL;
 	}
+	Keys[1] = 0;
+	TriggerBox[0] = 0;
+
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
@@ -226,73 +216,31 @@ void Scene4_Boss::Update(double dt)
 	static Vector3 prevposTarget;
 	static bool smtHappen = false;
 	static float time;
-
-	deltaTime = "Health:" + std::to_string(player->getHealth());
-	BossH = "BossHealth:" + std::to_string(turret[9]->showHP());
-
 	static float LSPEED = 10;
 
 	DelayTimer += (float)dt;
-	
-	if (Application::IsKeyPressed(VK_LBUTTON))
-	{
-		lasergun->shoot(&camera);
-	}
-	for (int i = 0; i < clipSize; ++i)
-	{
-		if (lasergun->pBullet[i] && turret[9] && turret[9]->trigger(lasergun->pBullet[i]))
-		{			
-			turret[9]->dmgToEnemy(5);
-			smtHappen = true;
-			break;
-		}
-	}
-	if (turret[9]->showHP() == 0)
-	{
-		turret[9]->isdead();
-		turret[9]->Position.z = 1000;
-		turret[9]->Position.x = 1000;
-		turret[9]->updateCurPos();
-		turret[10]->Position.z = 1000;
-		turret[10]->Position.x = 1000;
-		turret[10]->updateCurPos();
-	}
-	if (DelayTimer > 5)
-	{
-		DelayTimer = 0;
-		bullet[1]->shoot = false;
-		bullet[2]->shoot = false;
-		bullet[3]->shoot = false;
-		bullet[4]->shoot = false;
-	}
-	else if (DelayTimer < 0.5)
-	{
-		bullet[1]->shoot = true;
-		bullet[2]->shoot = true;
-		bullet[3]->shoot = true;
-		bullet[4]->shoot = true;
-	}
-
-	if (coverOpened)
-	{
-		if (translateLimit<-10)
-			translateLimit *= -1;
-		if (openCover <6)
-			openCover += (float)(10 * translateLimit*dt);
-	}
-
-	if (Application::IsKeyPressed('I'))
-		light[0].position.z -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('K'))
-		light[0].position.z += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('J'))
-		light[0].position.x -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('L'))
-		light[0].position.x += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('O'))
-		light[0].position.y -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('P'))
-		light[0].position.y += (float)(LSPEED * dt);
+	rotateAngle += (float)dt;
+	test = player->getHealth()*0.215;
+	test3 = turret[9]->showHP()*0.3;
+	//if (coverOpened)
+	//{
+	//	if (translateLimit<-10)
+	//		translateLimit *= -1;
+	//	if (openCover <6)
+	//		openCover += (float)(10 * translateLimit*dt);
+	//}
+	//if (Application::IsKeyPressed('I'))
+	//	light[0].position.z -= (float)(LSPEED * dt);
+	//if (Application::IsKeyPressed('K'))
+	//	light[0].position.z += (float)(LSPEED * dt);
+	//if (Application::IsKeyPressed('J'))
+	//	light[0].position.x -= (float)(LSPEED * dt);
+	//if (Application::IsKeyPressed('L'))
+	//	light[0].position.x += (float)(LSPEED * dt);
+	//if (Application::IsKeyPressed('O'))
+	//	light[0].position.y -= (float)(LSPEED * dt);
+	//if (Application::IsKeyPressed('P'))
+	//	light[0].position.y += (float)(LSPEED * dt);
 
 	if (Application::IsKeyPressed('0'))
 	{
@@ -322,25 +270,71 @@ void Scene4_Boss::Update(double dt)
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	
+	//---------------------------------------------------------------------------------------------------------------------------------------------------------
+	//Player Shoot
+	if (Application::IsKeyPressed(VK_LBUTTON))
+	{
+		lasergun->shoot(&camera);
+	}
+	for (int i = 0; i < clipSize; ++i)
+	{
+		if (lasergun->pBullet[i] && turret[9] && turret[9]->trigger(lasergun->pBullet[i]))
+		{
+			turret[9]->dmgToEnemy(1);
+			smtHappen = true;
+			break;
+		}
+	}
+	if (turret[9]->showHP() == 0)
+	{
+		turret[9]->isdead();
+		turret[9]->Position.z = 1000;
+		turret[9]->Position.x = 1000;
+		turret[9]->updateCurPos();
+		turret[10]->Position.z = 1000;
+		turret[10]->Position.x = 1000;
+		turret[10]->updateCurPos();
+	}
+	if (DelayTimer > 5)
+	{
+		DelayTimer = 0;
+		bullet[1]->shoot = false;
+		bullet[2]->shoot = false;
+		bullet[3]->shoot = false;
+		bullet[4]->shoot = false;
+		bullet[5]->shoot = false;
+	}
+	else if (DelayTimer < 0.5)
+	{
+		bullet[1]->shoot = true;
+		bullet[2]->shoot = true;
+		bullet[3]->shoot = true;
+		bullet[4]->shoot = true;
+		bullet[5]->shoot = true;
+	}
+	//---------------------------------------------------------------------------------------------------------------------------------------------------------
+	//Bullet to player Collision
 	player->Position = camera.position;
 	player->updateCurPos();
 
-	for (int i = 1; i <= 4; ++i)
+	for (int i = 1; i <= 5; ++i)
 	{
 		if (bullet[i]->shoot)
 			bullet[i]->bulletUpdate(dt);
-		if (bullet[i]->shoot == false)
+		if (bullet[i]->shoot == false){
+			if (i == 5)
+				bullet[i]->shootBullet(turret[9]->RotateToPlayer(camera.position), turret[9]->Position);
+			else
 			bullet[i]->shootBullet(turret[i]->RotateToPlayer(camera.position), turret[i]->Position);
+		}
 		bullet[i]->updateCurPos();
 	}
-
-	//Run checker
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
 		if (object[i] && player->trigger(object[i]))
 		{
 			//if you need to get pushed out of the collider
-			deltaTime = "Wham bam";
+			//deltaTime = "Wham bam";
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
@@ -350,60 +344,66 @@ void Scene4_Boss::Update(double dt)
 	{
 		if (bullet[i] && player->trigger(bullet[i]))
 		{
+			
 			if (!smtHappen)
 			{
-				player->DmgPlayer(5);
+				if (i == 5)
+					player->DmgPlayer(30);
+				else 
+				player->DmgPlayer(10);
+
 				smtHappen = true;
 				bullet[i]->shoot = false;
 				DelayTimer = 0;
 			}
 		}
 	}
-	for (int i = 0; i < 2; ++i)
-	{
-		if (turret[9]->isdead()){
-			Keys[1]->Position.z = 0;
-			Keys[1]->updateCurPos();
-			if (Keys[i] && player->trigger(Keys[i]))
+	//---------------------------------------------------------------------------------------------------------------------------------------------------------
+	//Getting Key Functions
+	if (turret[9]->isdead()){
+		Keys[1]->Position.z = 0;
+		Keys[1]->updateCurPos();
+		if (Keys[1] && player->trigger(Keys[1]))
+		{
+			if (Application::IsKeyPressed('E'))
 			{
-				if (i == 0)
-					deltaTime = "Press E";
-				if (Application::IsKeyPressed('E') && i == 1)
-				{
-					Keys[1]->SetCollected(true);
-					WallsObj[8]->Position.z = 100;
-					WallsObj[8]->updateCurPos();
-					WallsObj[9]->Position.z = -100;
-					WallsObj[9]->updateCurPos();
-					break;
-				}
+				Keys[1]->SetCollected(true);
+				WallsObj[8]->Position.z = 100;
+				WallsObj[8]->updateCurPos();
+				WallsObj[9]->Position.z = -100;
+				WallsObj[9]->updateCurPos();
+				Keys[1]->Position.z = 1000;
+				Keys[1]->Position.x = 1000;
+				Keys[1]->updateCurPos();
 			}
 		}
-		else
-		{
-			Keys[1]->Position.z = 1000;
-			Keys[1]->updateCurPos();
-		}
 	}
-
+	else
+	{
+		Keys[1]->Position.z = 1000;
+		Keys[1]->updateCurPos();
+	}
+	//---------------------------------------------------------------------------------------------------------------------------------------------------------
+	//Collision on walls
 	for (int i = 0; i < numOfWalls; ++i)
 	{
 		if (WallsObj[i] && player->trigger(WallsObj[i]))
 		{
 			//if you need to get pushed out of the collider
-			deltaTime = "Why";
+			//deltaTime = "Why";
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
 		}
 	}
-
+	//---------------------------------------------------------------------------------------------------------------------------------------------------------
+	//Collision on objects
 	for (int i = 0; i < numOfEnemy; ++i)
 	{
 		if (turret[i] && player->trigger(turret[i]))
 		{
 			//if you need to get pushed out of the collider
-			deltaTime = "Wham bam";
+			//deltaTime = "Wham bam";
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
@@ -414,18 +414,15 @@ void Scene4_Boss::Update(double dt)
 			prevposTarget = camera.target;
 		}
 	}
-
-	camera.Update(dt);
-	lasergun->updateBullet(dt);
-
-	for (int i = 0; i < 1; ++i)
+	//---------------------------------------------------------------------------------------------------------------------------------------------------------
+	//Change Scene
+	if (TriggerBox[0] && player->trigger(TriggerBox[0]))
 	{
-		if (TriggerBox[i] && player->trigger(TriggerBox[i]))
-		{
-			SceneManager::instance()->changeScene(2);
-			break;
-		}
+		SceneManager::instance()->changeScene(2);
+		return;
 	}
+	//---------------------------------------------------------------------------------------------------------------------------------------------------------
+	//Delay for Bullet attacks
 	if (smtHappen)
 	{
 		time += dt;
@@ -435,12 +432,23 @@ void Scene4_Boss::Update(double dt)
 			smtHappen = false;
 		}
 	}
+	if (DelayTimer > 0.125)
+	{
+		test2 += 20 * dt;
+		if (test2 > 30.f)
+			test2 = 30.f;
+		if (test3 <= 0)
+			test2 -= 40*dt;
+	}
+	camera.Update(dt);
+	lasergun->updateBullet(dt);
 }
 
 void Scene4_Boss::GUI()
 {
 	test = 21.5f;
-	test2 = 18.7f;
+	test2 = 0.f;
+	test3 = 30.f;
 	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_HEALTH]->textureID = LoadTGA("Image//UI//healthBar.tga");
 
@@ -449,6 +457,14 @@ void Scene4_Boss::GUI()
 
 	meshList[GEO_HEALTHBG] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_HEALTHBG]->textureID = LoadTGA("Image//UI//healthBG.tga");
+
+	meshList[GEO_AMMOBG] = MeshBuilder::GenerateQuad("ammoBG", Color(1, 1, 1), 1, 1);
+	meshList[GEO_AMMOBG]->textureID = LoadTGA("Image//UI//ammoBG.tga");
+
+	meshList[GEO_BOSSTESTBG] = MeshBuilder::GenerateQuad("ammoBG", Color(1, 1, 1), 1, 1);
+	meshList[GEO_BOSSTESTBG]->textureID = LoadTGA("Image//UI//Boss//bossBG.tga");
+	meshList[GEO_BOSSTEST] = MeshBuilder::GenerateQuad("ammoBG", Color(1, 1, 1), 1, 1);
+	meshList[GEO_BOSSTEST]->textureID = LoadTGA("Image//UI//Boss//bossHP.tga");
 }
 
 void Scene4_Boss::skyBox()
@@ -713,6 +729,10 @@ void Scene4_Boss::GenerateOBJ()
 	bullet[4]->setCollider(5, 5);
 	bullet[4]->updateCurPos();
 
+	bullet[5] = new Bullet("Bullet_1", Vector3(turret[9]->Position.x, turret[9]->Position.y, turret[9]->Position.z));
+	bullet[5]->setCollider(30,30);
+	bullet[5]->updateCurPos();
+
 	meshList[GEO_BLASTER] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//blaster.obj");
 	meshList[GEO_BLASTER]->textureID = LoadTGA("Image//Player//blaster.tga");
 	meshList[GEO_PBULLET] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//Player_Bullet.obj");
@@ -741,7 +761,16 @@ void Scene4_Boss::EnemyField()
 	modelStack.Scale(7, 7, 7);
 	RenderMesh(meshList[GEO_TURRETHEAD], true);
 	modelStack.PopMatrix();
-
+	
+	if (bullet[5]->shoot)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(bullet[5]->Position.x, bullet[5]->Position.y - 25 , bullet[5]->Position.z - 2);
+		modelStack.Rotate(bullet[5]->rotation, 0, 1, 0);
+		modelStack.Scale(5,5,5);
+		RenderMesh(meshList[GEO_BULLET], false);
+		modelStack.PopMatrix();
+	}
 	//TURRETS_1
 	modelStack.PushMatrix();
 	modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
@@ -759,7 +788,7 @@ void Scene4_Boss::EnemyField()
 	if (bullet[1]->shoot)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(bullet[1]->Position.x, bullet[1]->Position.y + 3.5, bullet[1]->Position.z);
+		modelStack.Translate(bullet[1]->Position.x, bullet[1]->Position.y, bullet[1]->Position.z);
 		modelStack.Rotate(bullet[1]->rotation, 0, 1, 0);
 		RenderMesh(meshList[GEO_BULLET], false);
 		modelStack.PopMatrix();
@@ -782,7 +811,7 @@ void Scene4_Boss::EnemyField()
 	if (bullet[2]->shoot)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(bullet[2]->Position.x, bullet[2]->Position.y + 3.5, bullet[2]->Position.z);
+		modelStack.Translate(bullet[2]->Position.x, bullet[2]->Position.y, bullet[2]->Position.z);
 		modelStack.Rotate(bullet[2]->rotation, 0, 1, 0);
 		RenderMesh(meshList[GEO_BULLET], false);
 		modelStack.PopMatrix();
@@ -806,7 +835,7 @@ void Scene4_Boss::EnemyField()
 	if (bullet[3]->shoot)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(bullet[3]->Position.x, bullet[3]->Position.y + 3.5, bullet[3]->Position.z);
+		modelStack.Translate(bullet[3]->Position.x, bullet[3]->Position.y, bullet[3]->Position.z);
 		modelStack.Rotate(bullet[3]->rotation, 0, 1, 0);
 		RenderMesh(meshList[GEO_BULLET], false);
 		modelStack.PopMatrix();
@@ -816,11 +845,12 @@ void Scene4_Boss::EnemyField()
 	modelStack.PushMatrix();
 	modelStack.Translate(turret[4]->Position.x, turret[4]->Position.y, turret[4]->Position.z);
 	modelStack.Rotate(turret[4]->RotateToPlayer(camera.position), 0, 1, 0);
+	modelStack.Scale(3,3,3);
 	RenderMesh(meshList[GEO_TURRETHEAD_2], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(turret[9]->Position.x, turret[9]->Position.y, turret[9]->Position.z);
+	modelStack.Translate(turret[8]->Position.x, turret[8]->Position.y, turret[8]->Position.z);
 	modelStack.Scale(3, 3, 3);
 	RenderMesh(meshList[GEO_TURRETBODY_2], true);
 	modelStack.PopMatrix();
@@ -828,7 +858,7 @@ void Scene4_Boss::EnemyField()
 	if (bullet[4]->shoot)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(bullet[4]->Position.x, bullet[4]->Position.y + 3.5, bullet[4]->Position.z);
+		modelStack.Translate(bullet[4]->Position.x, bullet[4]->Position.y, bullet[4]->Position.z);
 		modelStack.Rotate(bullet[4]->rotation, 0, 1, 0);
 		RenderMesh(meshList[GEO_BULLET], false);
 		modelStack.PopMatrix();
@@ -838,6 +868,8 @@ void Scene4_Boss::EnemyField()
 	{
 		modelStack.PushMatrix();
 		modelStack.Translate(Keys[1]->Position.x, Keys[1]->Position.y, Keys[1]->Position.z);
+		modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
+		modelStack.Rotate(15,1,0,0);
 		modelStack.Scale(scaleAll, scaleAll, scaleAll);
 		RenderMesh(meshList[GEO_CARDKEY], true);
 		modelStack.PopMatrix();
@@ -925,6 +957,10 @@ void Scene4_Boss::Render()
 	RenderMeshOnScreen(meshList[GEO_HEALTHBG], 15, 5, 30, 30, false);
 	RenderMeshOnScreen(meshList[GEO_HEALTH], 8.f, 5, test, 30, true);
 	RenderMeshOnScreen(meshList[GEO_STAMINA], 8.1f, 5, camera.test2, 30, true);
+	RenderMeshOnScreen(meshList[GEO_AMMOBG], 65, 10, 30, 30, false);
+
+	RenderMeshOnScreen(meshList[GEO_BOSSTESTBG], 40, 55, test2, 30, false);
+	RenderMeshOnScreen(meshList[GEO_BOSSTEST], 40, 55, test3, 30, false);
 	//-------------------------------------------------------------------------------------
 }
 
@@ -1093,17 +1129,12 @@ void Scene4_Boss::Exit()
 			delete object[i];
 	}
 	//Keys
-	for (int i = 0; i < 2; ++i)
-	{
-		if (Keys[i] != 0)
-			delete Keys[i];
-	}
+	if (Keys[1] != 0)
+		delete Keys[1];
 	//TriggerBox
-	for (int i = 0; i < 1; ++i)
-	{
-		if (TriggerBox[i] != 0)
-			delete TriggerBox[i];
-	}
+	if (TriggerBox[0] != 0)
+		delete TriggerBox[0];
+	
 	delete player;
 	delete lasergun;
 	// Cleanup VBO here
