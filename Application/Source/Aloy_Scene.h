@@ -40,6 +40,11 @@ class Aloy_Scene : public Scene
 		GEO_AXES,
 		GEO_TITLE,
 		GEO_FRONT,
+		GEO_CUBE,
+		GEO_CUBE_2,
+		GEO_CUBE_3,
+		GEO_CUBE_4,
+		GEO_CUBE_5,
 		GEO_TEXT,
 		GEO_TEXT_1,
 		GEO_TEXT_2,
@@ -61,6 +66,7 @@ private:
 	float TextSize_3; //resizing text for scene for exit game
 	bool TextChecking;//if they press Enter already
 	bool TextSwitching;//Checking the left and right button
+	bool TitleCheck;
 	bool bSomethingHappen;
 	int MenuSelect;
 	float Delaytimer;
@@ -68,6 +74,8 @@ private:
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
+	float titlescale;
+	float CubeScale;
 	Camera4 camera;
 	MS modelStack, viewStack, projectionStack;
 

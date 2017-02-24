@@ -31,6 +31,8 @@ void Aloy_Scene::Init()
 	TextSize_2 = 0;
 	TextSize_3 = 0;
 	MenuSelect = 0;
+	CubeScale = 0;
+	TitleCheck = false;
 	TextChecking = true;
 	TextSwitching = false;
 
@@ -44,8 +46,7 @@ void Aloy_Scene::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Initialise camera
-	camera.Init(Vector3(0, 0, 0), Vector3(0, 0, -10), Vector3(0, 1, 0));
-	//camera2.Init(Vector3(0,0,0), Vector3(0,0,-10),Vector3(0,1,0));
+	camera.Init(Vector3(0,0,0), Vector3(0,0,-10),Vector3(0,1,0));
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
@@ -56,12 +57,14 @@ void Aloy_Scene::Init()
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 		meshList[i] = NULL;
 
-	//meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_TITLE] = MeshBuilder::GenerateQuad("title", Color(1, 1, 1), 1, 1);
 	meshList[GEO_TITLE]->textureID = LoadTGA("Image//Text//Title.tga");
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//front.tga");
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//city_bk.tga");
+	
+	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0, 0, 0), 1, 1, 1);
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
@@ -87,67 +90,95 @@ void Aloy_Scene::Init()
 	glUseProgram(m_programID);
 
 	Mtx44 projection;
-	projection.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
+	projection.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 4000.0f);
 	projectionStack.LoadMatrix(projection);
 }
 
 void Aloy_Scene::Update(double dt)
 {
-	if (TextChecking == true)
+	if (TitleCheck == true)
 	{
-		if (Application::IsKeyPressed(VK_RETURN))
+		titlescale = 50;
+		if (TextChecking == true)
 		{
-			TextSize = 0;
-			Delaytimer = 0;
-			TextChecking = false;
-		}
-	}
-	else if (TextChecking == false)
-	{
-		bSomethingHappen = false;
-		switch (MenuSelect)
-		{
-		case 0:
-			bSomethingHappen = true;
-			TextSize_2 = 3;
-			if (Delaytimer > 0.125)
+			TextSize = 3;
+			if (Application::IsKeyPressed(VK_RETURN))
 			{
-				if (Application::IsKeyPressed(VK_RETURN))
-					SceneManager::instance()->changeScene(2);
-				else if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
+				TextSize = 0;
+				Delaytimer = 0;
+				TextChecking = false;
+			}
+		}
+		else if (TextChecking == false)
+		{
+			bSomethingHappen = false;
+			switch (MenuSelect)
+			{
+			case 0:
+				bSomethingHappen = true;
+				TextSize_2 = 3;
+				if (Delaytimer > 0.125)
 				{
+					if (Application::IsKeyPressed(VK_RETURN))
+					{
+						SceneManager::instance()->changeScene(2);
+						return;
+					}
+					else if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
+					{
 
-					Delaytimer = 0;
-					TextSize_2 = 0;
-					TextSize_3 = 3;
-					MenuSelect = 1;
+						Delaytimer = 0;
+						TextSize_2 = 0;
+						TextSize_3 = 3;
+						MenuSelect = 1;
+					}
 				}
+				break;
+			case 1:
+				bSomethingHappen = true;
+				if (Delaytimer > 0.125)
+				{
+					if (Application::IsKeyPressed(VK_RETURN))
+					{
+						SceneManager::instance()->EndGame(true);
+					}
+					else if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
+					{
+						Delaytimer = 0;
+						TextSize_3 = 0;
+						MenuSelect = 0;
+					}
+				}
+				break;
+			default:
+				break;
 			}
-			break;
-		case 1:
-			bSomethingHappen = true;
-			if (Delaytimer > 0.125)
+			if (bSomethingHappen)
 			{
-				if (Application::IsKeyPressed(VK_RETURN))
-				{
-					SceneManager::instance()->EndGame(true);
-				}
-				else if (Application::IsKeyPressed(VK_LEFT)||Application::IsKeyPressed(VK_RIGHT))
-				{
-					Delaytimer = 0;
-					TextSize_3 = 0;
-					MenuSelect = 0;
-				}
+				Delaytimer += (float)dt;
 			}
-			break;
-		default:
-			break;
-		}
-		if (bSomethingHappen)
-		{
-			Delaytimer += (float)dt;
 		}
 	}
+	else
+	{
+		Delaytimer += (float)dt;
+		TextSize = 0;
+		if (Delaytimer > 10)
+		{
+			CubeScale += (float)dt;
+			TitleCheck = true;
+		}
+	}
+	if (Application::IsKeyPressed('1'))
+		glEnable(GL_CULL_FACE);
+	if (Application::IsKeyPressed('2'))
+		glDisable(GL_CULL_FACE);
+
+	//Wireframe / not wireframe
+	if (Application::IsKeyPressed('3'))
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	if (Application::IsKeyPressed('4'))
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	camera.Update(dt);
 }
@@ -176,15 +207,23 @@ void Aloy_Scene::Render()
 	RenderMesh(meshList[GEO_FRONT], false);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	//to do: transformation code here
+	modelStack.Translate(0,0,0);
+	modelStack.Scale(100, 0, 100);
+	RenderMesh(meshList[GEO_CUBE], false);
+	modelStack.PopMatrix();
+	
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 0, 0);
 
 	//No transform needed
-	RenderMeshOnScreen(meshList[GEO_TITLE], 40, 30, 50, 50);
+	RenderMeshOnScreen(meshList[GEO_TITLE], 40, 30, titlescale, titlescale);
 
 	modelStack.PushMatrix();
 	RenderTextOnScreen(meshList[GEO_TEXT_1], "ENTER TO START", Color(0, 1, 0), TextSize, 6, 4);
 	RenderTextOnScreen(meshList[GEO_TEXT_1], "Start Game" , Color(0, 1, 0), TextSize_2, 8, 4);
 	RenderTextOnScreen(meshList[GEO_TEXT_2], "Quit Game", Color(0,1,0), TextSize_3 ,8.5,4);
+	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
 	modelStack.PopMatrix();
 	//-------------------------------------------------------------------------------------
 
