@@ -50,7 +50,7 @@ void Weapon::shoot(Fps_Camera *camera)
 {
 	for (int i = 0; i < clipSize; ++i)
 	{
-		if (!pBullet[i]->shot() && pBullet[i])
+		if (!pBullet[i]->shot() && pBullet[i] && clip >0)
 		{
 			pBullet[i]->velcocity = camera->view;
 			pBullet[i]->Position = (camera->position);
