@@ -384,11 +384,17 @@ void Scene1tutorial::Update(double dt)
 		}
 	}
 
-	static float direction_DoorSlidingLeft = 0;
+	static float direction_DoorSlidingLeft = 0 ;
 	static float direction_DoorSlidingRight = 0;
+	static float direction_BoulderRolling = 0;
+	static float key_rotating = 0;
 
-	translate_DoorLeft += (float)(10 * direction_DoorSlidingLeft * dt);
+	translate_DoorLeft -= (float)(10 * direction_DoorSlidingLeft * dt);
 	translate_DoorRight += (float)(10 * direction_DoorSlidingRight *dt);
+	translate_DoorLeft2 -= (float)(10 * direction_DoorSlidingLeft * dt);
+	translate_DoorRight2 += (float)(10 * direction_DoorSlidingRight *dt);
+	translate_BoulderRolling += (float)(10 * direction_BoulderRolling  *dt);
+	rotateAngle += (float)(30 *dt);
 	 
 	for (int drop = 2; drop < 8.0; drop++)
 	{
@@ -400,16 +406,22 @@ void Scene1tutorial::Update(double dt)
 		{
 			direction_DoorSlidingLeft = 1;
 			direction_DoorSlidingRight = 1;
+
+		if (direction_DoorSlidingLeft<-10)
+			direction_DoorSlidingLeft *= -1;
+		if (translate_DoorLeft <-13)
+			translate_DoorLeft += (float)(10 * direction_DoorSlidingLeft*dt);
 		}
+
+		
 	}
 
-	if (Application::IsKeyPressed('E'))
+	if (Application::IsKeyPressed('O'))
 	{
-
-	}
-	if (translate_DoorLeft>1 && translate_DoorLeft < 5)
-	{
-		direction_DoorSlidingLeft = -1;
+		if (camera.position.x > -18 && camera.position.x < -14 && camera.position.z>-40 && camera.position.z < -34)
+		{
+			
+		}
 	}
 
 
@@ -613,33 +625,37 @@ void Scene1tutorial::RenderObjects()
 	//right
 	modelStack.PushMatrix();
 	modelStack.Translate(-8.6, 7, 20);
+	modelStack.Translate(translate_DoorRight, 0, 0);
 	modelStack.Scale(2.5f, 2.5f, 2.5f);
 	RenderMesh(meshList[GEO_DOOR], true);
 	modelStack.PopMatrix();
 
 	//left2
 	modelStack.PushMatrix();
-	modelStack.Translate(33.5, 7, -25);
+	modelStack.Translate(translate_DoorLeft2, 7, -25);
 	modelStack.Scale(4.f, 2.5f, 2.5f);
 	RenderMesh(meshList[GEO_DOOR], true);
 	modelStack.PopMatrix();
 	
 	//right2
 	modelStack.PushMatrix();
+	modelStack.Translate(translate_DoorRight2, 7, 20); 
     modelStack.Translate(38, 7, -25);
 	modelStack.Scale(4.f, 2.5f, 2.5f);
 	RenderMesh(meshList[GEO_DOOR], true);
 	modelStack.PopMatrix();
 	
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 7, 40);;
+	modelStack.Translate(0, 8, 40);
 	modelStack.Scale(2.5, 2.5, 2.5);
+	modelStack.Rotate(rotateAngle, 0, 1, 0);
 	RenderMesh(meshList[GEO_BLUEKEYCARD], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(20, 7, 40);;
+	modelStack.Translate(20, 8, 40);;
 	modelStack.Scale(2.5, 2.5, 2.5);
+	modelStack.Rotate(rotateAngle, 0, 1, 0);
 	RenderMesh(meshList[GEO_BLUEKEYCARD], true);
 	modelStack.PopMatrix();
 	

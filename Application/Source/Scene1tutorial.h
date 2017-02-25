@@ -145,7 +145,10 @@ public:
 
 	float translate_DoorLeft;
 	float translate_DoorRight;
+	float translate_DoorLeft2;
+	float translate_DoorRight2;
 	float translate_BoulderRolling;
+	float keyrotation;
 	int counterForDrink;
 	 
 	std::string coords;
