@@ -1,7 +1,10 @@
 #include "SceneManager.h"
+//#include "GL\glew.h"
+//#include "shader.hpp"
 
 SceneManager::SceneManager() :currentLevel(0), nextLevel(0), offset(0), endCheck(false), levelCompleted(0)
 {
+	//programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 }
 SceneManager::~SceneManager()
 {

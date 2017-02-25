@@ -13,6 +13,7 @@ using namespace Math;
 
 Menu_Room::Menu_Room()
 {
+	/*m_programID = (SceneManager::instance()->programID);*/
 }
 
 Menu_Room::~Menu_Room()
@@ -356,8 +357,6 @@ void Menu_Room::Render()
 	RenderMeshOnScreen(meshList[GEO_AMMOBG], 65, 10, 30, 30, false);
 	RenderTextOnScreen(meshList[GEO_TEXT], clipCount, Color(0, 1, 0), 5, 58, 5);
 	RenderTextOnScreen(meshList[GEO_TEXT], ammoLeft, Color(0, 1, 0), 3, 65.5f, 0.5f);
-
-
 	/*RenderMeshOnScreen(meshList[GEO_BOSSTESTBG], 40, 55, test2, 30, false);	
 	RenderMeshOnScreen(meshList[GEO_BOSSTEST], 40, 55, test3, 30, false);*/
 	//-------------------------------------------------------------------------------------
