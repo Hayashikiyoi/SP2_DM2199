@@ -5,7 +5,7 @@
 #include "Scene.h"
 
 //Level include here
-#include "SceneUI.h"
+//#include "SceneUI.h"
 
 using std::map;
 
@@ -44,6 +44,7 @@ public:
 	bool EndCheck();
 	
 	size_t levelCompleted;
+	//unsigned programID;
 private:
 	//Here be levels
 	size_t currentLevel; //Shows current level
