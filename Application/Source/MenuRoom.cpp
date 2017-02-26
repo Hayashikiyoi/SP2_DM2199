@@ -254,10 +254,12 @@ void Menu_Room::Update(double dt)
 	if (Application::IsKeyPressed(VK_LBUTTON) && !shoot)
 	{
 		lasergun->shoot(&camera);
+		//SceneManager::instance()->levelCompleted += 1; //Put here to test working drawBridge
 		shoot = true;
 	}
 	if (Application::IsKeyPressed('T'))
 	{
+		//SceneManager::instance()->levelCompleted = 0;
 		lasergun->reload();
 	}
 	if (Application::IsKeyPressed('F'))
@@ -266,7 +268,7 @@ void Menu_Room::Update(double dt)
 	}
 	if (shoot)
 	{
-		TP += dt;
+		TP += (float)dt;
 		if (TP > ROF)
 		{
 			TP = 0;
@@ -319,6 +321,8 @@ void Menu_Room::Render()
 	//RenderSkybox();
 	Walls();
 	EnemyField();
+	DrawBridge();
+	BridgeGate();
 
 	for (size_t i = 0; i < clipSize; i++)
 	{
@@ -345,7 +349,7 @@ void Menu_Room::Render()
 	modelStack.PopMatrix();
 
 	//No transform needed
-	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 1, 6);
+	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 1, 7);
 	
 	//RenderTextOnScreen(meshList[GEO_TEXT], cordx, Color(0, 1, 0), 3, 0, 3);
 	//RenderTextOnScreen(meshList[GEO_TEXT], cordz, Color(0, 1, 0), 3, 0, 5);
@@ -524,6 +528,50 @@ void Menu_Room::GenerateOBJ()
 	turret[17] = new Enemy("DoorFrame", Vector3(0, 0, -100));
 }
 
+void Menu_Room::BridgeGate()
+{
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[14]->Position.x + 4, turret[14]->Position.y, turret[14]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(5.5, 5.5, 5.5);
+	RenderMesh(meshList[GEO_DOOR], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[15]->Position.x + 4, turret[15]->Position.y, turret[15]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(5.5, 5.5, 5.5);
+	RenderMesh(meshList[GEO_DOOR_FRAME], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[16]->Position.x + 4, turret[16]->Position.y, turret[16]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_DOOR], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[17]->Position.x + 4, turret[17]->Position.y, turret[17]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_DOOR_FRAME], false);
+	modelStack.PopMatrix();
+}
+void Menu_Room::DrawBridge()
+{
+	int counter = SceneManager::instance()->levelCompleted;
+
+	for (int i = 0; i <= counter; i++)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(0, -1, (-100 + ((float)(i-1)*50)) );
+		modelStack.Rotate(90, -1, 0, 0);
+		modelStack.Scale(100.f, 100.f, 100.f);
+		RenderMesh(meshList[GEO_FLOOR_2], false);
+		modelStack.PopMatrix();
+	}
+}
 void Menu_Room::initializeObjects()
 {
 	//Initialise ur objects here
@@ -680,38 +728,6 @@ void Menu_Room::Walls()
 	modelStack.Scale(1000.f, 1000.f, 1000.f);
 	RenderMesh(meshList[GEO_BOTTOMVOTEX], false);
 	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(0, -1, -100);
-	modelStack.Rotate(90, -1, 0, 0);
-	modelStack.Scale(100.f, 100.f, 100.f);
-	RenderMesh(meshList[GEO_FLOOR_2], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(0, -1, -50);
-	modelStack.Rotate(90, -1, 0, 0);
-	modelStack.Scale(100.f, 100.f, 100.f);
-	RenderMesh(meshList[GEO_FLOOR_2], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(0, -1, 50);
-	modelStack.Rotate(90, -1, 0, 0);
-	modelStack.Scale(100.f, 100.f, 100.f);
-	RenderMesh(meshList[GEO_FLOOR_2], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(0, -1, 100);
-	modelStack.Rotate(90, -1, 0, 0);
-	modelStack.Scale(100.f, 100.f, 100.f);
-	RenderMesh(meshList[GEO_FLOOR_2], false);
-	modelStack.PopMatrix();
 }
 
 void Menu_Room::EnemyField()
@@ -778,35 +794,6 @@ void Menu_Room::EnemyField()
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_COMPUTER], false);
 	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(turret[14]->Position.x + 4, turret[14]->Position.y, turret[14]->Position.z);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(5.5, 5.5, 5.5);
-	RenderMesh(meshList[GEO_DOOR], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(turret[15]->Position.x + 4, turret[15]->Position.y, turret[15]->Position.z);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(5.5, 5.5, 5.5);
-	RenderMesh(meshList[GEO_DOOR_FRAME], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(turret[16]->Position.x+4, turret[16]->Position.y, turret[16]->Position.z);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[GEO_DOOR], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(turret[17]->Position.x+4, turret[17]->Position.y, turret[17]->Position.z);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[GEO_DOOR_FRAME], false);
-	modelStack.PopMatrix();
-
 }
 
 void Menu_Room::RenderMesh(Mesh *mesh, bool enableLight)

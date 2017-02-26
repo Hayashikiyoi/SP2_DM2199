@@ -157,8 +157,9 @@ private:
 	//Enemy
 	Enemy* turret[numOfEnemy]; //NPC Need rename
 
-	
-
+	//Door / Bridge
+	void DrawBridge();
+	void BridgeGate();
 public:
 	Menu_Room();
 	~Menu_Room();
