@@ -279,10 +279,7 @@ void Scene4_Boss::Update(double dt)
 	{
 		lasergun->reload();
 	}
-	if (Application::IsKeyPressed('F'))
-	{
-		lasergun->pickupClip();
-	}
+	
 	if (Application::IsKeyPressed(VK_LBUTTON) && !shoot)
 	{
 		lasergun->shoot(&camera);
@@ -381,6 +378,11 @@ void Scene4_Boss::Update(double dt)
 			}
 		}
 	}
+	if (player->getHealth() == 0)
+	{
+		SceneManager::instance()->changeScene(2);
+		return;
+	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------------------
 	//Getting Key Functions
 	if (turret[9]->isdead()){
@@ -405,6 +407,50 @@ void Scene4_Boss::Update(double dt)
 	{
 		Keys[1]->Position.z = 1000;
 		Keys[1]->updateCurPos();
+	}
+	if (Keys[2] && player->trigger(Keys[2]))
+	{
+		if (Application::IsKeyPressed('E'))
+		{
+			lasergun->pickupClip();
+			Keys[2]->Position.x = 1000;
+			Keys[2]->Position.z = 1000;
+			Keys[2]->updateCurPos();
+			smtHappen = true;
+		}
+	}
+	if (Keys[3] && player->trigger(Keys[3]))
+	{
+		if (Application::IsKeyPressed('E'))
+		{
+			lasergun->pickupClip();
+			Keys[3]->Position.x = 1000;
+			Keys[3]->Position.z = 1000;
+			Keys[3]->updateCurPos();
+			smtHappen = true;
+		}
+	}
+	if (Keys[4] && player->trigger(Keys[4]))
+	{
+		if (Application::IsKeyPressed('E'))
+		{
+			lasergun->pickupClip();
+			Keys[4]->Position.x = 1000;
+			Keys[4]->Position.z = 1000;
+			Keys[4]->updateCurPos();
+			smtHappen = true;
+		}
+	}
+	if (Keys[5] && player->trigger(Keys[5]))
+	{
+		if (Application::IsKeyPressed('E'))
+		{
+			player->HealPlayer(50);
+			Keys[5]->Position.x = 1000;
+			Keys[5]->Position.z = 1000;
+			Keys[5]->updateCurPos();
+			smtHappen = true;
+		}
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------------------
 	//Collision on walls
@@ -760,12 +806,26 @@ void Scene4_Boss::GenerateOBJ()
 	meshList[GEO_BLASTER]->textureID = LoadTGA("Image//Player//blaster.tga");
 	meshList[GEO_PBULLET] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//Player_Bullet.obj");
 	meshList[GEO_PBULLET]->textureID = LoadTGA("Image//Player//Player_Bullet.tga");
-	//object[GEO_PBULLET] = new GameObject("Debug", Vector3(-20, 0, -20));
-	//object[GEO_PBULLET]->setCollider(2, 2);
-	//object[GEO_PBULLET]->updateCurPos();
-	/*TriggerBox[3] = new GameObject("DebugTrigger", Vector3(-20, 0, -20));
-	TriggerBox[3]->setCollider(4, 4);
-	TriggerBox[3]->updateCurPos();*/
+
+	meshList[GEO_BATTERY] = MeshBuilder::GenerateOBJ("Battery", "OBJ//NPC//Battery_Clips.obj");
+	meshList[GEO_BATTERY]->textureID = LoadTGA("Image//Player//Battery_Clips.tga");
+	Keys[2] = new Item("Battery", Vector3(300, 0, 0), "Getting a Battery");
+	Keys[2]->setCollider(10, 10);
+	Keys[2]->updateCurPos();
+
+	Keys[3] = new Item("Battery", Vector3(0, 0, 300), "Getting a Battery");
+	Keys[3]->setCollider(10, 10);
+	Keys[3]->updateCurPos();
+
+	Keys[4] = new Item("Battery", Vector3(0, 0, -300), "Getting a Battery");
+	Keys[4]->setCollider(10, 10);
+	Keys[4]->updateCurPos();
+
+	meshList[GEO_RECOVERY] = MeshBuilder::GenerateOBJ("Recovery", "OBJ//Player//Can.obj");
+	//meshList[GEO_RECOVERY]->textureID = LoadTGA("Image//Player//.tga");
+	Keys[5] = new Item("Battery", Vector3(100, 0, -300), "Getting a Battery");
+	Keys[5]->setCollider(10, 10);
+	Keys[5]->updateCurPos();
 }
 
 void Scene4_Boss::EnemyField()
@@ -897,6 +957,30 @@ void Scene4_Boss::EnemyField()
 		RenderMesh(meshList[GEO_CARDKEY], true);
 		modelStack.PopMatrix();
 	}
+
+	modelStack.PushMatrix();
+	modelStack.Translate(Keys[2]->Position.x, Keys[2]->Position.y, Keys[2]->Position.z);
+	modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
+	RenderMesh(meshList[GEO_BATTERY], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(Keys[3]->Position.x, Keys[3]->Position.y, Keys[3]->Position.z);
+	modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
+	RenderMesh(meshList[GEO_BATTERY], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(Keys[4]->Position.x, Keys[4]->Position.y, Keys[4]->Position.z);
+	modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
+	RenderMesh(meshList[GEO_BATTERY], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(Keys[5]->Position.x, Keys[5]->Position.y, Keys[5]->Position.z);
+	modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
+	RenderMesh(meshList[GEO_RECOVERY], true);
+	modelStack.PopMatrix();
 }
 
 void Scene4_Boss::Render()
@@ -983,7 +1067,7 @@ void Scene4_Boss::Render()
 	RenderMeshOnScreen(meshList[GEO_AMMOBG], 65, 10, 30, 30, false);
 
 	RenderTextOnScreen(meshList[GEO_TEXT], clipCount, Color(0, 1, 0), 5, 58, 5);
-	RenderTextOnScreen(meshList[GEO_TEXT], ammoLeft, Color(0, 1, 0), 3, 65.5f, 0.5f);
+	RenderTextOnScreen(meshList[GEO_TEXT], AmmoLeft, Color(0, 1, 0), 3, 65.5f, 0.5f);
 	
 	RenderMeshOnScreen(meshList[GEO_BOSSTESTBG], 40, 55, test2, 30, false);
 	RenderMeshOnScreen(meshList[GEO_BOSSTEST], 40, 55, test3, 30, false);

@@ -113,6 +113,8 @@ class Scene4_Boss : public Scene
 		GEO_HEALTH,
 		GEO_STAMINA,
 		GEO_AMMOBG,
+		GEO_BATTERY,
+		GEO_RECOVERY,
 		GEO_BOSSTESTBG,
 		GEO_BOSSTEST,
 		NUM_GEOMETRY,
@@ -129,7 +131,7 @@ private:
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* CamObj;
 	GameObject* TriggerBox[1];
-	Item* Keys[1];
+	Item* Keys[5];
 	GameObject* WallsObj[numOfWalls];
 	Player* player;
 
