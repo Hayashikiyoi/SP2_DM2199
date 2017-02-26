@@ -135,6 +135,8 @@ private:
 
 	string deltaTime;
 	string BossH;
+	string AmmoLeft;
+	string MagsLeft;
 	string cordx, cordy, cordz;
 	Vector3 Robot;
 
@@ -174,10 +176,12 @@ private:
 	//Game Object
 	void GenerateOBJ();
 
+	//Player
 	float moveBullet;
-	float test;
+	float HPsizeX;
 	float test2;
 	float test3;
+	string clipCount, ammoLeft;
 public:
 	Scene4_Boss();
 	~Scene4_Boss();

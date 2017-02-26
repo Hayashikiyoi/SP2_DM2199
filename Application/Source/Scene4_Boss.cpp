@@ -220,7 +220,7 @@ void Scene4_Boss::Update(double dt)
 
 	DelayTimer += (float)dt;
 	rotateAngle += (float)dt;
-	test = player->getHealth()*0.215;
+	HPsizeX = player->getHealth()*0.215;
 	test3 = turret[9]->showHP()*0.3;
 	//if (coverOpened)
 	//{
@@ -272,10 +272,34 @@ void Scene4_Boss::Update(double dt)
 	
 	//---------------------------------------------------------------------------------------------------------------------------------------------------------
 	//Player Shoot
-	if (Application::IsKeyPressed(VK_LBUTTON))
+	static float ROF = 0.125f;
+	static float TP = 0;
+	static bool shoot = false;
+	if (Application::IsKeyPressed('T'))
+	{
+		lasergun->reload();
+	}
+	if (Application::IsKeyPressed('F'))
+	{
+		lasergun->pickupClip();
+	}
+	if (Application::IsKeyPressed(VK_LBUTTON) && !shoot)
 	{
 		lasergun->shoot(&camera);
+		shoot = true;
 	}
+	if (shoot)
+	{
+		TP += dt;
+		if (TP > ROF)
+		{
+			TP = 0; 
+			shoot = false;
+		}
+	}
+	AmmoLeft = std::to_string(lasergun->bulletLeft())+ "/45";
+	clipCount = std::to_string(lasergun->canisterLeft());
+
 	for (int i = 0; i < clipSize; ++i)
 	{
 		if (lasergun->pBullet[i] && turret[9] && turret[9]->trigger(lasergun->pBullet[i]))
@@ -344,7 +368,6 @@ void Scene4_Boss::Update(double dt)
 	{
 		if (bullet[i] && player->trigger(bullet[i]))
 		{
-			
 			if (!smtHappen)
 			{
 				if (i == 5)
@@ -446,7 +469,7 @@ void Scene4_Boss::Update(double dt)
 
 void Scene4_Boss::GUI()
 {
-	test = 21.5f;
+	HPsizeX = 21.5f;
 	test2 = 0.f;
 	test3 = 30.f;
 	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1.f, 1.f);
@@ -923,10 +946,10 @@ void Scene4_Boss::Render()
 	Walls();
 	EnemyField();
 
-	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
-	RenderTextOnScreen(meshList[GEO_TEXT], BossH, Color(0, 1, 0), 5, 0, 5);
-
-	
+	/*RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
+	RenderTextOnScreen(meshList[GEO_TEXT], BossH, Color(0, 1, 0), 5, 0, 5);*/
+	//RenderTextOnScreen(meshList[GEO_TEXT], AmmoLeft, Color(1, 1, 1), 3, 5, 5);
+	//RenderTextOnScreen(meshList[GEO_TEXT], Mags, Color(1, 1, 1), 5, 0, 5);
 	//GUN Bullets
 	for (size_t i = 0; i < clipSize; i++)
 	{
@@ -955,10 +978,13 @@ void Scene4_Boss::Render()
 	modelStack.PopMatrix();
 
 	RenderMeshOnScreen(meshList[GEO_HEALTHBG], 15, 5, 30, 30, false);
-	RenderMeshOnScreen(meshList[GEO_HEALTH], 8.f, 5, test, 30, true);
+	RenderMeshOnScreen(meshList[GEO_HEALTH], 8.f, 5, HPsizeX, 30, true);
 	RenderMeshOnScreen(meshList[GEO_STAMINA], 8.1f, 5, camera.test2, 30, true);
 	RenderMeshOnScreen(meshList[GEO_AMMOBG], 65, 10, 30, 30, false);
 
+	RenderTextOnScreen(meshList[GEO_TEXT], clipCount, Color(0, 1, 0), 5, 58, 5);
+	RenderTextOnScreen(meshList[GEO_TEXT], ammoLeft, Color(0, 1, 0), 3, 65.5f, 0.5f);
+	
 	RenderMeshOnScreen(meshList[GEO_BOSSTESTBG], 40, 55, test2, 30, false);
 	RenderMeshOnScreen(meshList[GEO_BOSSTEST], 40, 55, test3, 30, false);
 	//-------------------------------------------------------------------------------------
@@ -1048,8 +1074,8 @@ void Scene4_Boss::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, 
 	viewStack.LoadIdentity(); //No need camera for ortho mode
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity(); //Reset modelStack
-	modelStack.Scale(size, size, size);
 	modelStack.Translate(x, y, 0);
+	modelStack.Scale(size, size, size);
 
 
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
