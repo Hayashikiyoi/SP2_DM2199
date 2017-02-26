@@ -185,7 +185,15 @@ void GameOver::Update(double dt)
 		}
 	}
 
-
+	if (counter >= 11) //Time delay to return to first scene
+	{
+		timer += dt;
+		if (timer > 3.f)
+		{
+			SceneManager::instance()->changeScene(0);
+			return;
+		}
+	}
 	camera.Update(dt);
 }
 
