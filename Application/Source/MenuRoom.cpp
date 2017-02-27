@@ -31,6 +31,9 @@ void Menu_Room::Init()
 	glEnable(GL_BLEND);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	//translator
+	TranslateCode = 100;
 
 	//Initialise camera
 	camera.Init(Vector3(0, 10, -400), Vector3(0, 0, -10), Vector3(0, 1, 0));
@@ -131,14 +134,26 @@ void Menu_Room::Update(double dt)
 	cordz = "Z: " + std::to_string(camera.position.z);
 	static float LSPEED = 10;
 
+	static float change = 1;
+	TranslateCode += 25 * (float)dt * change;
+	if (TranslateCode > 100)
+	{
+		change = -1;
+		//TranslateCode = 0;
+		
+	}
+	else if (TranslateCode < -100)
+	{
+		change = 1;
+	}
 
 	if (Application::IsKeyPressed('V'))
 		lightEnable = false;
 	if (Application::IsKeyPressed('B'))
 		lightEnable = true;
 
-	if (Application::IsKeyPressed('Y'))
-		coverOpened = true;
+	//if (Application::IsKeyPressed('Y'))
+	//	coverOpened = true;
 
 	if (Application::IsKeyPressed('I'))
 		light[0].position.z -= (float)(LSPEED * dt);
@@ -536,17 +551,29 @@ void Menu_Room::GenerateOBJ()
 	meshList[GEO_DOOR_FRAME] = MeshBuilder::GenerateOBJ("Door_Frame", "OBJ//Door//doorframe_2.obj");
 	//meshList[GEO_DOOR_FRAME]->textureID = LoadTGA("Image//Wall//Wall.tga");
 	turret[14] = new Enemy("Door", Vector3(0, 0, 100));
-	turret[14]->setCollider(1000, 15);
+	turret[14]->setCollider(100, 15);
 	turret[14]->updateCurPos();
 	turret[15] = new Enemy("DoorFrame", Vector3(0, 0, 100));
 	//Door 2
 	turret[16] = new Enemy("Door", Vector3(0, 0, -100));
-	turret[16]->setCollider(1000, 15); //Plz Change
+	turret[16]->setCollider(100, 15); //Plz Change
 	turret[16]->updateCurPos();
 	turret[17] = new Enemy("DoorFrame", Vector3(0, 0, -100));
 	TriggerBox[4] = new GameObject("Door trigger", Vector3(0, 0, -100));
-	TriggerBox[4]->setCollider(1000, 20);
+	TriggerBox[4]->setCollider(100, 20);
 	TriggerBox[4]->updateCurPos();
+
+	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Box", Color(1,1,1),1,1,1);
+	turret[18] = new Enemy("Door trigger", Vector3(-300, 0, 0));
+	turret[18]->setCollider(500, 200);
+	turret[18]->updateCurPos();
+
+	turret[19] = new Enemy("Door trigger", Vector3(300, 0, 0));
+	turret[19]->setCollider(500, 200);
+	turret[19]->updateCurPos();
+
+	meshList[GEO_CODEBLOCK] = MeshBuilder::GenerateOBJ("Code", "OBJ//Objects//codeBlock.obj");
+	meshList[GEO_CODEBLOCK]->textureID = LoadTGA("Image//model//codeBlock.tga");
 }
 
 void Menu_Room::BridgeGate()
@@ -814,6 +841,22 @@ void Menu_Room::EnemyField()
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(5, 5, 5);
 	RenderMesh(meshList[GEO_COMPUTER], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+
+	modelStack.Translate(0,TranslateCode, 0);
+	modelStack.Rotate(90,0,1,0);
+	modelStack.Scale(10,10,10);
+	RenderMesh(meshList[GEO_CODEBLOCK], false);
+	//modelStack.Translate(turret[18]->getCollider().getmin().x, turret[18]->Position.y, turret[18]->getCollider().getmin().z);
+	//modelStack.Scale(1, 100, 1);
+	//RenderMesh(meshList[GEO_DEBUGBOX], false);
+	//modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//modelStack.Translate(turret[18]->getCollider().getmax().x, turret[18]->Position.y, turret[18]->getCollider().getmax().z);
+	//modelStack.Scale(1, 100, 1);
+	//RenderMesh(meshList[GEO_DEBUGBOX], false);
 	modelStack.PopMatrix();
 }
 

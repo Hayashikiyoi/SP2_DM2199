@@ -106,6 +106,7 @@ class Menu_Room : public Scene
 		GEO_AMMOBG,
 		GEO_BOSSTESTBG,
 		GEO_BOSSTEST,
+		GEO_CODEBLOCK,
 		NUM_GEOMETRY,
 	};
 
@@ -139,6 +140,7 @@ private:
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* TriggerBox[7];
 	Item* Locked[4];
+	float TranslateCode;
 
 	//Initialize
 	void initializeObjects();
