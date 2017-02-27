@@ -215,6 +215,8 @@ void Scene4_Boss::Update(double dt)
 	static Vector3 prevpos;
 	static Vector3 prevposTarget;
 	static bool smtHappen = false;
+	static bool smtHappen2 = false;
+	static bool smtHappen3 = false;
 	static float time;
 	static float LSPEED = 10;
 
@@ -299,10 +301,10 @@ void Scene4_Boss::Update(double dt)
 
 	for (int i = 0; i < clipSize; ++i)
 	{
-		if (lasergun->pBullet[i] && turret[9] && turret[9]->trigger(lasergun->pBullet[i]))
+		if (lasergun->pBullet[i] && turret[9] && turret[9]->trigger(lasergun->pBullet[i]) && !smtHappen2)
 		{
 			turret[9]->dmgToEnemy(1);
-			smtHappen = true;
+			smtHappen2 = true;
 			break;
 		}
 	}
@@ -368,7 +370,7 @@ void Scene4_Boss::Update(double dt)
 			if (!smtHappen)
 			{
 				if (i == 5)
-					player->DmgPlayer(30);
+				player->DmgPlayer(30);
 				else 
 				player->DmgPlayer(10);
 
@@ -380,7 +382,7 @@ void Scene4_Boss::Update(double dt)
 	}
 	if (player->getHealth() == 0)
 	{
-		SceneManager::instance()->changeScene(2);
+		SceneManager::instance()->changeScene(4);
 		return;
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -410,46 +412,58 @@ void Scene4_Boss::Update(double dt)
 	}
 	if (Keys[2] && player->trigger(Keys[2]))
 	{
-		if (Application::IsKeyPressed('E'))
+		if (!smtHappen)
 		{
-			lasergun->pickupClip();
-			Keys[2]->Position.x = 1000;
-			Keys[2]->Position.z = 1000;
-			Keys[2]->updateCurPos();
-			smtHappen = true;
+			if (Application::IsKeyPressed('E'))
+			{
+				lasergun->pickupClip();
+				Keys[2]->Position.x = 1000;
+				Keys[2]->Position.z = 1000;
+				Keys[2]->updateCurPos();
+				smtHappen3 = true;
+			}
 		}
 	}
 	if (Keys[3] && player->trigger(Keys[3]))
 	{
-		if (Application::IsKeyPressed('E'))
+		if (!smtHappen)
 		{
-			lasergun->pickupClip();
-			Keys[3]->Position.x = 1000;
-			Keys[3]->Position.z = 1000;
-			Keys[3]->updateCurPos();
-			smtHappen = true;
+			if (Application::IsKeyPressed('E'))
+			{
+				lasergun->pickupClip();
+				Keys[3]->Position.x = 1000;
+				Keys[3]->Position.z = 1000;
+				Keys[3]->updateCurPos();
+				smtHappen3 = true;
+			}
 		}
 	}
 	if (Keys[4] && player->trigger(Keys[4]))
 	{
-		if (Application::IsKeyPressed('E'))
+		if (!smtHappen)
 		{
-			lasergun->pickupClip();
-			Keys[4]->Position.x = 1000;
-			Keys[4]->Position.z = 1000;
-			Keys[4]->updateCurPos();
-			smtHappen = true;
+			if (Application::IsKeyPressed('E'))
+			{
+				lasergun->pickupClip();
+				Keys[4]->Position.x = 1000;
+				Keys[4]->Position.z = 1000;
+				Keys[4]->updateCurPos();
+				smtHappen3 = true;
+			}
 		}
 	}
 	if (Keys[5] && player->trigger(Keys[5]))
 	{
-		if (Application::IsKeyPressed('E'))
+		if (!smtHappen)
 		{
-			player->HealPlayer(50);
-			Keys[5]->Position.x = 1000;
-			Keys[5]->Position.z = 1000;
-			Keys[5]->updateCurPos();
-			smtHappen = true;
+			if (Application::IsKeyPressed('E'))
+			{
+				player->HealPlayer(50);
+				Keys[5]->Position.x = 1000;
+				Keys[5]->Position.z = 1000;
+				Keys[5]->updateCurPos();
+				smtHappen3 = true;
+			}
 		}
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -488,6 +502,7 @@ void Scene4_Boss::Update(double dt)
 	if (TriggerBox[0] && player->trigger(TriggerBox[0]))
 	{
 		SceneManager::instance()->changeScene(2);
+		SceneManager::instance()->levelCompleted = 4;
 		return;
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -499,6 +514,39 @@ void Scene4_Boss::Update(double dt)
 		{
 			time = 0;
 			smtHappen = false;
+		}
+	}
+	if (smtHappen2)
+	{
+		time += dt;
+		if (time > 1)
+		{
+			time = 0;
+			smtHappen2 = false;
+		}
+	}
+	if (smtHappen3)
+	{
+		time += dt;
+		if (time > 10)
+		{
+			time = 0;
+			Keys[2]->Position.x = 300;
+			Keys[2]->Position.z = 0;
+			Keys[2]->updateCurPos();
+
+			Keys[3]->Position.x = 0;
+			Keys[3]->Position.z = 300;
+			Keys[3]->updateCurPos();
+			
+			Keys[4]->Position.x = 0;
+			Keys[4]->Position.z = -300;
+			Keys[4]->updateCurPos();
+
+			Keys[5]->Position.x = 100;
+			Keys[5]->Position.z = -300;
+			Keys[5]->updateCurPos();
+			smtHappen3 = false;
 		}
 	}
 	if (DelayTimer > 0.125)

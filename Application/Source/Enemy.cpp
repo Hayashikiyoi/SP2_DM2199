@@ -23,7 +23,7 @@ bool Enemy::isdead()
 	return (health <= 0);
 }
 
-void Enemy::dmgToEnemy(size_t dmg)
+void Enemy::dmgToEnemy(float dmg)
 {
 	if (this->health > 0)
 	{
@@ -36,7 +36,7 @@ void Enemy::dmgToEnemy(size_t dmg)
 	}
 }
 
-size_t Enemy::showHP()
+float Enemy::showHP()
 {
 	return (this->health);
 }
