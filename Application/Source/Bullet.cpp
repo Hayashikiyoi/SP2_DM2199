@@ -30,8 +30,8 @@ void Bullet::bulletUpdate(double dt)
 {
 	if (shoot)
 	{
-		Bullet::Position.x -= (float)(50 * sin(Math::DegreeToRadian(rotation))*dt);
-		Bullet::Position.z -= (float)(50 * cos(Math::DegreeToRadian(rotation))*dt);
+		Bullet::Position.x -= (float)(150 * sin(Math::DegreeToRadian(rotation))*dt);
+		Bullet::Position.z -= (float)(150 * cos(Math::DegreeToRadian(rotation))*dt);
 	}
 }
 

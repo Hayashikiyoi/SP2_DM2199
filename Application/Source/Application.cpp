@@ -118,7 +118,7 @@ void Application::Run()
 	SceneManager::instance()->addScene(new Menu_Room);
 	SceneManager::instance()->addScene(new LoadScene); //Must be after main menu
 	SceneManager::instance()->addScene(new Menu_Room);
-	SceneManager::instance()->addScene(new GameOver);
+	//SceneManager::instance()->addScene(new GameOver);
 	//SceneManager::instance()->addScene(new Wilson);
 	//SceneManager::instance()->addScene(new Scene1tutorial);
 	//SceneManager::instance()->addScene(new ChuanXu);
@@ -129,6 +129,7 @@ void Application::Run()
 	//SceneManager::instance()->addScene(new SceneCalvert); //Mechanic test area (Cannot use for proper game)
 	//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
 	SceneManager::instance()->addScene(new Scene4_Boss);
+	SceneManager::instance()->addScene(new GameOver);
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame

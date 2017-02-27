@@ -13,11 +13,11 @@ public:
 	float RotateToPlayer(Vector3 player);
 
 	bool isdead();
-	void dmgToEnemy(size_t dmg);
-	size_t showHP();
+	void dmgToEnemy( float dmg);
+	float showHP();
 
 private:
-	size_t health;
+	float health;
 };
 
 #endif
