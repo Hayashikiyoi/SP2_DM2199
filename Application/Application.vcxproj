@@ -91,6 +91,7 @@
     <ClCompile Include="Source\ChuanXu.cpp" />
     <ClCompile Include="Source\Camera4.cpp" />
     <ClCompile Include="Source\CollisionChecker.cpp" />
+    <ClCompile Include="Source\Credits.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
     <ClCompile Include="Source\Fps_Camera.cpp" />
     <ClCompile Include="Source\GameObject.cpp" />
@@ -127,6 +128,7 @@
     <ClInclude Include="Source\ChuanXu.h" />
     <ClInclude Include="Source\Camera4.h" />
     <ClInclude Include="Source\CollisionChecker.h" />
+    <ClInclude Include="Source\Credits.h" />
     <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\Fps_Camera.h" />
     <ClInclude Include="Source\GameObject.h" />
