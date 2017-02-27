@@ -31,7 +31,8 @@ void Aloy_Scene::Init()
 	TextSize_2 = 0;
 	TextSize_3 = 0;
 	MenuSelect = 0;
-	CubeScale = 0;
+	Translating[0] = 0;
+	Translating[1] = 0;
 	TitleCheck = false;
 	TextChecking = true;
 	TextSwitching = false;
@@ -64,7 +65,8 @@ void Aloy_Scene::Init()
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//city_bk.tga");
 	
-	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(0, 0, 0), 1, 1, 1);
+	meshList[GEO_CINAMATIC] = MeshBuilder::GenerateOBJ("Object", "OBJ//Objects//menu.obj");
+	meshList[GEO_CINAMATIC]->textureID = LoadTGA("Image//model//Menutransition.tga");
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
@@ -96,16 +98,34 @@ void Aloy_Scene::Init()
 
 void Aloy_Scene::Update(double dt)
 {
+	Delaytimer[1] += (float)dt;
+
+	if (Delaytimer[1] < 12)
+	{
+		Translating[0] -= (float)dt;
+	}
+	if (Delaytimer[1] > 12)
+	{
+		Translating[1] -= (float)dt;
+		Translating[0] = 0;
+	}
+	if (Delaytimer[1] > 23)
+	{
+		Translating[1] = 0;
+		Delaytimer[1] = 0;
+	}
+	// Title will appeared after 10 seconds (Check with DelayTimer at the else statement)
 	if (TitleCheck == true)
 	{
 		titlescale = 50;
 		if (TextChecking == true)
 		{
 			TextSize = 3;
+			//Pressing Enter will change to Start and Quit game option
 			if (Application::IsKeyPressed(VK_RETURN))
 			{
 				TextSize = 0;
-				Delaytimer = 0;
+				Delaytimer[0] = 0;
 				TextChecking = false;
 			}
 		}
@@ -117,7 +137,7 @@ void Aloy_Scene::Update(double dt)
 			case 0:
 				bSomethingHappen = true;
 				TextSize_2 = 3;
-				if (Delaytimer > 0.125)
+				if (Delaytimer[0] > 0.125)
 				{
 					if (Application::IsKeyPressed(VK_RETURN))
 					{
@@ -127,7 +147,7 @@ void Aloy_Scene::Update(double dt)
 					else if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
 					{
 
-						Delaytimer = 0;
+						Delaytimer[0] = 0;
 						TextSize_2 = 0;
 						TextSize_3 = 3;
 						MenuSelect = 1;
@@ -136,7 +156,7 @@ void Aloy_Scene::Update(double dt)
 				break;
 			case 1:
 				bSomethingHappen = true;
-				if (Delaytimer > 0.125)
+				if (Delaytimer[0] > 0.125)
 				{
 					if (Application::IsKeyPressed(VK_RETURN))
 					{
@@ -144,7 +164,7 @@ void Aloy_Scene::Update(double dt)
 					}
 					else if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
 					{
-						Delaytimer = 0;
+						Delaytimer[0] = 0;
 						TextSize_3 = 0;
 						MenuSelect = 0;
 					}
@@ -155,17 +175,16 @@ void Aloy_Scene::Update(double dt)
 			}
 			if (bSomethingHappen)
 			{
-				Delaytimer += (float)dt;
+				Delaytimer[0] += (float)dt;
 			}
 		}
 	}
 	else
 	{
-		Delaytimer += (float)dt;
+		Delaytimer[0] += (float)dt;
 		TextSize = 0;
-		if (Delaytimer > 10)
+		if (Delaytimer[0] > 3)
 		{
-			CubeScale += (float)dt;
 			TitleCheck = true;
 		}
 	}
@@ -209,9 +228,19 @@ void Aloy_Scene::Render()
 
 	modelStack.PushMatrix();
 	//to do: transformation code here
-	modelStack.Translate(0,0,0);
-	modelStack.Scale(100, 0, 100);
-	RenderMesh(meshList[GEO_CUBE], false);
+	modelStack.Translate(0,0, -700);
+	modelStack.Translate(0,0,-70 * Translating[0]);
+	modelStack.Rotate(90,0,0,1);
+	modelStack.Scale(50, 50, 50);
+	RenderMesh(meshList[GEO_CINAMATIC], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	//to do: transformation code here
+	modelStack.Translate(0, 0, -700);
+	modelStack.Translate(0, 0, -70 * Translating[1]);
+	modelStack.Scale(50, 50, 50);
+	RenderMesh(meshList[GEO_CINAMATIC], false);
 	modelStack.PopMatrix();
 	
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 0, 0);
@@ -220,6 +249,7 @@ void Aloy_Scene::Render()
 	RenderMeshOnScreen(meshList[GEO_TITLE], 40, 30, titlescale, titlescale);
 
 	modelStack.PushMatrix();
+	//Text Enter and Start Game
 	RenderTextOnScreen(meshList[GEO_TEXT_1], "ENTER TO START", Color(0, 1, 0), TextSize, 6, 4);
 	RenderTextOnScreen(meshList[GEO_TEXT_1], "Start Game" , Color(0, 1, 0), TextSize_2, 8, 4);
 	RenderTextOnScreen(meshList[GEO_TEXT_2], "Quit Game", Color(0,1,0), TextSize_3 ,8.5,4);

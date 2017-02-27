@@ -3,6 +3,7 @@
 
 #include "Scene.h"
 #include "Camera4.h"
+#include "Fps_Camera.h"
 #include "Mesh.h"
 #include "MatrixStack.h"
 #include "Light.h"
@@ -40,11 +41,7 @@ class Aloy_Scene : public Scene
 		GEO_AXES,
 		GEO_TITLE,
 		GEO_FRONT,
-		GEO_CUBE,
-		GEO_CUBE_2,
-		GEO_CUBE_3,
-		GEO_CUBE_4,
-		GEO_CUBE_5,
+		GEO_CINAMATIC,
 		GEO_TEXT,
 		GEO_TEXT_1,
 		GEO_TEXT_2,
@@ -69,13 +66,13 @@ private:
 	bool TitleCheck;
 	bool bSomethingHappen;
 	int MenuSelect;
-	float Delaytimer;
+	float Delaytimer[2];
 
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
 	float scaleAll;
 	float titlescale;
-	float CubeScale;
+	float Translating[2];
 	Camera4 camera;
 	MS modelStack, viewStack, projectionStack;
 

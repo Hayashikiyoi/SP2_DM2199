@@ -61,8 +61,8 @@ To be called every frame. Camera4 will get user inputs and update its position a
 /******************************************************************************/
 void Camera4::Update(double dt)
 {
-	static const float CAMERA_SPEED = 20.f;
+	//static const float camera_speed = 300.f;
 
-	position += view * (float)(CAMERA_SPEED * dt);
-	target = position + view * (float)(CAMERA_SPEED * dt);
+	//position += view * (float)(camera_speed * dt);
+	//target = position + view * (float)(camera_speed * dt);
 }
