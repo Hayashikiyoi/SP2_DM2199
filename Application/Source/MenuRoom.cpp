@@ -85,7 +85,7 @@ void Menu_Room::Init()
 
 	glUseProgram(m_programID);
 
-	light[0].type = Light::LIGHT_SPOT;
+	light[0].type = Light::LIGHT_DIRECTIONAL;
 	light[0].position.Set(0, 20, 0);
 	light[0].color.Set(1, 1, 1);
 	light[0].power = 1;
@@ -219,7 +219,8 @@ void Menu_Room::Update(double dt)
 	object[GEO_BOTTOMVOTEX]->rotation += (float)dt;
 	object[GEO_VOTEX]->rotation -= (float)dt;
 	deltaTime = "";
-	for (int i = 0; i < 5; ++i)
+	static bool openDoor = false;
+	for (int i = 0; i < 6; ++i)
 	{
 		if (TriggerBox[i] && player->trigger(TriggerBox[i]))
 		{
@@ -236,15 +237,32 @@ void Menu_Room::Update(double dt)
 				SceneManager::instance()->changeScene(6);*/
 			if (i == 4)
 				deltaTime = "Press E: Unlock";
-			if (Application::IsKeyPressed('E') && i == 4)
+			if (Application::IsKeyPressed('E') && i == 4 && SceneManager::instance()->levelCompleted  == 4)
 			{
-				turret[17]->Position.z = 1000;
-				turret[17]->Position.y = -100;
+				//turret[14]->Position.z = 1000;
+				//turret[14]->Position.y = -100;
+				//turret[16]->Position.z = 1000;
+				//turret[16]->Position.y = -100;
+				openDoor = true;
 			}
 			std::cout << deltaTime  << std::endl;
 			break;
-			
 		}
+	}
+
+	if (openDoor && turret[14]->Position.y >= -100)
+	{
+		turret[14]->Position.y -= 10 * dt;
+		turret[16]->Position.y -= 10 * dt;
+	}
+	if (turret[14]->Position.y <= -100)
+	{
+		turret[14]->Position.z = 1000;
+		turret[14]->Position.y = -100;
+		turret[14]->updateCurPos();
+		turret[16]->Position.z = 1000;
+		turret[16]->Position.y = -100;
+		turret[16]->updateCurPos();
 	}
 	//----------------------------------------------------------------------------
 	//Gun Stuffs------------------------------------------------------------------
@@ -254,12 +272,12 @@ void Menu_Room::Update(double dt)
 	if (Application::IsKeyPressed(VK_LBUTTON) && !shoot)
 	{
 		lasergun->shoot(&camera);
-		//SceneManager::instance()->levelCompleted += 1; //Put here to test working drawBridge
+		SceneManager::instance()->levelCompleted += 1; //Put here to test working drawBridge
 		shoot = true;
 	}
 	if (Application::IsKeyPressed('T'))
 	{
-		//SceneManager::instance()->levelCompleted = 0;
+		SceneManager::instance()->levelCompleted = 0;
 		lasergun->reload();
 	}
 	if (Application::IsKeyPressed('F'))
@@ -523,9 +541,12 @@ void Menu_Room::GenerateOBJ()
 	turret[15] = new Enemy("DoorFrame", Vector3(0, 0, 100));
 	//Door 2
 	turret[16] = new Enemy("Door", Vector3(0, 0, -100));
-	turret[16]->setCollider(1000, 15);
+	turret[16]->setCollider(1000, 15); //Plz Change
 	turret[16]->updateCurPos();
 	turret[17] = new Enemy("DoorFrame", Vector3(0, 0, -100));
+	TriggerBox[4] = new GameObject("Door trigger", Vector3(0, 0, -100));
+	TriggerBox[4]->setCollider(1000, 20);
+	TriggerBox[4]->updateCurPos();
 }
 
 void Menu_Room::BridgeGate()
@@ -580,7 +601,7 @@ void Menu_Room::initializeObjects()
 		meshList[i] = NULL;
 		object[i] = 0;
 	}
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < 6; ++i)
 	{
 		TriggerBox[i] = 0;
 	}
@@ -957,7 +978,7 @@ void Menu_Room::Exit()
 		if (object[i] != 0)
 			delete object[i];
 	}
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < 6; ++i)
 	{
 		if (TriggerBox[i] != 0)
 			delete TriggerBox[i];
