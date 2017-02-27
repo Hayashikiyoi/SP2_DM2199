@@ -12,13 +12,15 @@
 #include"Fps_Camera.h"
 #include"Player.h"
 
+
 #include <string>
 using std::string;
 #undef numOfEnemy
 
 #define numOfEnemy 5
 #define numOfBullet 5
-#define Walls 4
+#define Walls 34
+#define numOfIdleNPC 5
 class ChuanXu : public Scene 
 {
 
@@ -78,6 +80,7 @@ class ChuanXu : public Scene
 		GEO_BOSSBODY,
 		GEO_CROSSHAIR,
 		GEO_WALL,
+		GEO_WALL2,
 		GEO_FLOOR,
 		NUM_GEOMETRY,
 	};
@@ -93,8 +96,9 @@ private:
 	//GameObj
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* CamObj;
-	GameObject* Wall[Walls];
-	Enemy* turret[numOfEnemy];
+	//Enemy* turretHead[numOfEnemy];
+	Enemy* turretBody[numOfEnemy];
+	Enemy* turretHead[numOfEnemy];
 	Bullet* bullet[numOfBullet];
 	GameObject * WallsObj[Walls];
 	string deltaTime;
@@ -109,6 +113,7 @@ private:
 	void skyBox();
 	void RenderWalls();
 	void GenerateObj();
+	void RenderMaze();
 
 	Fps_Camera camera;
 	MS modelStack, viewStack, projectionStack;
@@ -120,8 +125,6 @@ private:
 	Light light[1];
 
 	void RenderMesh(Mesh *mesh, bool enableLight);
-
-	
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
