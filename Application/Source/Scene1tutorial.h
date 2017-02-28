@@ -16,6 +16,7 @@
 #include <string>
 using std::string;
 #undef numOfEnemy
+#undef Walls
 
 #define numOfEnemy 5
 #define numOfBullet 5

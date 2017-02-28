@@ -23,6 +23,7 @@ void Aloy_Scene::Init()
 {
 	// Init VBO here
 	rotateAngle = 0;
+	transX = 100; //For selection
 	translateX[0] = 8;
 	translateX[1] = 0;
 	translateX[2] = 0;
@@ -37,6 +38,7 @@ void Aloy_Scene::Init()
 	TitleCheck = false;
 	TextChecking = true;
 	TextSwitching = false;
+	bSomethingHappen = false;
 
 	lightEnable = true;
 
@@ -60,8 +62,16 @@ void Aloy_Scene::Init()
 		meshList[i] = NULL;
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
+
 	meshList[GEO_TITLE] = MeshBuilder::GenerateQuad("title", Color(1, 1, 1), 1, 1);
-	meshList[GEO_TITLE]->textureID = LoadTGA("Image//Text//Title.tga");
+	meshList[GEO_TITLE]->textureID = LoadTGA("Image//UI//Mainmenu//title.tga");
+
+	meshList[GEO_SELECT1] = MeshBuilder::GenerateQuad("title", Color(1, 1, 1), 1, 1);
+	meshList[GEO_SELECT1]->textureID = LoadTGA("Image//UI//Mainmenu//start.tga");
+	meshList[GEO_SELECT2] = MeshBuilder::GenerateQuad("title", Color(1, 1, 1), 1, 1);
+	meshList[GEO_SELECT2]->textureID = LoadTGA("Image//UI//Mainmenu//credit.tga");
+	meshList[GEO_SELECT3] = MeshBuilder::GenerateQuad("title", Color(1, 1, 1), 1, 1);
+	meshList[GEO_SELECT3]->textureID = LoadTGA("Image//UI//Mainmenu//end.tga");
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//MainMenu.tga");
@@ -71,15 +81,6 @@ void Aloy_Scene::Init()
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
-
-	meshList[GEO_TEXT_1] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT_1]->textureID = LoadTGA("Image//Text//ocrastd.tga");
-
-	meshList[GEO_TEXT_2] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT_2]->textureID = LoadTGA("Image//Text//ocrastd.tga");
-
-	meshList[GEO_TEXT_3] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT_3]->textureID = LoadTGA("Image//Text//ocrastd.tga");
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -118,8 +119,12 @@ void Aloy_Scene::Update(double dt)
 		Translating[1] = 0;
 		Delaytimer[1] = 0;
 	}
+
+	static size_t selectedNum = 1;
+	static float moveAmt = 60.f;
+	static float curX = 0.f;
 	// Title will appeared after 10 seconds (Check with DelayTimer at the else statement)
-	if (TitleCheck == true)
+	if (TitleCheck)
 	{
 		titlescale = 50;
 		if (TextChecking == true)
@@ -131,106 +136,63 @@ void Aloy_Scene::Update(double dt)
 				TextSize = 0;
 				Delaytimer[0] = 0;
 				TextChecking = false;
+				bSomethingHappen = true;
 			}
 		}
-		else if (TextChecking == false)
+		else if (!TextChecking)
 		{
-			bSomethingHappen = false;
-			switch (MenuSelect)
+			if (Application::IsKeyPressed(VK_LEFT) && !bSomethingHappen)
 			{
-			case 0:
-				bSomethingHappen = true;
-				TextSize_2 = 3;
-				if (Delaytimer[0] > 0.125)
+				if (selectedNum > 1)
 				{
-					if (Application::IsKeyPressed(VK_RETURN))
-					{
-						SceneManager::instance()->changeScene(2);
-						return;
-					}
-					if (Application::IsKeyPressed(VK_RIGHT))
-					{
-							Delaytimer[0] = 0;
-							TextSize_2 = 0;
-							TextSize_3 = 3;
-							TextSize_4 = 0;
-							MenuSelect = 1;
-					}
-					else if (Application::IsKeyPressed(VK_LEFT))
-					{
-
-						Delaytimer[0] = 0;
-						TextSize_2 = 0;
-						TextSize_3 = 0;
-						TextSize_4 = 3;
-						MenuSelect = 2;
-					}
+					//std::cout << "Left";
+					selectedNum--;
+					curX += moveAmt;
+					bSomethingHappen = true;
 				}
-				break;
-			case 1:
-				bSomethingHappen = true;
-				if (Delaytimer[0] > 0.125)
+			}
+			if (Application::IsKeyPressed(VK_RIGHT) && !bSomethingHappen)
+			{
+				if (selectedNum < 3)
 				{
-					if (Application::IsKeyPressed(VK_RETURN))
-					{
-						SceneManager::instance()->EndGame(true);
-					}
-					if (Application::IsKeyPressed(VK_RIGHT))
-					{
-						Delaytimer[0] = 0;
-						TextSize_2 = 0;
-						TextSize_3 = 0;
-						TextSize_4 = 3;
-						MenuSelect =2;
-					}
-					else if (Application::IsKeyPressed(VK_LEFT))
-					{
-						Delaytimer[0] = 0;
-						TextSize_3 = 0;
-						TextSize_2 = 3;
-						TextSize_4 = 0;
-						MenuSelect = 0;
-					}
+					//std::cout << "Right";
+					selectedNum++;
+					curX -= moveAmt;
+					bSomethingHappen = true;
+				}
+			}
+
+			switch (selectedNum)
+			{
+			case 1:
+				if (Application::IsKeyPressed(VK_RETURN) && !bSomethingHappen)
+				{
+					SceneManager::instance()->changeScene(2);
+					return;
 				}
 				break;
 			case 2:
-				bSomethingHappen = true;
-				TextSize_4 = 3;
-				if (Delaytimer[0] > 0.125)
+				if (Application::IsKeyPressed(VK_RETURN) && !bSomethingHappen)
 				{
-					if (Application::IsKeyPressed(VK_RETURN))
-					{
-						SceneManager::instance()->changeScene(7);
-						return;
-					}
-					if (Application::IsKeyPressed(VK_RIGHT))
-					{
-						Delaytimer[0] = 0;
-						TextSize_2 = 3;
-						TextSize_3 = 0;
-						TextSize_4 = 0;
-						MenuSelect = 0;
-					}
-					else if (Application::IsKeyPressed(VK_LEFT))
-					{
-						Delaytimer[0] = 0;
-						TextSize_3 = 3;
-						TextSize_2 = 0;
-						TextSize_4 = 0;
-						MenuSelect = 1;
-					}
+					SceneManager::instance()->changeScene(3);
+					return;
+				}
+				break;
+			case 3:
+				if (Application::IsKeyPressed(VK_RETURN) && !bSomethingHappen)
+				{
+					SceneManager::instance()->changeScene(4);
+					return;
 				}
 				break;
 			default:
 				break;
 			}
-			if (bSomethingHappen)
-			{
-				Delaytimer[0] += (float)dt;
-			}
 		}
+
 	}
-	else
+	
+	else //Make menu appear
 	{
 		Delaytimer[0] += (float)dt;
 		TextSize = 0;
@@ -239,6 +201,54 @@ void Aloy_Scene::Update(double dt)
 			TitleCheck = true;
 		}
 	}
+
+	static bool more = false;
+	static bool less = false;
+	if (bSomethingHappen && !more && !less)
+	{
+		if (transX > curX)
+		{
+			more = true;
+		}
+		else if (transX < curX)
+		{
+			less = true;
+		}
+		else
+		{
+			Delaytimer[0] += (float)dt;
+			if (Delaytimer[0] > 2)
+			{
+				Delaytimer[0] = 0;
+				transX = 0;
+				bSomethingHappen = false;
+			}
+		}
+	}
+
+	if (more)
+	{
+		if (transX > curX)
+		{
+			transX -= moveAmt*dt;
+		}
+		else
+		{
+			more = bSomethingHappen = false;
+		}
+	}
+	if (less)
+	{
+		if (transX < curX)
+		{
+			transX += moveAmt*dt;
+		}
+		else
+		{
+			less = bSomethingHappen = false;
+		}
+	}
+
 	if (Application::IsKeyPressed('1'))
 		glEnable(GL_CULL_FACE);
 	if (Application::IsKeyPressed('2'))
@@ -294,19 +304,18 @@ void Aloy_Scene::Render()
 	RenderMesh(meshList[GEO_CINAMATIC], false);
 	modelStack.PopMatrix();
 	
-	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 0, 0);
+	//RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 0, 0);
 
 	//No transform needed
 	RenderMeshOnScreen(meshList[GEO_TITLE], 40, 30, titlescale, titlescale);
-
-	modelStack.PushMatrix();
+	RenderMeshOnScreen(meshList[GEO_SELECT1], transX + 40, 13, 20, 20);
+	RenderMeshOnScreen(meshList[GEO_SELECT2], transX + 100, 13, 20, 20);
+	RenderMeshOnScreen(meshList[GEO_SELECT3], transX + 160, 13, 20, 20);
+	//modelStack.PushMatrix();
 	//Text Enter and Start Game
-	RenderTextOnScreen(meshList[GEO_TEXT_1], "ENTER TO START", Color(0, 1, 0), TextSize, 6, 4);
-	RenderTextOnScreen(meshList[GEO_TEXT_1], "Start Game" , Color(0, 1, 0), TextSize_2, 8, 4);
-	RenderTextOnScreen(meshList[GEO_TEXT_2], "Quit Game", Color(0,1,0), TextSize_3 ,8.5,4);
-	RenderTextOnScreen(meshList[GEO_TEXT_3], "Credits", Color(0, 1, 0), TextSize_4, 8.5, 4);
-	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
-	modelStack.PopMatrix();
+	RenderTextOnScreen(meshList[GEO_TEXT], "ENTER TO START", Color(0, 1, 0), TextSize, 6, 4);
+	//RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
+	//modelStack.PopMatrix();
 	//-------------------------------------------------------------------------------------
 
 }

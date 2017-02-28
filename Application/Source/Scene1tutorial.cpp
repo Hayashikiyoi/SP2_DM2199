@@ -185,13 +185,13 @@ void Scene1tutorial::GenerateObj()
 
 	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//Door//star wars doors.obj");
 	meshList[GEO_DOOR]->textureID = LoadTGA("Image//model//star wars doors.tga");
-	Doors[1] = new GameObject("Doors", Vector3(-11.5, 7, 20));
+	Doors[1] = new GameObject("Doors", Vector3(-11.5f, 7, 20));
 	Doors[1]->setCollider(5, 5);
 	Doors[1]->updateCurPos();
-	Doors[2] = new GameObject("Doors", Vector3(-8.6, 7, 20));
+	Doors[2] = new GameObject("Doors", Vector3(-8.6f, 7, 20));
 	Doors[2]->setCollider(5, 5);
 	Doors[2]->updateCurPos();
-	Doors[3] = new GameObject("Doors", Vector3(33.5, 7, -25));
+	Doors[3] = new GameObject("Doors", Vector3(33.5f, 7, -25));
 	Doors[3]->setCollider(5, 5);
 	Doors[3]->updateCurPos();
 	Doors[4] = new GameObject("Doors", Vector3(38, 7, -25));
@@ -435,26 +435,26 @@ void Scene1tutorial::RenderWall()
 	for (int i = 0; i < 90; i += 10)
 	{
         modelStack.PushMatrix();
-		modelStack.Translate(i - 42, 6, 47);
+		modelStack.Translate((float)i - 42, 6, 47);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCKWALL], true);
 		modelStack.PopMatrix();
 
 		modelStack.PushMatrix();
-		modelStack.Translate(i - 42, 6, -47);
+		modelStack.Translate((float)i - 42, 6, -47);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCKWALL], true);
 		modelStack.PopMatrix();
 	
 		modelStack.PushMatrix();
-		modelStack.Translate(-47, 6, i - 42);
+		modelStack.Translate(-47, 6, (float)i - 42);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		modelStack.Rotate(90, 0, 1, 0);
 		RenderMesh(meshList[GEO_ROCKWALL], true);
 		modelStack.PopMatrix();
 		
 		modelStack.PushMatrix();
-		modelStack.Translate(47, 6, i - 42);
+		modelStack.Translate(47, 6, (float)i - 42);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		modelStack.Rotate(90, 0, 1, 0);
 		RenderMesh(meshList[GEO_ROCKWALL], true);
@@ -464,13 +464,13 @@ void Scene1tutorial::RenderWall()
     for (int i = 0; i < 30; i += 10)
 	{
       	modelStack.PushMatrix();
-		modelStack.Translate(i - 37, 6, 20);
+		modelStack.Translate((float)i - 37, 6, 20);
 	    modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCKWALL], true);
 		modelStack.PopMatrix();
 	
 		modelStack.PushMatrix();
-		modelStack.Translate(10, 6, i + 20);
+		modelStack.Translate(10, 6, (float)i + 20);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCKWALL], true);
 		modelStack.PopMatrix();
@@ -479,7 +479,7 @@ void Scene1tutorial::RenderWall()
 	for (int i = 0; i < 40; i += 10)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(30, 6, i - 10);
+		modelStack.Translate(30, 6, (float)i - 10);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCKWALL], true);
 		modelStack.PopMatrix();
@@ -488,7 +488,7 @@ void Scene1tutorial::RenderWall()
 	for (int i = 0; i < 40; i += 10)
 	{
     	modelStack.PushMatrix();
-		modelStack.Translate(i - 10, 6, -10);
+		modelStack.Translate((float)i - 10, 6, -10);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCKWALL], true);
 		modelStack.PopMatrix();
@@ -497,7 +497,7 @@ void Scene1tutorial::RenderWall()
    	for (int i = 0; i < 30; i += 10)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(-10, 6, i - 30);
+		modelStack.Translate(-10, 6, (float)i - 30);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCKWALL], true);
 		modelStack.PopMatrix();
@@ -506,7 +506,7 @@ void Scene1tutorial::RenderWall()
 	for (int i = 0; i < 20; i += 10)
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(28, 6, i - 38);
+		modelStack.Translate(28, 6, (float)i - 38);
 		modelStack.Scale(10.f, 10.f, 10.f);
 		RenderMesh(meshList[GEO_ROCKWALL], true);
 		modelStack.PopMatrix();
@@ -528,7 +528,7 @@ void Scene1tutorial::RenderWall()
 void Scene1tutorial::skyBox()
 {
 	modelStack.PushMatrix();
-	modelStack.Translate(0, 7.1, 0);
+	modelStack.Translate(0, 7.1f, 0);
 	RenderMesh(meshList[GEO_AXES], false);
 	modelStack.PopMatrix();
 
@@ -624,7 +624,7 @@ void Scene1tutorial::RenderObjects()
 
 	//right
 	modelStack.PushMatrix();
-	modelStack.Translate(-8.6, 7, 20);
+	modelStack.Translate(-8.6f, 7, 20);
 	modelStack.Translate(translate_DoorRight, 0, 0);
 	modelStack.Scale(2.5f, 2.5f, 2.5f);
 	RenderMesh(meshList[GEO_DOOR], true);
@@ -864,8 +864,8 @@ void Scene1tutorial::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int
 	modelStack.PushMatrix();
 	modelStack.LoadIdentity();
 	//to do: scale and translate accordingly
-	modelStack.Translate(x, y, 0);
-	modelStack.Scale(sizex, sizey, 1);
+	modelStack.Translate((float)x, (float)y, 0);
+	modelStack.Scale((float)sizex, (float)sizey, 1);
 	RenderMesh(mesh, false); //UI should not have light
 	projectionStack.PopMatrix();
 	viewStack.PopMatrix();
