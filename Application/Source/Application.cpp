@@ -122,7 +122,7 @@ void Application::Run()
 	//SceneManager::instance()->addScene(new GameOver);
 	//SceneManager::instance()->addScene(new Wilson);
 	//SceneManager::instance()->addScene(new Scene1tutorial);
-	//SceneManager::instance()->addScene(new ChuanXu);
+	SceneManager::instance()->addScene(new ChuanXu);
 	//SceneManager::instance()->addScene(new Scene_Level2);
 	//SceneManager::instance()->addScene(new Scene4_Boss);
 	//SceneManager::instance()->addScene(new SceneGameOver); //Cannot be called missing image
@@ -131,7 +131,7 @@ void Application::Run()
 	//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
 	//SceneManager::instance()->addScene(new Scene4_Boss);
 	//SceneManager::instance()->addScene(new GameOver);
-	SceneManager::instance()->addScene(new Credits);
+	//SceneManager::instance()->addScene(new Credits);
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame

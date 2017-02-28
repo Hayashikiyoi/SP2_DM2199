@@ -78,9 +78,7 @@ class ChuanXu : public Scene
 		GEO_BULLET,
 		GEO_BOSSHEAD,
 		GEO_BOSSBODY,
-		GEO_CROSSHAIR,
 		GEO_WALL,
-		GEO_WALL2,
 		GEO_FLOOR,
 		NUM_GEOMETRY,
 	};
@@ -110,7 +108,6 @@ private:
 	float scaleAll;
 	float openCover = 0;
 	float DelayTimer=0;
-	void skyBox();
 	void RenderWalls();
 	void GenerateObj();
 	void RenderMaze();
