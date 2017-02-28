@@ -45,6 +45,7 @@ class Aloy_Scene : public Scene
 		GEO_TEXT,
 		GEO_TEXT_1,
 		GEO_TEXT_2,
+		GEO_TEXT_3,
 		NUM_GEOMETRY,
 	};
 
@@ -61,12 +62,13 @@ private:
 	float TextSize;//resizing the image when checking left or right
 	float TextSize_2;//resizing text for scene for startgame
 	float TextSize_3; //resizing text for scene for exit game
+	float TextSize_4; //resizing text for scene for Credit
 	bool TextChecking;//if they press Enter already
 	bool TextSwitching;//Checking the left and right button
 	bool TitleCheck;
 	bool bSomethingHappen;
 	int MenuSelect;
-	float Delaytimer[2];
+	float Delaytimer[3];
 
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
