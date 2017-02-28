@@ -21,13 +21,10 @@ ChuanXu::~ChuanXu()
 
 void ChuanXu::Init()
 {	
-
+	HPsizeX = 21.5f;
+	delayTime = 0;
 	// Init VBO here
-	rotateAngle = 0;
-	translateX[0] = 0;
-	translateX[1] = 0;
-	translateX[2] = 0;
-	scaleAll = 1;
+
 	lightEnable = true;
 
 
@@ -41,6 +38,7 @@ void ChuanXu::Init()
 	//Initialise camera
 	camera.Init(Vector3(90, 30, 0), Vector3(0, 10, -210), Vector3(0, 1, 0));
 	player = new Player("camera", Vector3(40, 30, 30));
+	lasergun = new Weapon("Blaster", Vector3(-0.12f, -0.750, 2), 100);
 
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -55,23 +53,15 @@ void ChuanXu::Init()
 		object[i] = 0;
 	}
 	CamObj = new GameObject("camera", Vector3(0, 0, 0));
-	for (int i = 0; i < numOfEnemy; ++i)
-	{
-		turretHead[i] = NULL;
-		turretBody[i] = NULL;
 
-	}
-	for (int i = 0; i < numOfBullet; ++i)
-	{
-		bullet[i] = NULL;
-	}
+
 	for (int i = 0; i < Walls; ++i)
 	{
 		WallsObj[i] = NULL;
 	}
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
+
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
@@ -84,12 +74,25 @@ void ChuanXu::Init()
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall2", "OBJ//Wall//CX_WALL.obj");
 	meshList[GEO_WALL]->textureID = LoadTGA("Image//Wall//MazeWall.tga");
 
-	GenerateObj();
-	meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//NPC//Vending_Machine.obj");
-	meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//NPC//Vending_Machine.tga");
+	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_HEALTH]->textureID = LoadTGA("Image//UI//healthBar.tga");
 
-	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//NPC//Vending_Cover.obj");
-	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//NPC//Vending_Cover.tga");
+
+	meshList[GEO_STAMINA] = MeshBuilder::GenerateQuad("stamina", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_STAMINA]->textureID = LoadTGA("Image//UI//staminaBar.tga");
+
+	meshList[GEO_HEALTHBG] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1.f, 1.f);
+	meshList[GEO_HEALTHBG]->textureID = LoadTGA("Image//UI//healthBG.tga");
+
+	meshList[GEO_AMMOBG] = MeshBuilder::GenerateQuad("ammoBG", Color(1, 1, 1), 1, 1);
+	meshList[GEO_AMMOBG]->textureID = LoadTGA("Image//UI//ammoBG.tga");
+
+	GenerateObj();
+	//meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//NPC//Vending_Machine.obj");
+	//meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//NPC//Vending_Machine.tga");
+
+	//meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//NPC//Vending_Cover.obj");
+	//meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//NPC//Vending_Cover.tga");
 	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("Floor", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor//floor.tga");
 
@@ -128,8 +131,48 @@ void ChuanXu::Init()
 
 	glUseProgram(m_programID);
 
-	light[0].type = Light::LIGHT_SPOT;
-	light[0].position.Set(0, 20, 0);
+	//light[0].type = Light::LIGHT_SPOT;
+	//light[0].position.Set(0, 20, 0);
+	//light[0].color.Set(1, 1, 1);
+	//light[0].power = 1;
+	//light[0].kC = 1.f;
+	//light[0].kL = 0.01f;
+	//light[0].kQ = 0.001f;
+	//light[0].cosCutoff = cos(Math::DegreeToRadian(90));
+	//light[0].cosInner = cos(Math::DegreeToRadian(30));
+	//light[0].exponent = 3.f;
+	//light[0].spotDirection.Set(0.f, 1.f, 0.f);
+
+
+	////Make sure you pass uniform parameters after glUseProgram()
+	//glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
+	//glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
+	//glUniform1f(m_parameters[U_LIGHT0_KC], light[0].kC);
+	//glUniform1f(m_parameters[U_LIGHT0_KL], light[0].kL);
+	//glUniform1f(m_parameters[U_LIGHT0_KQ], light[0].kQ);
+
+	//glUniform1i(m_parameters[U_NUMLIGHTS], 1);
+	//glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
+	//glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
+	//glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
+	//glUniform1f(m_parameters[U_LIGHT0_KC], light[0].kC);
+	//glUniform1f(m_parameters[U_LIGHT0_KL], light[0].kL);
+	//glUniform1f(m_parameters[U_LIGHT0_KQ], light[0].kQ);
+	//glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
+	//glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
+	//glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
+
+	lightingfunc();
+
+	Mtx44 projection;
+	projection.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
+	projectionStack.LoadMatrix(projection);
+}
+
+void ChuanXu::lightingfunc()
+{
+	light[0].type = Light::LIGHT_DIRECTIONAL;
+	light[0].position.Set(0, 1000, 0);
 	light[0].color.Set(1, 1, 1);
 	light[0].power = 1;
 	light[0].kC = 1.f;
@@ -140,6 +183,17 @@ void ChuanXu::Init()
 	light[0].exponent = 3.f;
 	light[0].spotDirection.Set(0.f, 1.f, 0.f);
 
+	light[1].type = Light::LIGHT_SPOT;
+	light[1].position.Set(0, 50, 0);
+	light[1].color.Set(1, 0, 0);
+	light[1].power = 10;
+	light[1].kC = 1.f;
+	light[1].kL = 0.01f;
+	light[1].kQ = 0.001f;
+	light[1].cosCutoff = cos(Math::DegreeToRadian(90));
+	light[1].cosInner = cos(Math::DegreeToRadian(30));
+	light[1].exponent = 3.f;
+	light[1].spotDirection.Set(0.f, 1.f, 0.f);
 
 	//Make sure you pass uniform parameters after glUseProgram()
 	glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
@@ -148,7 +202,6 @@ void ChuanXu::Init()
 	glUniform1f(m_parameters[U_LIGHT0_KL], light[0].kL);
 	glUniform1f(m_parameters[U_LIGHT0_KQ], light[0].kQ);
 
-	glUniform1i(m_parameters[U_NUMLIGHTS], 1);
 	glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
 	glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
@@ -159,11 +212,27 @@ void ChuanXu::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
+	//Make sure you pass uniform parameters after glUseProgram()
+	glUniform3fv(m_parameters[U_LIGHT1_COLOR], 1, &light[1].color.r);
+	glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
+	glUniform1f(m_parameters[U_LIGHT1_KC], light[1].kC);
+	glUniform1f(m_parameters[U_LIGHT1_KL], light[1].kL);
+	glUniform1f(m_parameters[U_LIGHT1_KQ], light[1].kQ);
 
-	Mtx44 projection;
-	projection.SetToPerspective(45.0f, 4.0f / 3.0f, 0.1f, 1000.0f);
-	projectionStack.LoadMatrix(projection);
+	glUniform1i(m_parameters[U_LIGHT1_TYPE], light[1].type);
+	glUniform3fv(m_parameters[U_LIGHT1_COLOR], 1, &light[1].color.r);
+	glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
+	glUniform1f(m_parameters[U_LIGHT1_KC], light[1].kC);
+	glUniform1f(m_parameters[U_LIGHT1_KL], light[1].kL);
+	glUniform1f(m_parameters[U_LIGHT1_KQ], light[1].kQ);
+	glUniform1f(m_parameters[U_LIGHT1_COSCUTOFF], light[1].cosCutoff);
+	glUniform1f(m_parameters[U_LIGHT1_COSINNER], light[1].cosInner);
+	glUniform1f(m_parameters[U_LIGHT1_EXPONENT], light[1].exponent);
+
+	glUniform1i(m_parameters[U_NUMLIGHTS], 6);
+
 }
+
 void ChuanXu::GenerateObj()
 {
 	//Robot
@@ -178,15 +247,15 @@ void ChuanXu::GenerateObj()
 		, 3);
 	WallsObj[1]->updateCurPos();
 
-	WallsObj[2] = new GameObject("back wall", Vector3(100, 1, 0));
+	WallsObj[2] = new GameObject("back wall", Vector3(100, 0, 11));
 	WallsObj[2]->setCollider(3, 200);
 	WallsObj[2]->updateCurPos();
 
-	WallsObj[3] = new GameObject("left wall", Vector3(0, 1, 100));
+	WallsObj[3] = new GameObject("left wall", Vector3(12, 0, 100));
 	WallsObj[3]->setCollider(200, 3);
 	WallsObj[3]->updateCurPos();
 
-	WallsObj[4] = new GameObject("front wall", Vector3(-80, 1, 0));
+	WallsObj[4] = new GameObject("front wall", Vector3(-75, 0, 12));
 	WallsObj[4]->setCollider(3, 200);
 	WallsObj[4]->updateCurPos();
 
@@ -487,13 +556,22 @@ void ChuanXu::RenderMaze()
 
 void ChuanXu::Update(double dt)
 {
-	DelayTimer += (float)dt;
 	static float translateLimit = 1;
-	static float time;
-	static bool smtHappen = false;
 	static Vector3 prevpos;
 	static Vector3 prevposTarget;
-	deltaTime = "Health" + std::to_string(player->getHealth()); //"FPS:" + std::to_string(1 / dt);
+	deltaTime = /*"Health" + std::to_string(player->getHealth()); */"FPS:" + std::to_string(1 / dt);
+	HPsizeX = player->getHealth()*0.215;
+	delayTime += (float)dt;
+
+	if (delayTime > 3)
+	{
+		player->DmgPlayer(5);
+		delayTime = 0;
+	}
+	else if (delayTime < 3)
+	{
+		delayTime += (float)dt;
+	}
 
 	static float LSPEED = 10;
 
@@ -504,14 +582,13 @@ void ChuanXu::Update(double dt)
 
 	if (Application::IsKeyPressed('Y'))
 		coverOpened= true;
-	if (coverOpened)
-	{	
-		if (translateLimit<-2)
-		translateLimit *= -1;
-		if (openCover <6)
-		openCover += (float)(10 * translateLimit*dt);
-	}
-
+	//if (coverOpened)
+	//{	
+	//	if (translateLimit<-2)
+	//	translateLimit *= -1;
+	//	if (openCover <6)
+	//	openCover += (float)(10 * translateLimit*dt);
+	//}
 
 	if (Application::IsKeyPressed('I'))
 		light[0].position.z -= (float)(LSPEED * dt);
@@ -554,6 +631,7 @@ void ChuanXu::Update(double dt)
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+
 	player->Position = camera.position;
 	player->updateCurPos();
 
@@ -566,24 +644,14 @@ void ChuanXu::Update(double dt)
 			camera.target = prevposTarget;
 			break;
 		} 
+	}
 
-	}
-	for (int i = 0; i < numOfEnemy; ++i)
-	{
-		if (turretBody[i] && player->trigger(turretBody[i]))
-		{
-			//deltaTime = "Wham bam";
-			camera.position = prevpos;
-			camera.target = prevposTarget;
-			break;
-		}
-	}
 
 	for (int i = 0; i < Walls; ++i)
 	{
 		if (WallsObj[i] && player->trigger(WallsObj[i]))
 		{
-			//deltaTime = "Wham bam";
+			player->DmgPlayer(1);
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
@@ -595,7 +663,11 @@ void ChuanXu::Update(double dt)
 		}
 	}
 
+	AmmoLeft = std::to_string(lasergun->bulletLeft()) + "/45";
+	clipCount = std::to_string(lasergun->canisterLeft());
 	camera.Update(dt);
+
+	
 }
 
 void ChuanXu::RenderWalls()
@@ -606,6 +678,25 @@ void ChuanXu::RenderWalls()
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(WallsObj[2]->Position.x, WallsObj[2]->Position.y, WallsObj[2]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(12, 1.5, 1.5);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(WallsObj[3]->Position.x, WallsObj[3]->Position.y, WallsObj[3]->Position.z);
+	modelStack.Scale(12, 1.5, 1.5);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(WallsObj[4]->Position.x, WallsObj[4]->Position.y, WallsObj[4]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(12, 1.5, 1.5);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
 
 	//floor
 	modelStack.PushMatrix();
@@ -627,19 +718,16 @@ void ChuanXu::Render()
 		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
 		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
 	}
-	else if (light[0].type == Light::LIGHT_SPOT)
+	
+	if (light[1].type == Light::LIGHT_SPOT)
 	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
+		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
+		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[1].spotDirection;
+		glUniform3fv(m_parameters[U_LIGHT1_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+		glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
 
+	}
 	//Initialize
 	Mtx44 MVP;
 
@@ -659,14 +747,13 @@ void ChuanXu::Render()
 
 	//-------------------------------------------------------------------------------------
 
-	modelStack.PushMatrix();
-	modelStack.Translate(-20, 0, -20);
-	RenderMesh(meshList[GEO_VENDINGBODY], true);
-	modelStack.PushMatrix();
-	modelStack.Translate(0, openCover, 0);
-	RenderMesh(meshList[GEO_VENDINGCOVER], true);
-	modelStack.PopMatrix();
-	modelStack.PopMatrix();
+	 RenderMeshOnScreen(meshList[GEO_HEALTHBG], 15, 5, 30, 30, false);
+	 RenderMeshOnScreen(meshList[GEO_HEALTH], 8.f, 5, HPsizeX, 30, true);
+	 RenderMeshOnScreen(meshList[GEO_STAMINA], 8.1f, 5, camera.test2, 30, true);
+	 RenderMeshOnScreen(meshList[GEO_AMMOBG], 65, 10, 30, 30, false);
+
+	 RenderTextOnScreen(meshList[GEO_TEXT], clipCount, (0, 1, 0), 5, 11.7, 1.1);
+	 RenderTextOnScreen(meshList[GEO_TEXT], AmmoLeft, (0, 1, 0), 3, 21.7, 0.2f);
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, (0, 1, 0), 4, 5, 5);
 }
@@ -786,7 +873,7 @@ void ChuanXu::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, floa
 	glEnable(GL_DEPTH_TEST);
 }
 
-void ChuanXu::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
+void ChuanXu::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, bool isHealth)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -795,15 +882,32 @@ void ChuanXu::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey)
 	projectionStack.LoadMatrix(ortho);
 	viewStack.PushMatrix();
 	viewStack.LoadIdentity(); //No need camera for ortho mode
-	modelStack.PushMatrix();
-	modelStack.LoadIdentity();
-	//to do: scale and translate accordingly
-	modelStack.Translate(x, y, 0);
-	modelStack.Scale(sizex, sizey, 1);
-	RenderMesh(mesh, false); //UI should not have light
-	projectionStack.PopMatrix();
-	viewStack.PopMatrix();
-	modelStack.PopMatrix();
+	if (isHealth)
+	{
+		modelStack.PushMatrix();
+		modelStack.LoadIdentity();
+		//to do: scale and translate accordingly
+		modelStack.Translate(x, y, 0);
+		//modelStack.Translate(sizex * 0.5f, 0, 0);
+		modelStack.Scale(sizex, sizey, 1);
+		modelStack.Translate(0.5f, 0, 0); //Size of quad pls set to 1
+		RenderMesh(mesh, false); //UI should not have light
+		projectionStack.PopMatrix();
+		viewStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
+	else
+	{
+		modelStack.PushMatrix();
+		modelStack.LoadIdentity();
+		//to do: scale and translate accordingly
+		modelStack.Translate(x, y, 0);
+		modelStack.Scale(sizex, sizey, 1);
+		RenderMesh(mesh, false); //UI should not have light
+		projectionStack.PopMatrix();
+		viewStack.PopMatrix();
+		modelStack.PopMatrix();
+	}
 	glEnable(GL_DEPTH_TEST);
 
 }
@@ -816,11 +920,14 @@ void ChuanXu::Exit()
 		if (meshList[i] != NULL)
 			delete meshList[i];
 	}
-	for (int i = 0; i <= Walls; ++i)
+	for (int i = 0; i < Walls; ++i)
 	{
 		if (WallsObj[i] != NULL)
 			delete WallsObj[i];
 	}
+	delete player;
+	delete lasergun;
+
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 
