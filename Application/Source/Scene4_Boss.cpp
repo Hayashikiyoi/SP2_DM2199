@@ -37,6 +37,7 @@ void Scene4_Boss::Init()
 	camera.Init(Vector3(400, 0, 0), Vector3(0, 0, 0), Vector3(0, 1, 0));
 	player = new Player("camera", Vector3(400, 0, 0));
 	lasergun = new Weapon("Blaster", Vector3(-0.12f, -0.750, 2), 100);
+
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
