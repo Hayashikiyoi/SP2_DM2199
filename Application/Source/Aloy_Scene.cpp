@@ -23,13 +23,14 @@ void Aloy_Scene::Init()
 {
 	// Init VBO here
 	rotateAngle = 0;
-	translateX[0] = 0;
+	translateX[0] = 8;
 	translateX[1] = 0;
 	translateX[2] = 0;
 	scaleAll = 1;
 	TextSize = 3;
 	TextSize_2 = 0;
 	TextSize_3 = 0;
+	TextSize_4 = 0;
 	MenuSelect = 0;
 	Translating[0] = 0;
 	Translating[1] = 0;
@@ -76,6 +77,9 @@ void Aloy_Scene::Init()
 
 	meshList[GEO_TEXT_2] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT_2]->textureID = LoadTGA("Image//Text//ocrastd.tga");
+
+	meshList[GEO_TEXT_3] = MeshBuilder::GenerateText("text", 16, 16);
+	meshList[GEO_TEXT_3]->textureID = LoadTGA("Image//Text//ocrastd.tga");
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -144,13 +148,22 @@ void Aloy_Scene::Update(double dt)
 						SceneManager::instance()->changeScene(2);
 						return;
 					}
-					else if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
+					if (Application::IsKeyPressed(VK_RIGHT))
+					{
+							Delaytimer[0] = 0;
+							TextSize_2 = 0;
+							TextSize_3 = 3;
+							TextSize_4 = 0;
+							MenuSelect = 1;
+					}
+					else if (Application::IsKeyPressed(VK_LEFT))
 					{
 
 						Delaytimer[0] = 0;
 						TextSize_2 = 0;
-						TextSize_3 = 3;
-						MenuSelect = 1;
+						TextSize_3 = 0;
+						TextSize_4 = 3;
+						MenuSelect = 2;
 					}
 				}
 				break;
@@ -162,11 +175,49 @@ void Aloy_Scene::Update(double dt)
 					{
 						SceneManager::instance()->EndGame(true);
 					}
-					else if (Application::IsKeyPressed(VK_LEFT) || Application::IsKeyPressed(VK_RIGHT))
+					if (Application::IsKeyPressed(VK_RIGHT))
+					{
+						Delaytimer[0] = 0;
+						TextSize_2 = 0;
+						TextSize_3 = 0;
+						TextSize_4 = 3;
+						MenuSelect =2;
+					}
+					else if (Application::IsKeyPressed(VK_LEFT))
 					{
 						Delaytimer[0] = 0;
 						TextSize_3 = 0;
+						TextSize_2 = 3;
+						TextSize_4 = 0;
 						MenuSelect = 0;
+					}
+				}
+				break;
+			case 2:
+				bSomethingHappen = true;
+				TextSize_4 = 3;
+				if (Delaytimer[0] > 0.125)
+				{
+					if (Application::IsKeyPressed(VK_RETURN))
+					{
+						SceneManager::instance()->changeScene(7);
+						return;
+					}
+					if (Application::IsKeyPressed(VK_RIGHT))
+					{
+						Delaytimer[0] = 0;
+						TextSize_2 = 3;
+						TextSize_3 = 0;
+						TextSize_4 = 0;
+						MenuSelect = 0;
+					}
+					else if (Application::IsKeyPressed(VK_LEFT))
+					{
+						Delaytimer[0] = 0;
+						TextSize_3 = 3;
+						TextSize_2 = 0;
+						TextSize_4 = 0;
+						MenuSelect = 1;
 					}
 				}
 				break;
@@ -253,6 +304,7 @@ void Aloy_Scene::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT_1], "ENTER TO START", Color(0, 1, 0), TextSize, 6, 4);
 	RenderTextOnScreen(meshList[GEO_TEXT_1], "Start Game" , Color(0, 1, 0), TextSize_2, 8, 4);
 	RenderTextOnScreen(meshList[GEO_TEXT_2], "Quit Game", Color(0,1,0), TextSize_3 ,8.5,4);
+	RenderTextOnScreen(meshList[GEO_TEXT_3], "Credits", Color(0, 1, 0), TextSize_4, 8.5, 4);
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
 	modelStack.PopMatrix();
 	//-------------------------------------------------------------------------------------

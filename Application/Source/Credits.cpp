@@ -207,11 +207,13 @@ void Credits::Update(double dt)
 
 	if (translateImg > 30)
 	{
-		//SceneManager::instance()->changeScene(0); //Add return scene here
+		SceneManager::instance()->changeScene(0); //Add return scene here
+		return;
 	}
 	if (Application::IsKeyPressed('E'))
 	{
-		//SceneManager::instance()->changeScene(0); //Add return scene here
+		SceneManager::instance()->changeScene(0); //Add return scene here
+		return;
 	}
 	camera.Update(dt);
 }
