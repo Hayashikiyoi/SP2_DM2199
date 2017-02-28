@@ -62,6 +62,11 @@ void Fps_Camera::Update(double dt)
 		position -= view * (float)(CAMERA_SPEED * dt);
 		target = position + view * (float)(CAMERA_SPEED * dt);
 	}
+	if (Application::IsKeyPressed('P'))
+	{
+		SceneManager::instance()->changeScene(2);
+		SceneManager::instance()->levelCompleted = 3;
+	}
 	if (sprintcheck)
 	{
 		if (Application::IsKeyPressed(VK_SHIFT) && Application::IsKeyPressed('A'))

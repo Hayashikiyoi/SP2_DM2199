@@ -115,13 +115,13 @@ void Application::Init()
 void Application::Run()
 {
 	//Add Scenes Here
-	//SceneManager::instance()->addScene(new Aloy_Scene); //Main menu must be at first (Unless have splash screen before that)
+	SceneManager::instance()->addScene(new Aloy_Scene); //Main menu must be at first (Unless have splash screen before that)
 	//SceneManager::instance()->addScene(new Menu_Room);
-	//SceneManager::instance()->addScene(new LoadScene); //Must be after main menu
-	//SceneManager::instance()->addScene(new Menu_Room);
+	SceneManager::instance()->addScene(new LoadScene); //Must be after main menu
+	SceneManager::instance()->addScene(new Menu_Room);
 	//SceneManager::instance()->addScene(new GameOver);
 	//SceneManager::instance()->addScene(new Wilson);
-	//SceneManager::instance()->addScene(new Scene1tutorial);
+	SceneManager::instance()->addScene(new Scene1tutorial);
 	SceneManager::instance()->addScene(new ChuanXu);
 	//SceneManager::instance()->addScene(new Scene_Level2);
 	//SceneManager::instance()->addScene(new Scene4_Boss);
@@ -129,8 +129,8 @@ void Application::Run()
 	//SceneManager::instance()->addScene(new Wilson);	//**Are u still using** if no try to remove
 	//SceneManager::instance()->addScene(new SceneCalvert); //Mechanic test area (Cannot use for proper game)
 	//SceneManager::instance()->addScene(new SceneUI); //Scene 0 (Add more scene like this way)
-	//SceneManager::instance()->addScene(new Scene4_Boss);
-	//SceneManager::instance()->addScene(new GameOver);
+	SceneManager::instance()->addScene(new Scene4_Boss);
+	SceneManager::instance()->addScene(new GameOver);
 	SceneManager::instance()->addScene(new Credits);
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
 
