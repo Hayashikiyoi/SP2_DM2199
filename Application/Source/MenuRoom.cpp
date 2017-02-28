@@ -241,7 +241,7 @@ void Menu_Room::Update(double dt)
 		{
 			if (i>=0 && i<=3 && i == SceneManager::instance()->levelCompleted)
 				deltaTime = ("Press E: Level " + std::to_string(i+3));
-			if (Application::IsKeyPressed('E') && i >= 0 && i <= 3 && i == SceneManager::instance()->levelCompleted)
+			if (Application::IsKeyPressed('E') && i >= 0 && i <= 3 && i <= SceneManager::instance()->levelCompleted)
 			{
 				SceneManager::instance()->changeScene(i + 3);
 				return;
@@ -287,12 +287,12 @@ void Menu_Room::Update(double dt)
 	if (Application::IsKeyPressed(VK_LBUTTON) && !shoot)
 	{
 		lasergun->shoot(&camera);
-		SceneManager::instance()->levelCompleted += 1; //Put here to test working drawBridge
+		//SceneManager::instance()->levelCompleted += 1; //Put here to test working drawBridge
 		shoot = true;
 	}
 	if (Application::IsKeyPressed('T'))
 	{
-		SceneManager::instance()->levelCompleted = 0;
+		//SceneManager::instance()->levelCompleted = 0;
 		lasergun->reload();
 	}
 	if (Application::IsKeyPressed('F'))

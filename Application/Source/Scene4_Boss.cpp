@@ -501,8 +501,8 @@ void Scene4_Boss::Update(double dt)
 	//Change Scene
 	if (TriggerBox[0] && player->trigger(TriggerBox[0]))
 	{
-		SceneManager::instance()->changeScene(2);
 		SceneManager::instance()->levelCompleted = 4;
+		SceneManager::instance()->changeScene(2);
 		return;
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------------------
