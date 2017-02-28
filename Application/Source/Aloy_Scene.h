@@ -40,17 +40,18 @@ class Aloy_Scene : public Scene
 	{
 		GEO_AXES,
 		GEO_TITLE,
+		GEO_SELECT1,
+		GEO_SELECT2,
+		GEO_SELECT3,
 		GEO_FRONT,
 		GEO_CINAMATIC,
 		GEO_TEXT,
-		GEO_TEXT_1,
-		GEO_TEXT_2,
-		GEO_TEXT_3,
 		NUM_GEOMETRY,
 	};
 
 
 private:
+	float transX;
 	unsigned m_vertexArrayID;
 	unsigned m_programID;
 	unsigned m_parameters[U_TOTAL];
@@ -87,9 +88,6 @@ private:
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
-
-
-
 public:
 	Aloy_Scene();
 	~Aloy_Scene();
