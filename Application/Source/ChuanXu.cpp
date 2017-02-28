@@ -23,6 +23,7 @@ void ChuanXu::Init()
 {	
 	HPsizeX = 21.5f;
 	delayTime = 0;
+
 	// Init VBO here
 
 	lightEnable = true;
@@ -36,7 +37,7 @@ void ChuanXu::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Initialise camera
-	camera.Init(Vector3(90, 30, 0), Vector3(0, 10, -210), Vector3(0, 1, 0));
+	camera.Init(Vector3(90, 30, 0), Vector3(0, -20, -210), Vector3(0, 1, 0));
 	player = new Player("camera", Vector3(40, 30, 30));
 	lasergun = new Weapon("Blaster", Vector3(-0.12f, -0.750, 2), 100);
 
@@ -52,31 +53,24 @@ void ChuanXu::Init()
 		meshList[i] = NULL;
 		object[i] = 0;
 	}
-	CamObj = new GameObject("camera", Vector3(0, 0, 0));
-
+	for (int i = 0;i<5; ++i)
+	{
+		healthPack[i] = NULL;
+		healing[i] = true;
+	}
 
 	for (int i = 0; i < Walls; ++i)
 	{
 		WallsObj[i] = NULL;
 	}
 
-	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
 
-	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
-
-
-
-	
-	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall2", "OBJ//Wall//CX_WALL.obj");
-	meshList[GEO_WALL]->textureID = LoadTGA("Image//Wall//MazeWall.tga");
-
 	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_HEALTH]->textureID = LoadTGA("Image//UI//healthBar.tga");
-
 
 	meshList[GEO_STAMINA] = MeshBuilder::GenerateQuad("stamina", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_STAMINA]->textureID = LoadTGA("Image//UI//staminaBar.tga");
@@ -87,12 +81,10 @@ void ChuanXu::Init()
 	meshList[GEO_AMMOBG] = MeshBuilder::GenerateQuad("ammoBG", Color(1, 1, 1), 1, 1);
 	meshList[GEO_AMMOBG]->textureID = LoadTGA("Image//UI//ammoBG.tga");
 
-	GenerateObj();
-	//meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//NPC//Vending_Machine.obj");
-	//meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//NPC//Vending_Machine.tga");
+	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
 
-	//meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//NPC//Vending_Cover.obj");
-	//meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//NPC//Vending_Cover.tga");
+	GenerateObj();
+
 	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("Floor", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor//floor.tga");
 
@@ -130,37 +122,6 @@ void ChuanXu::Init()
 	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
 
 	glUseProgram(m_programID);
-
-	//light[0].type = Light::LIGHT_SPOT;
-	//light[0].position.Set(0, 20, 0);
-	//light[0].color.Set(1, 1, 1);
-	//light[0].power = 1;
-	//light[0].kC = 1.f;
-	//light[0].kL = 0.01f;
-	//light[0].kQ = 0.001f;
-	//light[0].cosCutoff = cos(Math::DegreeToRadian(90));
-	//light[0].cosInner = cos(Math::DegreeToRadian(30));
-	//light[0].exponent = 3.f;
-	//light[0].spotDirection.Set(0.f, 1.f, 0.f);
-
-
-	////Make sure you pass uniform parameters after glUseProgram()
-	//glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
-	//glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
-	//glUniform1f(m_parameters[U_LIGHT0_KC], light[0].kC);
-	//glUniform1f(m_parameters[U_LIGHT0_KL], light[0].kL);
-	//glUniform1f(m_parameters[U_LIGHT0_KQ], light[0].kQ);
-
-	//glUniform1i(m_parameters[U_NUMLIGHTS], 1);
-	//glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	//glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
-	//glUniform1f(m_parameters[U_LIGHT0_POWER], light[0].power);
-	//glUniform1f(m_parameters[U_LIGHT0_KC], light[0].kC);
-	//glUniform1f(m_parameters[U_LIGHT0_KL], light[0].kL);
-	//glUniform1f(m_parameters[U_LIGHT0_KQ], light[0].kQ);
-	//glUniform1f(m_parameters[U_LIGHT0_COSCUTOFF], light[0].cosCutoff);
-	//glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
-	//glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
 	lightingfunc();
 
@@ -242,6 +203,9 @@ void ChuanXu::GenerateObj()
 	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//NPC//Robot_Arm.obj");
 	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image//NPC//Robot_Arms.tga");
 
+
+	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall2", "OBJ//Wall//CX_WALL.obj");
+	meshList[GEO_WALL]->textureID = LoadTGA("Image//Wall//MazeWall.tga");
 	WallsObj[1] = new GameObject("right wall", Vector3(11, 0, -78));
 	WallsObj[1]->setCollider(200
 		, 3);
@@ -302,7 +266,6 @@ void ChuanXu::GenerateObj()
 	WallsObj[15] = new GameObject("maze_wall_11", Vector3(77, 0, 11));
 	WallsObj[15]->setCollider(47, 4);
 	WallsObj[15]->updateCurPos();
-
 
 	WallsObj[16] = new GameObject("maze_wall_12", Vector3(33, 0, 11));
 	WallsObj[16]->setCollider(4, 47);
@@ -368,11 +331,36 @@ void ChuanXu::GenerateObj()
 	WallsObj[31]->setCollider(4, 48);
 	WallsObj[31]->updateCurPos();
 
+	//Health packs
+	meshList[GEO_RECOVERY] = MeshBuilder::GenerateOBJ("Recovery", "OBJ//Player//Can.obj");
+	//meshList[GEO_RECOVERY]->textureID = LoadTGA("Image//Player//.tga");
+
+	healthPack[1] = new Item("Health_Pack_1", Vector3(88, 0, 17),"Heal player");
+	healthPack[1]->setCollider(5, 5);
+	healthPack[1]->updateCurPos();
+
+	healthPack[2] = new Item("Health_Pack_2", Vector3(40, 0, 88), "Heal player");
+	healthPack[2]->setCollider(5, 5);
+	healthPack[2]->updateCurPos();
+
+	healthPack[3] = new Item("Health_Pack_3", Vector3(0, 0, 85), "Heal player");
+	healthPack[3]->setCollider(5, 5);
+	healthPack[3]->updateCurPos();
+
+	healthPack[4] = new Item("Health_Pack_4", Vector3(45, 0, -60), "Heal player");
+	healthPack[4]->setCollider(5, 5);
+	healthPack[4]->updateCurPos();
+
+	healthPack[5] = new Item("Health_Pack_5", Vector3(-65, 0, -15), "Heal player");
+	healthPack[5]->setCollider(5, 5);
+	healthPack[5]->updateCurPos();
+
 
 }
 
-void ChuanXu::RenderMaze()
+void ChuanXu::RenderMaze() // Maze walls and healthpacks
 {
+	// Maze walls
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[5]->Position.x, WallsObj[5]->Position.y, WallsObj[5]->Position.z);
 	modelStack.Scale(7.5, 1.5, 1.5);
@@ -453,7 +441,6 @@ void ChuanXu::RenderMaze()
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
-
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[17]->Position.x, WallsObj[17]->Position.y, WallsObj[17]->Position.z);
 	modelStack.Rotate(90, 0, 1, 0);
@@ -478,7 +465,6 @@ void ChuanXu::RenderMaze()
 	modelStack.Scale(3, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
-
 
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[21]->Position.x, WallsObj[21]->Position.y, WallsObj[21]->Position.z);
@@ -545,13 +531,64 @@ void ChuanXu::RenderMaze()
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
-
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[31]->Position.x, WallsObj[31]->Position.y, WallsObj[31]->Position.z);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(3, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
+
+	//health pack
+	if (healing[1])
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(healthPack[1]->Position.x, 0, healthPack[1]->Position.z);
+		modelStack.Scale(0.5, 0.5, 0.5);
+		modelStack.Rotate(rotateAngle, 0, 1, 0);
+		RenderMesh(meshList[GEO_RECOVERY], false);
+		modelStack.PopMatrix();
+	}
+
+	if (healing[2])
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(healthPack[2]->Position.x, 0, healthPack[2]->Position.z);
+		modelStack.Scale(0.5, 0.5, 0.5);
+		modelStack.Rotate(rotateAngle, 0, 1, 0);
+		RenderMesh(meshList[GEO_RECOVERY], false);
+		modelStack.PopMatrix();
+	}
+
+	if (healing[3])
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(healthPack[3]->Position.x, 0, healthPack[3]->Position.z);
+		modelStack.Scale(0.5, 0.5, 0.5);
+		modelStack.Rotate(rotateAngle, 0, 1, 0);
+		RenderMesh(meshList[GEO_RECOVERY], false);
+		modelStack.PopMatrix();
+	}
+
+	if (healing[4])
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(healthPack[4]->Position.x, 0, healthPack[4]->Position.z);
+		modelStack.Scale(0.5, 0.5, 0.5);
+		modelStack.Rotate(rotateAngle, 0, 1, 0);
+		RenderMesh(meshList[GEO_RECOVERY], false);
+		modelStack.PopMatrix();
+	}
+
+	if (healing[5])
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(healthPack[5]->Position.x, 0, healthPack[5]->Position.z);
+		modelStack.Scale(0.5, 0.5, 0.5);
+		modelStack.Rotate(rotateAngle, 0, 1, 0);
+		RenderMesh(meshList[GEO_RECOVERY], false);
+		modelStack.PopMatrix();
+	}
+
 }
 
 void ChuanXu::Update(double dt)
@@ -559,16 +596,18 @@ void ChuanXu::Update(double dt)
 	static float translateLimit = 1;
 	static Vector3 prevpos;
 	static Vector3 prevposTarget;
+	
 	deltaTime = /*"Health" + std::to_string(player->getHealth()); */"FPS:" + std::to_string(1 / dt);
 	HPsizeX = player->getHealth()*0.215;
 	delayTime += (float)dt;
+	rotateAngle += (float)(10 * dt);
 
-	if (delayTime > 3)
+	if (delayTime > 5)
 	{
 		player->DmgPlayer(5);
 		delayTime = 0;
 	}
-	else if (delayTime < 3)
+	else if (delayTime < 5)
 	{
 		delayTime += (float)dt;
 	}
@@ -582,26 +621,6 @@ void ChuanXu::Update(double dt)
 
 	if (Application::IsKeyPressed('Y'))
 		coverOpened= true;
-	//if (coverOpened)
-	//{	
-	//	if (translateLimit<-2)
-	//	translateLimit *= -1;
-	//	if (openCover <6)
-	//	openCover += (float)(10 * translateLimit*dt);
-	//}
-
-	if (Application::IsKeyPressed('I'))
-		light[0].position.z -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('K'))
-		light[0].position.z += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('J'))
-		light[0].position.x -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('L'))
-		light[0].position.x += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('O'))
-		light[0].position.y -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('P'))
-		light[0].position.y += (float)(LSPEED * dt);
 
 	if (Application::IsKeyPressed('0')) 
 	{
@@ -637,15 +656,23 @@ void ChuanXu::Update(double dt)
 
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
-		if (object[i] && CamObj->trigger(object[i]))
+		if (object[i] && player->trigger(object[i]))
 		{
-			//deltaTime = "Wham bam";
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
 		} 
 	}
 
+	for (int i = 0; i <5; ++i)
+	{
+		if (healthPack[i] && player->trigger(healthPack[i])&&healing[i])
+		{
+			player->HealPlayer(50);
+			healing[i] = false;
+			break;
+		}
+	}
 
 	for (int i = 0; i < Walls; ++i)
 	{
@@ -708,8 +735,6 @@ void ChuanXu::RenderWalls()
 	modelStack.PopMatrix();
 }
 
-
-
 void ChuanXu::Render()
 {
 	if (light[0].type == Light::LIGHT_DIRECTIONAL)
@@ -756,6 +781,9 @@ void ChuanXu::Render()
 	 RenderTextOnScreen(meshList[GEO_TEXT], AmmoLeft, (0, 1, 0), 3, 21.7, 0.2f);
 
 	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, (0, 1, 0), 4, 5, 5);
+
+	 RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(player->Position.x), Color(0, 1, 0), 4, 3, 4);
+	 RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(player->Position.z), Color(0, 1, 0), 4, 3, 3);
 }
 
 void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)
@@ -924,6 +952,11 @@ void ChuanXu::Exit()
 	{
 		if (WallsObj[i] != NULL)
 			delete WallsObj[i];
+	}
+	for (int i = 0; i < 5; ++i)
+	{
+		if (healthPack[i] != NULL)
+			delete healthPack[i];
 	}
 	delete player;
 	delete lasergun;
