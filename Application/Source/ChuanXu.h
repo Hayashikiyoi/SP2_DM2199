@@ -12,13 +12,10 @@
 #include"Fps_Camera.h"
 #include"Player.h"
 #include"Weapon.h"
-
+#include"Item.h"
 
 #include <string>
 using std::string;
-
-
-
 
 #define Walls 32
 #define numOfIdleNPC 5
@@ -74,7 +71,6 @@ class ChuanXu : public Scene
 
 	enum GEOMETRY_TYPE
 	{
-		GEO_AXES,
 		GEO_TEXT,
 		GEO_DEBUGBOX,
 		GEO_ROBOBODY,
@@ -100,10 +96,10 @@ private:
 
 	//GameObj
 	GameObject* object[NUM_GEOMETRY];
-	GameObject* CamObj;
 	GameObject * WallsObj[Walls];
 	string deltaTime;
-	//Vector3 Robot;
+	
+	float rotateAngle = 0;
 	float DelayTimer=0;
 	void RenderWalls();
 	void GenerateObj();
@@ -117,10 +113,11 @@ private:
 	Player* player;
 	Weapon* lasergun;
 	string clipCount, ammoLeft;
-
+	Item* healthPack[6];
 	float HPsizeX;
 	float delayTime;
 
+	bool healing[5];
 	bool lightEnable;
 	bool coverOpened = false;
 	Light light[6];
