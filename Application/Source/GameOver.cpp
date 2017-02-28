@@ -190,6 +190,8 @@ void GameOver::Update(double dt)
 		timer += dt;
 		if (timer > 3.f)
 		{
+			timer = 0;
+			interval = 0.9f;
 			SceneManager::instance()->changeScene(0);
 			return;
 		}

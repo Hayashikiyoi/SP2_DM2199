@@ -141,6 +141,8 @@ private:
 	GameObject* TriggerBox[7];
 	Item* Locked[4];
 	float TranslateCode;
+	float SpawnBoxX;
+	float SpawnBoxZ;
 
 	//Initialize
 	void initializeObjects();

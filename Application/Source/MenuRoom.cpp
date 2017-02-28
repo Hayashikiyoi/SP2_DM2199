@@ -136,15 +136,17 @@ void Menu_Room::Update(double dt)
 
 	static float change = 1;
 	TranslateCode += 25 * (float)dt * change;
-	if (TranslateCode > 100)
+	if (TranslateCode > 300)
 	{
 		change = -1;
 		//TranslateCode = 0;
 		
 	}
-	else if (TranslateCode < -100)
+	else if (TranslateCode < -300)
 	{
-		change = 1;
+		TranslateCode = 100;
+		SpawnBoxX = rand() % 50;
+		SpawnBoxZ = rand() % 500;
 	}
 
 	if (Application::IsKeyPressed('V'))
@@ -241,7 +243,7 @@ void Menu_Room::Update(double dt)
 		{
 			if (i>=0 && i<=3 && i == SceneManager::instance()->levelCompleted)
 				deltaTime = ("Press E: Level " + std::to_string(i+3));
-			if (Application::IsKeyPressed('E') && i >= 0 && i <= 3 && i == SceneManager::instance()->levelCompleted)
+			if (Application::IsKeyPressed('E') && i >= 0 && i <= 3 && i <= SceneManager::instance()->levelCompleted)
 			{
 				SceneManager::instance()->changeScene(i + 3);
 				return;
@@ -287,12 +289,12 @@ void Menu_Room::Update(double dt)
 	if (Application::IsKeyPressed(VK_LBUTTON) && !shoot)
 	{
 		lasergun->shoot(&camera);
-		SceneManager::instance()->levelCompleted += 1; //Put here to test working drawBridge
+		//SceneManager::instance()->levelCompleted += 1; //Put here to test working drawBridge
 		shoot = true;
 	}
 	if (Application::IsKeyPressed('T'))
 	{
-		SceneManager::instance()->levelCompleted = 0;
+		//SceneManager::instance()->levelCompleted = 0;
 		lasergun->reload();
 	}
 	if (Application::IsKeyPressed('F'))
@@ -844,20 +846,37 @@ void Menu_Room::EnemyField()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-
-	modelStack.Translate(0,TranslateCode, 0);
-	modelStack.Rotate(90,0,1,0);
-	modelStack.Scale(10,10,10);
+	modelStack.Translate(SpawnBoxX, TranslateCode, SpawnBoxZ);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(10, 10, 10);
 	RenderMesh(meshList[GEO_CODEBLOCK], false);
-	//modelStack.Translate(turret[18]->getCollider().getmin().x, turret[18]->Position.y, turret[18]->getCollider().getmin().z);
-	//modelStack.Scale(1, 100, 1);
-	//RenderMesh(meshList[GEO_DEBUGBOX], false);
-	//modelStack.PopMatrix();
-	//modelStack.PushMatrix();
-	//modelStack.Translate(turret[18]->getCollider().getmax().x, turret[18]->Position.y, turret[18]->getCollider().getmax().z);
-	//modelStack.Scale(1, 100, 1);
-	//RenderMesh(meshList[GEO_DEBUGBOX], false);
+
+	modelStack.Translate(SpawnBoxX, TranslateCode, SpawnBoxZ);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(10, 10, 10);
+	RenderMesh(meshList[GEO_CODEBLOCK], false);
+
+	//modelStack.Translate(SpawnBoxX, TranslateCode, SpawnBoxZ);
+	//modelStack.Rotate(90, 0, 1, 0);
+	//modelStack.Scale(10, 10, 10);
+	//RenderMesh(meshList[GEO_CODEBLOCK], false);
+
+	//modelStack.Translate(SpawnBoxX, TranslateCode, SpawnBoxZ);
+	//modelStack.Rotate(90, 0, 1, 0);
+	//modelStack.Scale(10, 10, 10);
+	//RenderMesh(meshList[GEO_CODEBLOCK], false);
+
+	//modelStack.Translate(SpawnBoxX, TranslateCode, SpawnBoxZ);
+	//modelStack.Rotate(90, 0, 1, 0);
+	//modelStack.Scale(10, 10, 10);
+	//RenderMesh(meshList[GEO_CODEBLOCK], false);
+
+	//modelStack.Translate(SpawnBoxX, TranslateCode, SpawnBoxZ);
+	//modelStack.Rotate(90, 0, 1, 0);
+	//modelStack.Scale(10, 10, 10);
+	//RenderMesh(meshList[GEO_CODEBLOCK], false);
 	modelStack.PopMatrix();
+	
 }
 
 void Menu_Room::RenderMesh(Mesh *mesh, bool enableLight)
