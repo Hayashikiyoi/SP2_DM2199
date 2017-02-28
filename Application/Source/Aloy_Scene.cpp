@@ -63,7 +63,7 @@ void Aloy_Scene::Init()
 	meshList[GEO_TITLE]->textureID = LoadTGA("Image//Text//Title.tga");
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//city_bk.tga");
+	meshList[GEO_FRONT]->textureID = LoadTGA("Image//skybox//MainMenu.tga");
 	
 	meshList[GEO_CINAMATIC] = MeshBuilder::GenerateOBJ("Object", "OBJ//Objects//menu.obj");
 	meshList[GEO_CINAMATIC]->textureID = LoadTGA("Image//model//Menutransition.tga");
