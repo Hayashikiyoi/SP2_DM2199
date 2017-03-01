@@ -114,6 +114,7 @@
     <ClCompile Include="Source\SceneUI.cpp" />
     <ClCompile Include="Source\Scene_Level2.cpp" />
     <ClCompile Include="Source\shader.cpp" />
+    <ClCompile Include="Source\tutorialScene.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
     <ClCompile Include="Source\Weapon.cpp" />
     <ClCompile Include="Source\Wilson.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="Source\Scene_Calvert.h" />
     <ClInclude Include="Source\shader.hpp" />
     <ClInclude Include="Source\Scene_Level2.h" />
+    <ClInclude Include="Source\tutorialScene.h" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
     <ClInclude Include="Source\Weapon.h" />

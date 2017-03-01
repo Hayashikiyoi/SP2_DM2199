@@ -1,5 +1,5 @@
-#ifndef SCENE4_BOSS_H
-#define SCENE4_BOSS_H
+#ifndef TUTORIALSCENE_H
+#define TUTORIALSCENE_H
 
 #include "Scene.h"
 #include "Fps_Camera.h"
@@ -16,20 +16,11 @@ using std::string;
 #include "GameObject.h"
 #include "Item.h"
 #include "Player.h"
-#include "Bullet.h"
 #include "Weapon.h"
-
 #undef numOfEnemy
-#undef numOfBullets
-#undef numOfWalls
-#undef numOfGun
+#define numOfEnemy 20
 
-#define numOfEnemy 25
-#define numOfBullets 6
-#define numOfWalls 10
-#define numOfGun 6
-
-class Scene4_Boss : public Scene
+class tutorialScene : public Scene
 {
 
 	enum UNIFORM_TYPE
@@ -55,18 +46,6 @@ class Scene4_Boss : public Scene
 		U_LIGHT0_COSINNER,
 		U_LIGHT0_EXPONENT,
 
-		U_LIGHT1_POSITION,
-		U_LIGHT1_COLOR,
-		U_LIGHT1_POWER,
-		U_LIGHT1_KC,
-		U_LIGHT1_KL,
-		U_LIGHT1_KQ,
-		U_LIGHT1_TYPE,
-		U_LIGHT1_SPOTDIRECTION,
-		U_LIGHT1_COSCUTOFF,
-		U_LIGHT1_COSINNER,
-		U_LIGHT1_EXPONENT,
-
 		U_COLOR_TEXTURE_ENABLED,
 		U_COLOR_TEXTURE,
 
@@ -80,43 +59,24 @@ class Scene4_Boss : public Scene
 	enum GEOMETRY_TYPE
 	{
 		GEO_AXES,
-		GEO_QUAD,
-		GEO_LIGHTBALL,
 		GEO_LEFT,
 		GEO_RIGHT,
 		GEO_TOP,
 		GEO_BOTTOM,
 		GEO_FRONT,
 		GEO_BACK,
-		GEO_FLOOR,
 		GEO_TEXT,
 		GEO_DEBUGBOX,
-		GEO_VENDINGBODY,
-		GEO_VENDINGCOVER,
-		GEO_ROBOBODY,
-		GEO_ROBOARMS,
-		GEO_TURRETHEAD,
-		GEO_TURRETBODY,
-		GEO_TURRETHEAD_2,
-		GEO_TURRETBODY_2,
-		GEO_CARDKEY,
-		GEO_CARDKEY_2,
-		GEO_BULLET,
-		GEO_WALL,
-		GEO_WALL_2,
-		GEO_DOOR_FRAME,
-		GEO_DOOR,
-		GEO_DOOR_2,
 		GEO_BLASTER,
 		GEO_PBULLET,
 		GEO_HEALTHBG,
 		GEO_HEALTH,
 		GEO_STAMINA,
 		GEO_AMMOBG,
-		GEO_BATTERY,
-		GEO_RECOVERY,
-		GEO_BOSSTESTBG,
-		GEO_BOSSTEST,
+		GEO_WALLROW, //A Row Of Walls
+		GEO_QUADFLOOR, //Floor texture on quad
+		GEO_QUADCEILING, //Ceiling texture on quad
+		GEO_BUTTON,	//Button to go to next stage (Pressure plate)
 		NUM_GEOMETRY,
 	};
 
@@ -127,71 +87,52 @@ private:
 	unsigned m_parameters[U_TOTAL];
 	Mesh* meshList[NUM_GEOMETRY];
 
-	//GameObj
-	GameObject* object[NUM_GEOMETRY];
-	GameObject* CamObj;
-	GameObject* TriggerBox[1];
-	Item* Keys[5];
-	GameObject* WallsObj[numOfWalls];
-	Player* player;
-
-	string deltaTime;
-	string BossH;
-	string AmmoLeft;
-	string MagsLeft;
-	string cordx, cordy, cordz;
-	Vector3 Robot;
-
-	//Vector3 Bullet;
-	Bullet bullet_1;
-	Enemy* turret[numOfEnemy];
-	Bullet* bullet[numOfBullets];
-
-	//Weapon for Player
-	Weapon* lasergun;
-	
-	float rotateAngle;
-	//float translateX[3]; //Original code : float translateX; added [] to make 3 array
-	float scaleAll;
-	float openCover = 0;
-	float DelayTimer = 0;
-	void skyBox();
-	bool shootBullet = false;
-
-	Fps_Camera camera;
 	MS modelStack, viewStack, projectionStack;
 
 	bool lightEnable;
-	bool coverOpened = false;
-	Light light[6];
+	Light light[2];
 	void RenderMesh(Mesh *mesh, bool enableLight);
-
-	void lightingfunc();
-	void RenderSkybox();
-	void Walls();
-	void EnemyField();
-	void GUI();
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey, bool isHealth);
-	//Game Object
+
+	//Call Game Object
 	void GenerateOBJ();
+	void GenerateGEOMESH();
+	void GenerateSkybox();
+
+	//GameObj
+	GameObject* object[NUM_GEOMETRY];
+	GameObject* walls[5]; //Enclosed room
+
+	//Initialize
+	void initializeObjects();
+
+	//Render
+	void RenderSkybox();
+	void RenderWalls();
+	void RenderFloor();
+	void RenderGameItems();
 
 	//Player
-	float moveBullet;
+	Fps_Camera camera;
+	Player* player;
+	Weapon* lasergun;
 	float HPsizeX;
-	float test2;
-	float test3;
 	string clipCount, ammoLeft;
+	/*string tempPlayerposX, tempPlayerposZ;*/
+
+	//Trigger box (Instructions)(To next level)
+	GameObject* triggerbox[3];
+
 public:
-	Scene4_Boss();
-	~Scene4_Boss();
+	tutorialScene();
+	~tutorialScene();
 
 	virtual void Init();
 	virtual void Update(double dt);
 	virtual void Render();
 	virtual void Exit();
 };
-
 #endif

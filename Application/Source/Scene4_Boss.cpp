@@ -223,8 +223,8 @@ void Scene4_Boss::Update(double dt)
 
 	DelayTimer += (float)dt;
 	rotateAngle += (float)dt;
-	HPsizeX = player->getHealth()*0.215;
-	test3 = turret[9]->showHP()*0.3;
+	HPsizeX = (float)player->getHealth()*0.215f;
+	test3 = turret[9]->showHP()*0.3f;
 	//if (coverOpened)
 	//{
 	//	if (translateLimit<-10)
@@ -290,7 +290,7 @@ void Scene4_Boss::Update(double dt)
 	}
 	if (shoot)
 	{
-		TP += dt;
+		TP += (float)dt;
 		if (TP > ROF)
 		{
 			TP = 0; 
@@ -510,7 +510,7 @@ void Scene4_Boss::Update(double dt)
 	//Delay for Bullet attacks
 	if (smtHappen)
 	{
-		time += dt;
+		time += (float)dt;
 		if (time > 2)
 		{
 			time = 0;
@@ -519,7 +519,7 @@ void Scene4_Boss::Update(double dt)
 	}
 	if (smtHappen2)
 	{
-		time += dt;
+		time += (float)dt;
 		if (time > 1)
 		{
 			time = 0;
@@ -528,7 +528,7 @@ void Scene4_Boss::Update(double dt)
 	}
 	if (smtHappen3)
 	{
-		time += dt;
+		time += (float)dt;
 		if (time > 10)
 		{
 			time = 0;
@@ -552,11 +552,11 @@ void Scene4_Boss::Update(double dt)
 	}
 	if (DelayTimer > 0.125)
 	{
-		test2 += 20 * dt;
+		test2 += 20 * (float)dt;
 		if (test2 > 30.f)
 			test2 = 30.f;
 		if (test3 <= 0)
-			test2 -= 40*dt;
+			test2 -= 40*(float)dt;
 	}
 	camera.Update(dt);
 	lasergun->updateBullet(dt);
@@ -1111,8 +1111,8 @@ void Scene4_Boss::Render()
 	modelStack.PopMatrix();
 
 	RenderMeshOnScreen(meshList[GEO_HEALTHBG], 15, 5, 30, 30, false);
-	RenderMeshOnScreen(meshList[GEO_HEALTH], 8.f, 5, HPsizeX, 30, true);
-	RenderMeshOnScreen(meshList[GEO_STAMINA], 8.1f, 5, camera.test2, 30, true);
+	RenderMeshOnScreen(meshList[GEO_HEALTH], 8, 5, HPsizeX, 30, true);
+	RenderMeshOnScreen(meshList[GEO_STAMINA], 8.1f, 5.f, camera.test2, 30.f, true);
 	RenderMeshOnScreen(meshList[GEO_AMMOBG], 65, 10, 30, 30, false);
 
 	RenderTextOnScreen(meshList[GEO_TEXT], clipCount, Color(0, 1, 0), 5, 58, 5);
@@ -1238,7 +1238,7 @@ void Scene4_Boss::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, 
 	glEnable(GL_DEPTH_TEST);
 }
 
-void Scene4_Boss::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, bool isHealth)
+void Scene4_Boss::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey, bool isHealth)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
