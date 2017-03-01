@@ -181,7 +181,7 @@ void Aloy_Scene::Update(double dt)
 			case 3:
 				if (Application::IsKeyPressed(VK_RETURN) && !bSomethingHappen)
 				{
-					SceneManager::instance()->changeScene(4);
+					SceneManager::instance()->EndGame(true);
 					return;
 				}
 				break;
