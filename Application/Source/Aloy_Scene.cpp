@@ -175,7 +175,7 @@ void Aloy_Scene::Update(double dt)
 			case 2: //Credits
 				if (Application::IsKeyPressed(VK_RETURN) && !bSomethingHappen)
 				{
-					SceneManager::instance()->changeScene(7);
+					SceneManager::instance()->changeScene(8);
 					return;
 				}
 				break;
