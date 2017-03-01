@@ -179,9 +179,9 @@ void tutorialScene::Update(double dt)
 				triggerbox[0]->updateCurPos();
 				break;
 			case 1:
-				/*SceneManager::instance()->changeScene(4); //Change to correct scene
+				SceneManager::instance()->changeScene(3); //Change to correct scene
 				std::cout << "Change scene" << std::endl;
-				return;*/
+				return;
 				break;
 			default:
 				break;

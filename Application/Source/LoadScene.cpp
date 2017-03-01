@@ -13,6 +13,7 @@ using namespace Math;
 
 LoadScene::LoadScene()
 {
+	m_programID = SceneManager::instance()->programID;
 }
 
 LoadScene::~LoadScene()
@@ -53,7 +54,7 @@ void LoadScene::Init()
 	meshList[GEO_NOWLOADING]->textureID = LoadTGA("Image//Text//NowLoading.tga");
 
 	//Load vertex and fragment shaders
-	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
+	//m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
 
 	// Get a handle for our "colorTexture" uniform
