@@ -13,6 +13,7 @@ using namespace Math;
 
 Scene4_Boss::Scene4_Boss()
 {
+	m_programID = SceneManager::instance()->returnProg();
 }
 
 Scene4_Boss::~Scene4_Boss()
@@ -66,7 +67,6 @@ void Scene4_Boss::Init()
 	}
 	Keys[1] = 0;
 	TriggerBox[0] = 0;
-
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
@@ -94,13 +94,13 @@ void Scene4_Boss::Init()
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
 
 
-	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
+	//meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 
 	GUI();
 	GenerateOBJ();
 
 	//Load vertex and fragment shaders
-	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
+	//m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
 	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
 	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
@@ -220,25 +220,6 @@ void Scene4_Boss::Update(double dt)
 	rotateAngle += (float)dt;
 	HPsizeX = (float)player->getHealth()*0.215f;
 	test3 = turret[9]->showHP()*0.3f;
-	//if (coverOpened)
-	//{
-	//	if (translateLimit<-10)
-	//		translateLimit *= -1;
-	//	if (openCover <6)
-	//		openCover += (float)(10 * translateLimit*dt);
-	//}
-	//if (Application::IsKeyPressed('I'))
-	//	light[0].position.z -= (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('K'))
-	//	light[0].position.z += (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('J'))
-	//	light[0].position.x -= (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('L'))
-	//	light[0].position.x += (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('O'))
-	//	light[0].position.y -= (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('P'))
-	//	light[0].position.y += (float)(LSPEED * dt);
 
 	if (Application::IsKeyPressed('0'))
 	{
@@ -378,7 +359,7 @@ void Scene4_Boss::Update(double dt)
 	}
 	if (player->getHealth() == 0)
 	{
-		SceneManager::instance()->changeScene(4);
+		SceneManager::instance()->changeScene(5);
 		return;
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -497,8 +478,8 @@ void Scene4_Boss::Update(double dt)
 	//Change Scene
 	if (TriggerBox[0] && player->trigger(TriggerBox[0]))
 	{
-		SceneManager::instance()->levelCompleted = 4;
-		SceneManager::instance()->changeScene(2);
+		SceneManager::instance()->levelCompleted = 3;
+		SceneManager::instance()->changeScene(3);
 		return;
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -584,10 +565,10 @@ void Scene4_Boss::skyBox()
 {
 	RenderMesh(meshList[GEO_AXES], false);
 
-	modelStack.PushMatrix();
+	/*modelStack.PushMatrix();
 	modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
 	RenderMesh(meshList[GEO_LIGHTBALL], false);
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();*/
 
 	//Bottom
 	modelStack.PushMatrix();

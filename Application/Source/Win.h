@@ -1,8 +1,8 @@
-#ifndef MENU_ROOM_H
-#define MENU_ROOM_H
+#ifndef WIN_H
+#define WIN_H
 
 #include "Scene.h"
-#include "Fps_Camera.h"
+
 #include "Mesh.h"
 #include "MatrixStack.h"
 #include "Light.h"
@@ -12,15 +12,14 @@
 using std::string;
 
 //GameObject Folder
+#include "Camera4.h"
 #include "Enemy.h"
 #include "GameObject.h"
 #include "Item.h"
 #include "Player.h"
 #include "Weapon.h"
-#undef numOfEnemy
-#define numOfEnemy 31
 
-class Menu_Room : public Scene
+class Win : public Scene
 {
 
 	enum UNIFORM_TYPE
@@ -46,19 +45,6 @@ class Menu_Room : public Scene
 		U_LIGHT0_COSINNER,
 		U_LIGHT0_EXPONENT,
 
-		//Lighting 2
-		U_LIGHT1_POSITION,
-		U_LIGHT1_COLOR,
-		U_LIGHT1_POWER,
-		U_LIGHT1_KC,
-		U_LIGHT1_KL,
-		U_LIGHT1_KQ,
-		U_LIGHT1_TYPE,
-		U_LIGHT1_SPOTDIRECTION,
-		U_LIGHT1_COSCUTOFF,
-		U_LIGHT1_COSINNER,
-		U_LIGHT1_EXPONENT,
-
 		U_COLOR_TEXTURE_ENABLED,
 		U_COLOR_TEXTURE,
 
@@ -74,40 +60,12 @@ class Menu_Room : public Scene
 		GEO_AXES,
 		GEO_QUAD,
 		GEO_LIGHTBALL,
-		GEO_LEFT,
-		GEO_RIGHT,
-		GEO_TOP,
-		GEO_BOTTOM,
-		GEO_FRONT,
-		GEO_BACK,
-		GEO_FLOOR,
-		GEO_FLOOR_2,
 		GEO_TEXT,
-		GEO_DEBUGBOX,
-		GEO_VENDINGBODY,
-		GEO_VENDINGCOVER,
-		GEO_ROBOBODY,
-		GEO_ROBOARMS,
-		GEO_ROBOLOCKED,
-		GEO_ROBOARMSLOCKED,
-		GEO_BULLET,
-		GEO_VOTEX,
-		GEO_BOTTOMVOTEX,
-		GEO_COMPUTER,
-		GEO_WALL,
-		GEO_WALL_2,
-		GEO_DOOR_FRAME,
-		GEO_DOOR,
-		GEO_BLASTER,
-		GEO_PBULLET,
+		GEO_DEBUGBOX, //Old Stuff
+		GEO_IMAGE1, //animation
+		GEO_IMAGE2, //End of animation
 		GEO_HEALTHBG,
 		GEO_HEALTH,
-		GEO_STAMINA,
-		GEO_AMMOBG,
-		GEO_BOSSTESTBG,
-		GEO_BOSSTEST,
-		GEO_CODEBLOCK,
-		GEO_DEBRIS,
 		NUM_GEOMETRY,
 	};
 
@@ -119,12 +77,10 @@ private:
 	Mesh* meshList[NUM_GEOMETRY];
 
 	string deltaTime;
-	string cordx, cordy, cordz;
 
 	MS modelStack, viewStack, projectionStack;
 
 	bool lightEnable;
-	bool coverOpened = false;
 	Light light[2];
 	void RenderMesh(Mesh *mesh, bool enableLight);
 
@@ -133,44 +89,23 @@ private:
 	void RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey, bool isHealth);
 
 	//Call Game Object
-	void GenerateOBJ();
 	void GenerateGEOMESH();
-	void GenerateSkybox();
-
-	//GameObj
-	GameObject* object[NUM_GEOMETRY];
-	GameObject* TriggerBox[16];
-	Item* Locked[4];
-	float TranslateCode;
-	float Moving;
-	float maware;
-	float chatTime;
-	float SpawnBoxX[10];
-	float SpawnBoxZ[10];
+	void GenerateWin();
 
 	//Initialize
 	void initializeObjects();
 
 	//Render
-	void RenderSkybox();
-	void Walls();
-	void EnemyField();
+	void displayOnScreen();
+	float scaleX[2];
 
 	//Player
-	Fps_Camera camera;
+	Camera4 camera;
 	Player* player;
-	Weapon* lasergun;
-	float HPsizeX;
-	string clipCount, ammoLeft;
-	//Enemy
-	Enemy* turret[numOfEnemy]; //NPC Need rename
 
-	//Door / Bridge
-	void DrawBridge();
-	void BridgeGate();
 public:
-	Menu_Room();
-	~Menu_Room();
+	Win();
+	~Win();
 
 	virtual void Init();
 	virtual void Update(double dt);

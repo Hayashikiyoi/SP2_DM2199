@@ -13,7 +13,7 @@ using namespace Math;
 
 Aloy_Scene::Aloy_Scene()
 {
-	m_programID = SceneManager::instance()->programID;
+	m_programID = SceneManager::instance()->returnProg();
 }
 
 Aloy_Scene::~Aloy_Scene()
@@ -165,21 +165,21 @@ void Aloy_Scene::Update(double dt)
 
 			switch (selectedNum)
 			{
-			case 1:
+			case 1: //Start Game
 				if (Application::IsKeyPressed(VK_RETURN) && !bSomethingHappen)
 				{
 					SceneManager::instance()->changeScene(2);
 					return;
 				}
 				break;
-			case 2:
+			case 2: //Credits
 				if (Application::IsKeyPressed(VK_RETURN) && !bSomethingHappen)
 				{
-					SceneManager::instance()->changeScene(3);
+					SceneManager::instance()->changeScene(8);
 					return;
 				}
 				break;
-			case 3:
+			case 3: //End Game
 				if (Application::IsKeyPressed(VK_RETURN) && !bSomethingHappen)
 				{
 					SceneManager::instance()->EndGame(true);

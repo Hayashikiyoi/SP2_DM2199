@@ -122,6 +122,9 @@
     <ClCompile Include="Source\tutorialScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Win.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h">
@@ -239,6 +242,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\tutorialScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Win.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

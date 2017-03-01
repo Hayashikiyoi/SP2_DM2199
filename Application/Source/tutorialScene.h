@@ -81,6 +81,7 @@ class tutorialScene : public Scene
 		GEO_TUTORIAL1, //Tutorial 1 -animation
 		GEO_TUTORIAL2,
 		GEO_TUTORIAL3, //Tutorial 3 -end animation
+		GEO_RECOVERY,
 		NUM_GEOMETRY,
 	};
 
@@ -129,6 +130,7 @@ private:
 
 	//Trigger box (Instructions)(To next level)
 	GameObject* triggerbox[3];
+	float Maware;
 
 	//Tutorial
 	bool tutorial;

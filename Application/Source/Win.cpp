@@ -1,4 +1,4 @@
-#include "Credits.h"
+#include "Win.h"
 #include "GL\glew.h"
 #include "Mtx44.h"
 #include "Application.h"
@@ -11,16 +11,16 @@
 #include "MyMath.h"
 using namespace Math;
 
-Credits::Credits()
+Win::Win()
 {
 	m_programID = SceneManager::instance()->returnProg();
 }
 
-Credits::~Credits()
+Win::~Win()
 {
 }
 
-void Credits::Init()
+void Win::Init()
 {
 	// Init VBO here
 	lightEnable = true;
@@ -33,8 +33,8 @@ void Credits::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Initialise camera
-	camera.Init(Vector3(0, 0, 10), Vector3(0, 20, -10), Vector3(0, 1, 0));
-	//player = new Player("camera", Vector3(0, 0, -400));
+	camera.Init(Vector3(0, 0, 0), Vector3(0, 0, -10), Vector3(0, 1, 0));
+	player = new Player("camera", Vector3(0, 0, -400));
 
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -46,7 +46,7 @@ void Credits::Init()
 	//They are moved to 
 	initializeObjects();
 	GenerateGEOMESH();
-	GenerateCredits();
+	GenerateWin();
 
 	//Load vertex and fragment shaders
 	//m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -119,7 +119,7 @@ void Credits::Init()
 	projectionStack.LoadMatrix(projection);
 }
 
-void Credits::Update(double dt)
+void Win::Update(double dt)
 {
 	static float translateLimit = 1;
 	static float LSPEED = 10;
@@ -173,53 +173,44 @@ void Credits::Update(double dt)
 	//-----------------------------------------------------------------------
 	//Here be animation of game-over
 	static float timer = 0.f;
-	static float interval = .9f;
-
-	//if (counter != 11) //Time delay for loop
-	//{
-	//	timer += dt;
-	//	if (timer > interval)
-	//	{
-	//		timer = 0;
-	//		interval -= 0.08;
-	//		counter++;
-	//	}
-	//}
-
-	//if (counter >= 11) //Time delay to return to first scene
-	//{
-	//	timer += dt;
-	//	if (timer > 3.f)
-	//	{
-	//		SceneManager::instance()->changeScene(0);
-	//		return;
-	//	}
-	//}
-
+	static bool done = false;
+	//static float interval = .9f;
 	
-	if (translateImg < 12)
+	if (scaleX[0] < 19.9f)
 	{
-		translateImg += 1 * dt;
+		scaleX[0] += 5 * dt;
 	}
-	else
+	else if (scaleX[0] > 20.f)
 	{
-		translateImg += 5 * dt;
+		scaleX[0] = 20.f;
 	}
 
-	if (translateImg > 30)
+	if (scaleX[0] > 5.f && scaleX[1] < 79.9f)
 	{
-		SceneManager::instance()->changeScene(0); //Add return scene here
-		return;
+		scaleX[1] += 20 * dt;
 	}
-	if (Application::IsKeyPressed('E'))
+	else if (scaleX[1] > 79.9f)
 	{
-		SceneManager::instance()->changeScene(0); //Add return scene here
-		return;
+		scaleX[1] = 80.f;
+		done = true;
+	}
+
+	if (done)
+	{
+		timer += dt;
+		if (timer > 5.f)
+		{
+			timer = 0.f;
+			done = false;
+			SceneManager::instance()->changeScene(0);
+			std::cout << "change scene" << std::endl;
+			return;
+		}
 	}
 	camera.Update(dt);
 }
 
-void Credits::Render()
+void Win::Render()
 {
 	if (light[0].type == Light::LIGHT_DIRECTIONAL)
 	{
@@ -255,32 +246,32 @@ void Credits::Render()
 
 	//-------------------------------------------------------------------------------------
 	//Gameobject render here
-	//RenderMesh(meshList[GEO_AXES], false);
+
 	//No transform needed
-	//RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 1, 6);
-	/*RenderMeshOnScreen(meshList[GEO_HEALTHBG], 15, 5, 30, 30, false);*/
+	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 1, 6);
+	RenderMeshOnScreen(meshList[GEO_HEALTHBG], 15, 5, 30, 30, false);
+	RenderMeshOnScreen(meshList[GEO_HEALTH], 7.7f, 5, 21.5f, 30, true);
 	displayOnScreen();
 	//-------------------------------------------------------------------------------------
 }
 
-void Credits::initializeObjects()
+void Win::initializeObjects()
 {
-	translateImg = 0;
 	//Initialise ur objects here
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
 		meshList[i] = NULL;
 	}
 }
-void Credits::GenerateGEOMESH()
+void Win::GenerateGEOMESH()
 {
 	//Quad set to size 1 only
-	/*meshList[GEO_HEALTHBG] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1, 1);
+	meshList[GEO_HEALTHBG] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1, 1);
 	meshList[GEO_HEALTHBG]->textureID = LoadTGA("Image//UI//healthBG.tga");
-	meshList[GEO_TEST] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1, 1);
-	meshList[GEO_TEST]->textureID = LoadTGA("Image//Credits//Credits_test.tga");*/
-	/*meshList[GEO_IMAGE1] = MeshBuilder::GenerateQuad("IMAGE1", Color(1, 1, 1), 1, 1);
-	meshList[GEO_IMAGE1]->textureID = LoadTGA("Image\\Credit\\credits.tga");*/
+	meshList[GEO_HEALTH] = MeshBuilder::GenerateQuad("Health", Color(1, 1, 1), 1, 1);
+	meshList[GEO_HEALTH]->textureID = LoadTGA("Image//UI//healthBar.tga");
+	/*meshList[GEO_TEST] = MeshBuilder::GenerateQuad("HealthBG", Color(1, 1, 1), 1, 1);
+	meshList[GEO_TEST]->textureID = LoadTGA("Image//Win//Win_test.tga");*/
 	//------------------------------------------------------------------------------------
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
@@ -293,28 +284,30 @@ void Credits::GenerateGEOMESH()
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 }
-void Credits::GenerateCredits()
+void Win::GenerateWin()
 {
-	meshList[GEO_IMAGE1] = MeshBuilder::GenerateQuad("Image1", Color(1, 1, 1), 1, 1);
-	meshList[GEO_IMAGE1]->textureID = LoadTGA("Image//UI//Credits//credits.tga");
-	meshList[GEO_IMAGE2] = MeshBuilder::GenerateQuad("Image2", Color(1, 1, 1), 1, 1);
-	meshList[GEO_IMAGE2]->textureID = LoadTGA("Image//UI//Credits//credits_last.tga");
+	meshList[GEO_IMAGE1] = MeshBuilder::GenerateQuad("Win", Color(1, 1, 1), 1, 1);
+	meshList[GEO_IMAGE1]->textureID = LoadTGA("Image//Victory//victory.tga");
+	meshList[GEO_IMAGE2] = MeshBuilder::GenerateQuad("Win", Color(1, 1, 1), 1, 1);
+	meshList[GEO_IMAGE2]->textureID = LoadTGA("Image//Victory//yellowBar.tga");
+	scaleX[0] = 0.f; //Scale Left/right side bar (Max 80)
+	scaleX[1] = 0.f; //Scale victory icon (Max 80)
 }
-void Credits::displayOnScreen()
+void Win::displayOnScreen()
 {
-	modelStack.PushMatrix();
-	modelStack.Translate(0, translateImg, 0);
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[GEO_IMAGE1], false);
-	modelStack.PopMatrix();
-	modelStack.PushMatrix();
-	modelStack.Translate(0, translateImg-10, 0);
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[GEO_IMAGE2], false);
-	modelStack.PopMatrix();
+	/*for (unsigned i = 0; i < counter; i++)
+	{
+		RenderMeshOnScreen(meshList[(i + 5)], 40, 30, 80, 60, false);
+	}*/
+	RenderMeshOnScreen(meshList[GEO_IMAGE1], 40, 30, scaleX[1], 60, false);
+	//Left side bar
+	RenderMeshOnScreen(meshList[GEO_IMAGE2], 0, 30, scaleX[0], 60, false);
+	//Right side bar
+	RenderMeshOnScreen(meshList[GEO_IMAGE2], 80, 30, scaleX[0], 60, false);
+	
 }
 
-void Credits::RenderMesh(Mesh *mesh, bool enableLight)
+void Win::RenderMesh(Mesh *mesh, bool enableLight)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 
@@ -356,7 +349,7 @@ void Credits::RenderMesh(Mesh *mesh, bool enableLight)
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
-void Credits::RenderText(Mesh* mesh, std::string text, Color color)
+void Win::RenderText(Mesh* mesh, std::string text, Color color)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -382,7 +375,7 @@ void Credits::RenderText(Mesh* mesh, std::string text, Color color)
 	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
 	glEnable(GL_DEPTH_TEST);
 }
-void Credits::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
+void Win::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y)
 {
 	if (!mesh || mesh->textureID <= 0) //Proper error check
 		return;
@@ -426,7 +419,7 @@ void Credits::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, floa
 
 	glEnable(GL_DEPTH_TEST);
 }
-void Credits::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey, bool isHealth)
+void Win::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, float sizey, bool isHealth)
 {
 	glDisable(GL_DEPTH_TEST);
 	Mtx44 ortho;
@@ -465,14 +458,14 @@ void Credits::RenderMeshOnScreen(Mesh* mesh, float x, float y, float sizex, floa
 	glEnable(GL_DEPTH_TEST);
 
 }
-void Credits::Exit()
+void Win::Exit()
 {
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
 		if (meshList[i] != NULL)
 			delete meshList[i];
 	}
-	//delete player;
+	delete player;
 	// Cleanup VBO here
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 

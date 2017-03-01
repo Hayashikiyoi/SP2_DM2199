@@ -44,8 +44,11 @@ public:
 	bool EndCheck();
 	
 	size_t levelCompleted;
-	unsigned programID;
+	
+	//Return ProgramId
+	unsigned int returnProg();
 private:
+	unsigned programID;
 	//Here be levels
 	size_t currentLevel; //Shows current level
 	size_t nextLevel; //For adding new level

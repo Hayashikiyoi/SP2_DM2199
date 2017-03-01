@@ -13,7 +13,7 @@ using namespace Math;
 
 tutorialScene::tutorialScene()
 {
-	m_programID = SceneManager::instance()->programID;
+	m_programID = SceneManager::instance()->returnProg();
 }
 
 tutorialScene::~tutorialScene()
@@ -134,6 +134,7 @@ void tutorialScene::Update(double dt)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	HPsizeX = (float)player->getHealth()*0.215f;
 
 	//----------------------------------------------------------------------------
 	player->Position = camera.position;
@@ -183,6 +184,15 @@ void tutorialScene::Update(double dt)
 				std::cout << "Change scene" << std::endl;
 				return;
 				break;
+			case 2:
+				if (Application::IsKeyPressed('E'))
+				{
+					player->HealPlayer(50);
+					triggerbox[i]->Position.x = 1000;
+					triggerbox[i]->Position.z = 1000;
+					triggerbox[i]->updateCurPos();
+				}
+				break;
 			default:
 				break;
 			}
@@ -191,7 +201,7 @@ void tutorialScene::Update(double dt)
 	}
 	//----------------------------------------------------------------------------
 	//Tutorial--------------------------------------------------------------------
-	
+	Maware += (float)dt;
 	//----------------------------------------------------------------------------
 	//Gun Stuffs------------------------------------------------------------------
 	static float ROF = 0.125f;
@@ -229,6 +239,7 @@ void tutorialScene::Update(double dt)
 		fixedTimer += dt;
 		if (fixedTimer > 2.f)
 		{
+			player->DmgPlayer(25);
 			fixedTimer = 0.f;
 			tutorialhappen = false;
 		}
@@ -294,6 +305,13 @@ void tutorialScene::Render()
 	RenderFloor();
 	RenderGameItems();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(triggerbox[2]->Position.x, 8, triggerbox[2]->Position.z);
+	modelStack.Rotate(90 * Maware, 0, 1, 0);
+	modelStack.Scale(0.1f, 0.1f, 0.1f);
+	RenderMesh(meshList[GEO_RECOVERY], true);
+	modelStack.PopMatrix();
+	
 	for (size_t i = 0; i < clipSize; i++)
 	{
 		if (lasergun->pBullet[i]->shot() == true)
@@ -460,6 +478,11 @@ void tutorialScene::GenerateOBJ()
 	triggerbox[0]->updateCurPos();
 	tutorial = false;
 	tutorialNum = 0;
+
+	meshList[GEO_RECOVERY] = MeshBuilder::GenerateOBJ("Recovery", "OBJ//Player//Can.obj");
+	triggerbox[2] = new GameObject("Recovery", Vector3(0, 0, 0));
+	triggerbox[2]->setCollider(1, 1);
+	triggerbox[2]->updateCurPos();
 }
 
 void tutorialScene::initializeObjects()
