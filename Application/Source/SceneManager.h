@@ -44,7 +44,7 @@ public:
 	bool EndCheck();
 	
 	size_t levelCompleted;
-	//unsigned programID;
+	unsigned programID;
 private:
 	//Here be levels
 	size_t currentLevel; //Shows current level

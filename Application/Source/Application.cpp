@@ -115,7 +115,7 @@ void Application::Init()
 void Application::Run()
 {
 	//Add Scenes Here
-	SceneManager::instance()->addScene(new Aloy_Scene); //Main menu must be at first (Unless have splash screen before that)
+	//SceneManager::instance()->addScene(new Aloy_Scene); //Main menu must be at first (Unless have splash screen before that)
 	//SceneManager::instance()->addScene(new Menu_Room);
 	SceneManager::instance()->addScene(new LoadScene); //Must be after main menu
 	SceneManager::instance()->addScene(new tutorialScene);

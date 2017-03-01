@@ -77,6 +77,10 @@ class tutorialScene : public Scene
 		GEO_QUADFLOOR, //Floor texture on quad
 		GEO_QUADCEILING, //Ceiling texture on quad
 		GEO_BUTTON,	//Button to go to next stage (Pressure plate)
+		//GEO_SERVERPROP,//Servers around the room
+		GEO_TUTORIAL1, //Tutorial 1 -animation
+		GEO_TUTORIAL2,
+		GEO_TUTORIAL3, //Tutorial 3 -end animation
 		NUM_GEOMETRY,
 	};
 
@@ -125,6 +129,10 @@ private:
 
 	//Trigger box (Instructions)(To next level)
 	GameObject* triggerbox[3];
+
+	//Tutorial
+	bool tutorial;
+	int tutorialNum;
 
 public:
 	tutorialScene();
