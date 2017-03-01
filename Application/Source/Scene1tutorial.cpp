@@ -107,7 +107,7 @@ void Scene1tutorial::Init()
 
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 
-	GUI();
+	//GUI();
 	GenerateOBJ();
 
 	meshList[GEO_FLOOR] = MeshBuilder::GenerateGround("Ground", Color(1, 1, 1), 1.f, 1.f);
@@ -267,10 +267,6 @@ void Scene1tutorial::Update(double dt)
 
 	static Vector3 prevpos;
 	static Vector3 prevposTarget;
-	//Robot.Set(Robot.x, Robot.y, Robot.z);
-	//deltaTime = "Health" + std::to_string(player->getHealth()); //"FPS:" + std::to_string(1 / dt);
-	
-
 	static float LSPEED = 10;
 
 	if (Application::IsKeyPressed('V'))
@@ -279,14 +275,6 @@ void Scene1tutorial::Update(double dt)
 		lightEnable = true;
 
 	DelayTimer += (float)dt;
-
-	//if (coverOpened)
-	//{
-	//	if (translateLimit<-10)
-	//		translateLimit *= -1;
-	//	if (openCover <6)
-	//		openCover += (float)(10 * translateLimit*dt);
-	//}
 
 	if (Application::IsKeyPressed('I'))
 		light[0].position.z -= (float)(LSPEED * dt);
@@ -300,8 +288,6 @@ void Scene1tutorial::Update(double dt)
 		light[0].position.y -= (float)(LSPEED * dt);
 	if (Application::IsKeyPressed('P'))
 		light[0].position.y += (float)(LSPEED * dt);
-
-
 
 	if (Application::IsKeyPressed('0'))
 	{
@@ -331,8 +317,6 @@ void Scene1tutorial::Update(double dt)
 	if (Application::IsKeyPressed('4'))
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	//CamObj->Position = camera.position;
-	//CamObj->updateCurPos();
 	player->Position = camera.position;
 	player->updateCurPos();
 
@@ -349,21 +333,6 @@ void Scene1tutorial::Update(double dt)
 	}
 	
 	//Run checker
-	 
-
-	//for (int i = 0; i < 2; ++i)
-	//{
-	//	/*if (Keys[i] && player->trigger(Keys[i]))
-	//	{
-	//		if (i == 0)
-	//	     	deltaTime = "Press E";
-	//		if (Application::IsKeyPressed('E') && i == 1)
-	//		{
-	//			Keys[1]->SetCollected(true);
-	//			break;
-	//		}
-	//	}*/
-	//}
 
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
@@ -566,165 +535,165 @@ void Scene1tutorial::RenderWall()
 		RenderMesh(meshList[GEO_ROCKWALL], true);
 		modelStack.PopMatrix();
 
-		//TURRETS_1
-		modelStack.PushMatrix();
-		modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
-		modelStack.Rotate(turret[1]->RotateToPlayer(camera.position), 0, 1, 0);
-		modelStack.Scale(3, 3, 3);
-		RenderMesh(meshList[GEO_TURRETHEAD_2], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(turret[5]->Position.x, turret[5]->Position.y, turret[5]->Position.z);
-		modelStack.Scale(3, 3, 3);
-		RenderMesh(meshList[GEO_TURRETBODY_2], true);
-		modelStack.PopMatrix();
-
-		if (bullet[1]->shoot)
-		{
-			modelStack.PushMatrix();
-			modelStack.Translate(bullet[1]->Position.x, bullet[1]->Position.y, bullet[1]->Position.z);
-			modelStack.Rotate(bullet[1]->rotation, 0, 1, 0);
-			RenderMesh(meshList[GEO_BULLET], false);
-			modelStack.PopMatrix();
-		}
-
-		modelStack.PushMatrix();
-		modelStack.Translate(Keys[2]->Position.x, Keys[2]->Position.y, Keys[2]->Position.z);
-		modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
-		RenderMesh(meshList[GEO_BATTERY], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(Keys[3]->Position.x, Keys[3]->Position.y, Keys[3]->Position.z);
-		modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
-		RenderMesh(meshList[GEO_BATTERY], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(Keys[4]->Position.x, Keys[4]->Position.y, Keys[4]->Position.z);
-		modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
-		RenderMesh(meshList[GEO_BATTERY], true);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(Keys[5]->Position.x, Keys[5]->Position.y, Keys[5]->Position.z);
-		modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
-		RenderMesh(meshList[GEO_RECOVERY], true);
-		modelStack.PopMatrix();
-}
-
-void Scene1tutorial::skyBox()
-{
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 7.1f, 0);
-	RenderMesh(meshList[GEO_AXES], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
-	RenderMesh(meshList[GEO_LIGHTBALL], false);
-	modelStack.PopMatrix();
-
-	//Bottom
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(camera.position.x, camera.position.y - 498.f, camera.position.z);
-	modelStack.Rotate(90, 0, -1, 0);
-	modelStack.Rotate(90, -1, 0, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
-	RenderMesh(meshList[GEO_BOTTOM], false);
-	modelStack.PopMatrix();
-
-	//Top
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(camera.position.x, camera.position.y + 498.f, camera.position.z);
-	modelStack.Rotate(90, 0, -1, 0);
-	modelStack.Rotate(90, 1, 0, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
-	RenderMesh(meshList[GEO_TOP], false);
-	modelStack.PopMatrix();
-
-	//Front
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(camera.position.x, camera.position.y, camera.position.z - 498.f);
-	//modelStack.Rotate(90, -1, 0, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
-	RenderMesh(meshList[GEO_FRONT], false);
-	modelStack.PopMatrix();
-
-	//Right
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(camera.position.x + 498.f, camera.position.y, camera.position.z);
-	modelStack.Rotate(90, 0, -1, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
-	RenderMesh(meshList[GEO_RIGHT], false);
-	modelStack.PopMatrix();
-
-	//Left
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(camera.position.x - 498.f, camera.position.y, camera.position.z);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
-	RenderMesh(meshList[GEO_LEFT], false);
-	modelStack.PopMatrix();
-
-	//Back
-	modelStack.PushMatrix();
-	//to do: transformation code here
-	modelStack.Translate(camera.position.x, camera.position.y, camera.position.z + 498.f);
-	modelStack.Rotate(180, 0, 1, 0);
-	modelStack.Scale(1000.f, 1000.f, 1000.f);
-	RenderMesh(meshList[GEO_BACK], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(0, 7, 0);
-	modelStack.Rotate(90, -1, 0, 0);
-	modelStack.Scale(1000, 1000, 1000);
-	RenderMesh(meshList[GEO_FLOOR], true);
-	modelStack.PopMatrix();
+//		//TURRETS_1
+//		modelStack.PushMatrix();
+//		modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
+//		modelStack.Rotate(turret[1]->RotateToPlayer(camera.position), 0, 1, 0);
+//		modelStack.Scale(3, 3, 3);
+//		RenderMesh(meshList[GEO_TURRETHEAD_2], true);
+//		modelStack.PopMatrix();
+//
+//		modelStack.PushMatrix();
+//		modelStack.Translate(turret[5]->Position.x, turret[5]->Position.y, turret[5]->Position.z);
+//		modelStack.Scale(3, 3, 3);
+//		RenderMesh(meshList[GEO_TURRETBODY_2], true);
+//		modelStack.PopMatrix();
+//
+//		if (bullet[1]->shoot)
+//		{
+//			modelStack.PushMatrix();
+//			modelStack.Translate(bullet[1]->Position.x, bullet[1]->Position.y, bullet[1]->Position.z);
+//			modelStack.Rotate(bullet[1]->rotation, 0, 1, 0);
+//			RenderMesh(meshList[GEO_BULLET], false);
+//			modelStack.PopMatrix();
+//		}
+//
+//		modelStack.PushMatrix();
+//		modelStack.Translate(Keys[2]->Position.x, Keys[2]->Position.y, Keys[2]->Position.z);
+//		modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
+//		RenderMesh(meshList[GEO_BATTERY], true);
+//		modelStack.PopMatrix();
+//
+//		modelStack.PushMatrix();
+//		modelStack.Translate(Keys[3]->Position.x, Keys[3]->Position.y, Keys[3]->Position.z);
+//		modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
+//		RenderMesh(meshList[GEO_BATTERY], true);
+//		modelStack.PopMatrix();
+//
+//		modelStack.PushMatrix();
+//		modelStack.Translate(Keys[4]->Position.x, Keys[4]->Position.y, Keys[4]->Position.z);
+//		modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
+//		RenderMesh(meshList[GEO_BATTERY], true);
+//		modelStack.PopMatrix();
+//
+//		modelStack.PushMatrix();
+//		modelStack.Translate(Keys[5]->Position.x, Keys[5]->Position.y, Keys[5]->Position.z);
+//		modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
+//		RenderMesh(meshList[GEO_RECOVERY], true);
+//		modelStack.PopMatrix();
+//}
+//
+//void Scene1tutorial::skyBox()
+//{
+//	modelStack.PushMatrix();
+//	modelStack.Translate(0, 7.1f, 0);
+//	RenderMesh(meshList[GEO_AXES], false);
+//	modelStack.PopMatrix();
+//
+//	modelStack.PushMatrix();
+//	modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
+//	RenderMesh(meshList[GEO_LIGHTBALL], false);
+//	modelStack.PopMatrix();
+//
+//	//Bottom
+//	modelStack.PushMatrix();
+//	//to do: transformation code here
+//	modelStack.Translate(camera.position.x, camera.position.y - 498.f, camera.position.z);
+//	modelStack.Rotate(90, 0, -1, 0);
+//	modelStack.Rotate(90, -1, 0, 0);
+//	modelStack.Scale(1000.f, 1000.f, 1000.f);
+//	RenderMesh(meshList[GEO_BOTTOM], false);
+//	modelStack.PopMatrix();
+//
+//	//Top
+//	modelStack.PushMatrix();
+//	//to do: transformation code here
+//	modelStack.Translate(camera.position.x, camera.position.y + 498.f, camera.position.z);
+//	modelStack.Rotate(90, 0, -1, 0);
+//	modelStack.Rotate(90, 1, 0, 0);
+//	modelStack.Scale(1000.f, 1000.f, 1000.f);
+//	RenderMesh(meshList[GEO_TOP], false);
+//	modelStack.PopMatrix();
+//
+//	//Front
+//	modelStack.PushMatrix();
+//	//to do: transformation code here
+//	modelStack.Translate(camera.position.x, camera.position.y, camera.position.z - 498.f);
+//	//modelStack.Rotate(90, -1, 0, 0);
+//	modelStack.Scale(1000.f, 1000.f, 1000.f);
+//	RenderMesh(meshList[GEO_FRONT], false);
+//	modelStack.PopMatrix();
+//
+//	//Right
+//	modelStack.PushMatrix();
+//	//to do: transformation code here
+//	modelStack.Translate(camera.position.x + 498.f, camera.position.y, camera.position.z);
+//	modelStack.Rotate(90, 0, -1, 0);
+//	modelStack.Scale(1000.f, 1000.f, 1000.f);
+//	RenderMesh(meshList[GEO_RIGHT], false);
+//	modelStack.PopMatrix();
+//
+//	//Left
+//	modelStack.PushMatrix();
+//	//to do: transformation code here
+//	modelStack.Translate(camera.position.x - 498.f, camera.position.y, camera.position.z);
+//	modelStack.Rotate(90, 0, 1, 0);
+//	modelStack.Scale(1000.f, 1000.f, 1000.f);
+//	RenderMesh(meshList[GEO_LEFT], false);
+//	modelStack.PopMatrix();
+//
+//	//Back
+//	modelStack.PushMatrix();
+//	//to do: transformation code here
+//	modelStack.Translate(camera.position.x, camera.position.y, camera.position.z + 498.f);
+//	modelStack.Rotate(180, 0, 1, 0);
+//	modelStack.Scale(1000.f, 1000.f, 1000.f);
+//	RenderMesh(meshList[GEO_BACK], false);
+//	modelStack.PopMatrix();
+//
+//	modelStack.PushMatrix();
+//	modelStack.Translate(0, 7, 0);
+//	modelStack.Rotate(90, -1, 0, 0);
+//	modelStack.Scale(1000, 1000, 1000);
+//	RenderMesh(meshList[GEO_FLOOR], true);
+//	modelStack.PopMatrix();
 }
 
 void Scene1tutorial::RenderObjects()
 {
-	modelStack.PushMatrix();
-	modelStack.Translate(20, 8, 40);;
-	modelStack.Scale(2.5, 2.5, 2.5);
-	modelStack.Rotate(rotateAngle, 0, 1, 0);
-	RenderMesh(meshList[GEO_BLUEKEYCARD], true);
-	modelStack.PopMatrix();
-	
-	modelStack.PushMatrix();
-	modelStack.Translate(-40, 7, -20);
-	modelStack.Scale(0.5, 0.5, 0.5);
-	modelStack.Rotate(270, 0, 1, 0);
-	RenderMesh(meshList[GEO_VENDINGBODY], true);
-	modelStack.PushMatrix();
-	RenderMesh(meshList[GEO_VENDINGCOVER], true);
-	modelStack.PopMatrix();
-	modelStack.PopMatrix();
+	//modelStack.PushMatrix();
+	//modelStack.Translate(20, 8, 40);;
+	//modelStack.Scale(2.5, 2.5, 2.5);
+	//modelStack.Rotate(rotateAngle, 0, 1, 0);
+	//RenderMesh(meshList[GEO_BLUEKEYCARD], true);
+	//modelStack.PopMatrix();
+	//
+	//modelStack.PushMatrix();
+	//modelStack.Translate(-40, 7, -20);
+	//modelStack.Scale(0.5, 0.5, 0.5);
+	//modelStack.Rotate(270, 0, 1, 0);
+	//RenderMesh(meshList[GEO_VENDINGBODY], true);
+	//modelStack.PushMatrix();
+	//RenderMesh(meshList[GEO_VENDINGCOVER], true);
+	//modelStack.PopMatrix();
+	//modelStack.PopMatrix();
 
-	//TURRETS
-	meshList[GEO_TURRETHEAD_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_head.obj");
-	meshList[GEO_TURRETHEAD_2]->textureID = LoadTGA("Image//Enemy//Turret_Head.tga");
-	meshList[GEO_TURRETBODY_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_body.obj");
-	meshList[GEO_TURRETBODY_2]->textureID = LoadTGA("Image//Enemy//Turret_Body.tga");
-	turret[5] = new Enemy("Turret", Vector3(300, 0, 300));
-	turret[5]->setCollider(10, 10);
-	turret[5]->updateCurPos();
-	turret[1] = new Enemy("Turret", Vector3(300, 0, 300));
+	////TURRETS
+	//meshList[GEO_TURRETHEAD_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_head.obj");
+	//meshList[GEO_TURRETHEAD_2]->textureID = LoadTGA("Image//Enemy//Turret_Head.tga");
+	//meshList[GEO_TURRETBODY_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_body.obj");
+	//meshList[GEO_TURRETBODY_2]->textureID = LoadTGA("Image//Enemy//Turret_Body.tga");
+	//turret[2] = new Enemy("Turret", Vector3(300, 0, 300));
+	//turret[2]->setCollider(10, 10);
+	//turret[2]->updateCurPos();
+	//turret[3] = new Enemy("Turret", Vector3(300, 0, 300));
 
-	//Bullets
-	meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Bullet", "OBJ//Enemy//Bullet.obj");
-	meshList[GEO_BULLET]->textureID = LoadTGA("Image//Enemy//Bullet.tga");
-	bullet[1] = new Bullet("Bullet_1", Vector3(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z));
-	bullet[1]->setCollider(5, 5);
-	bullet[1]->updateCurPos();
+	////Bullets
+	//meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Bullet", "OBJ//Enemy//Bullet.obj");
+	//meshList[GEO_BULLET]->textureID = LoadTGA("Image//Enemy//Bullet.tga");
+	//bullet[1] = new Bullet("Bullet_1", Vector3(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z));
+	//bullet[1]->setCollider(5, 5);
+	//bullet[1]->updateCurPos();
 }
 
 void Scene1tutorial::Render()
@@ -775,99 +744,6 @@ void Scene1tutorial::Render()
 	////No transform needed
 	//RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
 	//-------------------------------------------------------------------------------------
-
-	for (size_t i = 0; i < clipSize; i++)
-	{
-		if (lasergun->pBullet[i]->shot() == true)
-		{
-			modelStack.PushMatrix();
-			//modelStack.Translate(-2.f, -.8f, 2.f); //Pos of cur gun
-
-			modelStack.Translate(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z); //Forward trnaslate
-			//modelStack.Translate(lasergun->Position.x, lasergun->Position.y, lasergun->Position.z);
-			modelStack.Scale(0.5f, 0.5f, 0.5f);
-			RenderMesh(meshList[GEO_PBULLET], true);
-			modelStack.PopMatrix();
-		}
-	}
-	//Test gun
-	modelStack.PushMatrix();
-	modelStack.LoadMatrix(lasergun->rotateGunToCamera(camera.position, camera.up, camera.target)); //Parent to cam
-	glDisable(GL_DEPTH_TEST); //Gun forever renders
-	glDisable(GL_CULL_FACE);
-	modelStack.Translate(lasergun->Position.x, lasergun->Position.y, lasergun->Position.z); //Translate to a proper position
-	modelStack.Rotate(180, 0, 1, 0); //Gun is inverted
-	RenderMesh(meshList[GEO_BLASTER], true);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	modelStack.PopMatrix();
-
-	RenderMeshOnScreen(meshList[GEO_HEALTHBG], 15, 5, 30, 30, false);
-	RenderMeshOnScreen(meshList[GEO_HEALTH], 8.f, 5, HPsizeX, 30, true);
-	RenderMeshOnScreen(meshList[GEO_STAMINA], 8.1f, 5, camera.test2, 30, true);
-	RenderMeshOnScreen(meshList[GEO_AMMOBG], 65, 10, 30, 30, false);
-
-	RenderTextOnScreen(meshList[GEO_TEXT], clipCount, Color(0, 1, 0), 5, 58, 5);
-	RenderTextOnScreen(meshList[GEO_TEXT], ammoLeft, Color(0, 1, 0), 3, 65.5f, 0.5f);
-
-	RenderMeshOnScreen(meshList[GEO_BOSSTESTBG], 40, 55, test2, 30, false);
-	RenderMeshOnScreen(meshList[GEO_BOSSTEST], 40, 55, test3, 30, false);
-
-	modelStack.PushMatrix();
-	modelStack.Translate(turret[5]->Position.x, turret[5]->Position.y, turret[5]->Position.z);
-	modelStack.Rotate(turret[5]->RotateToPlayer(camera.position), 0, 1, 0);
-	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[GEO_ROBOBODY], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(turret[6]->Position.x, turret[6]->Position.y, turret[6]->Position.z);
-	modelStack.Rotate(turret[6]->RotateToPlayer(camera.position), 0, 1, 0);
-	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[GEO_ROBOARMS], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(turret[7]->Position.x, turret[7]->Position.y, turret[7]->Position.z);
-	modelStack.Rotate(turret[7]->RotateToPlayer(camera.position), 0, 1, 0);
-	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[GEO_ROBOLOCKED], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(turret[8]->Position.x, turret[8]->Position.y, turret[8]->Position.z);
-	modelStack.Rotate(turret[8]->RotateToPlayer(camera.position), 0, 1, 0);
-	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[GEO_ROBOARMSLOCKED], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(turret[9]->Position.x, turret[9]->Position.y, turret[9]->Position.z);
-	modelStack.Rotate(turret[9]->RotateToPlayer(camera.position), 0, 1, 0);
-	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[GEO_ROBOLOCKED], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(turret[10]->Position.x, turret[10]->Position.y, turret[10]->Position.z);
-	modelStack.Rotate(turret[10]->RotateToPlayer(camera.position), 0, 1, 0);
-	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[GEO_ROBOARMSLOCKED], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(turret[11]->Position.x, turret[11]->Position.y, turret[11]->Position.z);
-	modelStack.Rotate(turret[11]->RotateToPlayer(camera.position), 0, 1, 0);
-	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[GEO_ROBOLOCKED], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(turret[12]->Position.x, turret[12]->Position.y, turret[12]->Position.z);
-	modelStack.Rotate(turret[12]->RotateToPlayer(camera.position), 0, 1, 0);
-	modelStack.Scale(5, 5, 5);
-	RenderMesh(meshList[GEO_ROBOARMSLOCKED], false);
-	modelStack.PopMatrix();
 }
 
 void Scene1tutorial::RenderMesh(Mesh *mesh, bool enableLight)
@@ -958,29 +834,29 @@ void Scene1tutorial::RenderTextOnScreen(Mesh* mesh, std::string text, Color colo
 	modelStack.Translate(x, y, 0);
 
 
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
-	glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
-	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
-	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
-	for (unsigned i = 0; i < text.length(); ++i)
-	{
-		Mtx44 characterSpacing;
-		characterSpacing.SetToTranslation(i + 1.f * .7f, 1, 0); //1.0f is the spacing of each character, you may change this value
-		Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
-		glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+	//glUniform1i(m_parameters[U_TEXT_ENABLED], 1);
+	//glUniform3fv(m_parameters[U_TEXT_COLOR], 1, &color.r);
+	//glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+	//glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+	//glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+	//for (unsigned i = 0; i < text.length(); ++i)
+	//{
+	//	Mtx44 characterSpacing;
+	//	characterSpacing.SetToTranslation(i + 1.f * .7f, 1, 0); //1.0f is the spacing of each character, you may change this value
+	//	Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top() * characterSpacing;
+	//	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
 
-		mesh->Render((unsigned)text[i] * 6, 6);
-	}
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
+	//	mesh->Render((unsigned)text[i] * 6, 6);
+	//}
+	//glBindTexture(GL_TEXTURE_2D, 0);
+	//glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
 
-	//Add these code just before glEnable(GL_DEPTH_TEST);
-	projectionStack.PopMatrix();
-	viewStack.PopMatrix();
-	modelStack.PopMatrix();
+	////Add these code just before glEnable(GL_DEPTH_TEST);
+	//projectionStack.PopMatrix();
+	//viewStack.PopMatrix();
+	//modelStack.PopMatrix();
 
 	glEnable(GL_DEPTH_TEST);
 }
