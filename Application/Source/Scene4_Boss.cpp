@@ -22,7 +22,6 @@ Scene4_Boss::~Scene4_Boss()
 
 void Scene4_Boss::Init()
 {
-	//m_programID = SceneManager::instance()->returnProg();
 	// Init VBO here
 	rotateAngle = 0;
 	scaleAll = 2;
@@ -68,7 +67,6 @@ void Scene4_Boss::Init()
 	}
 	Keys[1] = 0;
 	TriggerBox[0] = 0;
-
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
 	meshList[GEO_FRONT] = MeshBuilder::GenerateQuad("front", Color(1, 1, 1), 1.f, 1.f);
@@ -567,10 +565,10 @@ void Scene4_Boss::skyBox()
 {
 	RenderMesh(meshList[GEO_AXES], false);
 
-	modelStack.PushMatrix();
+	/*modelStack.PushMatrix();
 	modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
 	RenderMesh(meshList[GEO_LIGHTBALL], false);
-	modelStack.PopMatrix();
+	modelStack.PopMatrix();*/
 
 	//Bottom
 	modelStack.PushMatrix();

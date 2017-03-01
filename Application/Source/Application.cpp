@@ -21,6 +21,7 @@
 #include "GameOver.h"
 #include "Credits.h"
 #include "tutorialScene.h"
+#include "Win.h"
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
@@ -122,6 +123,7 @@ void Application::Run()
 	//SceneManager::instance()->addScene(new ChuanXu);
 	SceneManager::instance()->addScene(new Scene4_Boss);
 	SceneManager::instance()->addScene(new GameOver);
+	SceneManager::instance()->addScene(new Win);
 	SceneManager::instance()->addScene(new Credits);
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
 

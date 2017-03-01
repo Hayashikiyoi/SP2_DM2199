@@ -13,6 +13,7 @@ using namespace Math;
 
 SceneGameOver::SceneGameOver()
 {
+	m_programID = SceneManager::instance()->returnProg();
 }
 
 SceneGameOver::~SceneGameOver()
@@ -73,7 +74,6 @@ void SceneGameOver::Init()
 	meshList[GEO_TEXT_2]->textureID = LoadTGA("Image//ocrastd.tga");
 
 	//Load vertex and fragment shaders
-	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
 
 	// Get a handle for our "colorTexture" uniform

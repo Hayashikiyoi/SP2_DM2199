@@ -118,6 +118,7 @@
     <ClCompile Include="Source\Utility.cpp" />
     <ClCompile Include="Source\Weapon.cpp" />
     <ClCompile Include="Source\Wilson.cpp" />
+    <ClCompile Include="Source\Win.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Aloy_Scene.h" />
@@ -159,6 +160,7 @@
     <ClInclude Include="Source\Vertex.h" />
     <ClInclude Include="Source\Weapon.h" />
     <ClInclude Include="Source\Wilson.h" />
+    <ClInclude Include="Source\Win.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shader\SimpleFragmentShader.fragmentshader" />

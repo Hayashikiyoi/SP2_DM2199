@@ -13,6 +13,7 @@ using namespace Math;
 
 GameOver::GameOver()
 {
+	m_programID = SceneManager::instance()->returnProg();
 }
 
 GameOver::~GameOver()
@@ -48,7 +49,7 @@ void GameOver::Init()
 	GenerateGameOver();
 
 	//Load vertex and fragment shaders
-	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
+	//m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
 	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
 	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
