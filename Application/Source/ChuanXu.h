@@ -104,6 +104,7 @@ private:
 	GameObject* TriggerBox[1];
 	Enemy* SimpleEnemy[2];
 	
+	float triggerCount = 0;
 	float rotateAngle = 0;
 	float DelayTimer=0;
 	void RenderWalls();
