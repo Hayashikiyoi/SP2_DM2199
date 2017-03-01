@@ -22,7 +22,7 @@ Scene4_Boss::~Scene4_Boss()
 
 void Scene4_Boss::Init()
 {
-	m_programID = SceneManager::instance()->returnProg();
+	//m_programID = SceneManager::instance()->returnProg();
 	// Init VBO here
 	rotateAngle = 0;
 	scaleAll = 2;
@@ -96,7 +96,7 @@ void Scene4_Boss::Init()
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
 
 
-	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
+	//meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
 
 	GUI();
 	GenerateOBJ();

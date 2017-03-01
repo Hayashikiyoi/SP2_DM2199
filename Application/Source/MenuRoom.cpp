@@ -13,7 +13,7 @@ using namespace Math;
 
 Menu_Room::Menu_Room()
 {
-	/*m_programID = (SceneManager::instance()->programID);*/
+	m_programID = (SceneManager::instance()->returnProg());
 }
 
 Menu_Room::~Menu_Room()
@@ -54,7 +54,7 @@ void Menu_Room::Init()
 	GenerateOBJ();
 
 	//Load vertex and fragment shaders
-	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
+	//m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
 	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
 	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
