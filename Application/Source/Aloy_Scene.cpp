@@ -13,6 +13,7 @@ using namespace Math;
 
 Aloy_Scene::Aloy_Scene()
 {
+	m_programID = SceneManager::instance()->programID;
 }
 
 Aloy_Scene::~Aloy_Scene()
@@ -83,7 +84,7 @@ void Aloy_Scene::Init()
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
 
 	//Load vertex and fragment shaders
-	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
+	//m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
 
 	// Get a handle for our "colorTexture" uniform
