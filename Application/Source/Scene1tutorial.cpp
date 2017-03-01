@@ -41,6 +41,7 @@ void Scene1tutorial::Init()
 	//Initialise camera
 	camera.Init(Vector3(-30, 30, 40), Vector3(0, 0, -10), Vector3(0, 1, 0));
 	player = new Player("camera", Vector3(40, 30, 30));
+	lasergun = new Weapon("Blaster", Vector3(-0.12f, -0.750, 2), 100);
 
 	//Set background color to dark blue
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -54,7 +55,7 @@ void Scene1tutorial::Init()
 	    meshList[i] = NULL;
 		object[i] = NULL;
 		VendingMachine[i] = NULL;
-		Doors[i] = NULL;
+		//Doors[i] = NULL;
 	}
 
 	CamObj = new GameObject("camera", Vector3(0, 0, 0));
@@ -966,6 +967,10 @@ void Scene1tutorial::Exit()
 			delete meshList[i];
 		if (VendingMachine[i] != NULL)
 			delete VendingMachine[i];
+	}
+
+	for (int i = 0; i < 6; ++i)
+	{
 		if (Keys[i] != NULL)
 			delete Keys[i];
 	}
