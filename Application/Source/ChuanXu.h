@@ -103,7 +103,6 @@ private:
 	GameObject * WallsObj[Walls];
 	GameObject* TriggerBox[1];
 	Enemy* SimpleEnemy[2];
-	
 	float rotateAngle = 0;
 	float DelayTimer=0;
 	void RenderWalls();

@@ -25,7 +25,7 @@ void ChuanXu::Init()
 	delayTime = 0;
 
 	// Init VBO here
-
+	startLevel = false;
 	lightEnable = true;
 
 
@@ -37,7 +37,7 @@ void ChuanXu::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Initialise camera
-	camera.Init(Vector3(90, 30, 0), Vector3(0, -20, -210), Vector3(0, 1, 0));
+	camera.Init(Vector3(90, 30, 0), Vector3(0, -20, -125), Vector3(0, 1, 0));
 	player = new Player("camera", Vector3(40, 30, 30));
 	lasergun = new Weapon("Blaster", Vector3(-0.12f, -0.750, 2), 100);
 
@@ -68,7 +68,7 @@ void ChuanXu::Init()
 		SimpleEnemy[i] = NULL;
 	}
 
-	TriggerBox[1] = NULL;
+	TriggerBox[0] = NULL;
 
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
@@ -99,6 +99,9 @@ void ChuanXu::Init()
 	GenerateObj();
 	meshList[GEO_PBULLET] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//Player_Bullet.obj");
 	meshList[GEO_PBULLET]->textureID = LoadTGA("Image//Player//Player_Bullet.tga");
+	meshList[GEO_EXPLANATIONS] = MeshBuilder::GenerateQuad("Explanations", Color(1, 1, 1), 1, 1);
+	meshList[GEO_EXPLANATIONS]->textureID = LoadTGA("Image//CX_Scene//Level_2.tga");
+
 
 	GenerateObj();
 
@@ -348,9 +351,9 @@ void ChuanXu::GenerateObj()
 
 	//End point
 	meshList[GEO_END] = MeshBuilder::GenerateQuad("End of maze", Color(1, 1, 1), 10, 10);
-	TriggerBox[1] = new GameObject("End", Vector3(-74, 2, 20));
-	TriggerBox[1]->setCollider(4, 26);
-	TriggerBox[1]->updateCurPos();
+	TriggerBox[0] = new GameObject("End", Vector3(-74, 2, 20));
+	TriggerBox[0]->setCollider(4, 26);
+	TriggerBox[0]->updateCurPos();
 }
 
 void ChuanXu::RenderMaze() // Maze walls,end point and healthpacks
@@ -362,7 +365,7 @@ void ChuanXu::RenderMaze() // Maze walls,end point and healthpacks
 		modelStack.Translate(SimpleEnemy[0]->Position.x, SimpleEnemy[0]->Position.y, SimpleEnemy[0]->Position.z);
 		modelStack.Rotate(SimpleEnemy[0]->RotateToPlayer(player->Position), 0, 1, 0);
 		modelStack.Scale(4, 4, 4);
-		RenderMesh(meshList[GEO_SIMPLEENEMY], true);
+		RenderMesh(meshList[GEO_SIMPLEENEMY], false);
 		modelStack.PopMatrix();
 	}
 	if (!SimpleEnemy[1]->isdead())
@@ -371,7 +374,7 @@ void ChuanXu::RenderMaze() // Maze walls,end point and healthpacks
 		modelStack.Translate(SimpleEnemy[1]->Position.x, SimpleEnemy[1]->Position.y, SimpleEnemy[1]->Position.z);
 		modelStack.Rotate(SimpleEnemy[1]->RotateToPlayer(player->Position), 0, 1, 0);
 		modelStack.Scale(4, 4, 4);
-		RenderMesh(meshList[GEO_SIMPLEENEMY], true);
+		RenderMesh(meshList[GEO_SIMPLEENEMY], false);
 		modelStack.PopMatrix();
 	}
 
@@ -602,7 +605,7 @@ void ChuanXu::RenderMaze() // Maze walls,end point and healthpacks
 
 	//endpoint
 	modelStack.PushMatrix();
-	modelStack.Translate(TriggerBox[1]->Position.x, TriggerBox[1]->Position.y, TriggerBox[1]->Position.z);
+	modelStack.Translate(TriggerBox[0]->Position.x, TriggerBox[0]->Position.y, TriggerBox[0]->Position.z);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(1.5, 2, 1.5);
 	RenderMesh(meshList[GEO_END], false);
@@ -620,18 +623,18 @@ void ChuanXu::Update(double dt)
 	static bool shoot = false;
 	static bool smtHappen1= false ;
 	static bool smtHappen2 = false;
-	static bool startLevel = false;
+	//static bool startLevel = false;
 
 	HPsizeX = player->getHealth()*0.215;
 	delayTime += (float)dt;
 	rotateAngle += (float)(10 * dt);
 
-	if (delayTime > 2)
+	if (delayTime > 3 && startLevel)
 	{
 		player->DmgPlayer(5);
 		delayTime = 0;
 	}
-	else if (delayTime < 2)
+	else if (delayTime < 3)
 	{
 		delayTime += (float)dt;
 	}
@@ -645,6 +648,10 @@ void ChuanXu::Update(double dt)
 	{
 		lasergun->shoot(&camera);
 		shoot = true;
+	}
+	if (Application::IsKeyPressed('K'))
+	{
+		startLevel = true;
 	}
 	if (shoot)
 	{
@@ -660,14 +667,14 @@ void ChuanXu::Update(double dt)
 	if (smtHappen1 || smtHappen2 )
 	{
 		time += dt;
-		if (time > 2)
+		if (time > 0.5)
 		{
 			time = 0;
 			smtHappen1 = false;
 			smtHappen2 = false;
 		}
 	}
-
+	
 
 	//Cull back face
 	if (Application::IsKeyPressed('1'))
@@ -712,19 +719,17 @@ void ChuanXu::Update(double dt)
 	{
 		if (lasergun->pBullet[i] && SimpleEnemy[0] && SimpleEnemy[0]->trigger(lasergun->pBullet[i]) && !smtHappen1)
 		{
-			SimpleEnemy[0]->dmgToEnemy(5);
+			SimpleEnemy[0]->dmgToEnemy(20);
 			smtHappen1 = true;
 			break;
 		}
 		if (lasergun->pBullet[i] && SimpleEnemy[1] && SimpleEnemy[1]->trigger(lasergun->pBullet[i]) && !smtHappen2)
 		{
-			SimpleEnemy[2]->dmgToEnemy(5);
+			SimpleEnemy[1]->dmgToEnemy(20);
 			smtHappen2 = true;
 			break;
 		}
-
 	}
-
 
 	for (int i = 0; i < 2; i++)
 	{
@@ -738,7 +743,7 @@ void ChuanXu::Update(double dt)
 	}
 
 
-	if (TriggerBox[1] && player->trigger(TriggerBox[1]))
+	if (TriggerBox[0] && player->trigger(TriggerBox[0]))
 	{
 		SceneManager::instance()->levelCompleted = 2;
 		SceneManager::instance()->changeScene(2);
@@ -760,9 +765,11 @@ void ChuanXu::Update(double dt)
 	}
 
 
-
-	camera.Update(dt);
 	lasergun->updateBullet(dt);
+	if (startLevel)
+	{
+		camera.Update(dt);
+	}
 }
 
 void ChuanXu::RenderWalls()
@@ -867,6 +874,11 @@ void ChuanXu::Render()
 
 	 RenderTextOnScreen(meshList[GEO_TEXT], clipCount, (0, 1, 0), 5, 11.7, 1.1);
 	 RenderTextOnScreen(meshList[GEO_TEXT], AmmoLeft, (0, 1, 0), 3, 21.7, 0.2f);
+
+	 if (!startLevel)
+	 {
+		 RenderMeshOnScreen(meshList[GEO_EXPLANATIONS], 40, 30, 60, 60, false);
+	 }
 }
 
 void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)
