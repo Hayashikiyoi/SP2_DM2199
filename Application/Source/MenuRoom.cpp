@@ -162,11 +162,6 @@ void Menu_Room::Update(double dt)
 	turret[25]->updateCurPos();
 	TriggerBox[13]->updateCurPos();
 
-	/*turret[26]->Position.x += 25 * (float)dt *MovingX;
-	TriggerBox[14]->Position.x = turret[26]->Position.x;
-	turret[26]->updateCurPos();
-	TriggerBox[14]->updateCurPos();*/
-
 	if (turret[20]->Position.x > 50)
 	{
 		MovingX = -1;
@@ -176,7 +171,7 @@ void Menu_Room::Update(double dt)
 		MovingX = 1;
 	}
 
-	for (int i = 8; i < 15; i++){
+	for (int i = 8; i < 16; i++){
 		if (TriggerBox[i] && player->trigger(TriggerBox[i]))
 		{
 			if (Application::IsKeyPressed('E'))
@@ -188,6 +183,11 @@ void Menu_Room::Update(double dt)
 			{
 				deltaTime = "I love spinning";
 				chatTime = 0;
+			}
+			if (i == 15 && Application::IsKeyPressed('E'))
+			{
+				SceneManager::instance()->changeScene(6);
+				return;
 			}
 		}
 		
@@ -312,7 +312,7 @@ void Menu_Room::Update(double dt)
 			}
 			if (i == 3 && i == SceneManager::instance()->levelCompleted)
 				deltaTime = "Press E: Talk";
-			if (Application::IsKeyPressed('E') && i >= 0 && i <= 2 && i <= SceneManager::instance()->levelCompleted)
+			if (Application::IsKeyPressed('E') && i >= 0 && i <= 1 && i <= SceneManager::instance()->levelCompleted)
 				deltaTime = "go to the gate now";
 			/*if (i == 3)
 				deltaTime = "Press E: Level_3";
@@ -320,7 +320,7 @@ void Menu_Room::Update(double dt)
 				SceneManager::instance()->changeScene(6);*/
 			if (i == 4)
 				deltaTime = "Press E: Unlock";
-			if (Application::IsKeyPressed('E') && i == 3 && SceneManager::instance()->levelCompleted  == 3)
+			if (Application::IsKeyPressed('E') && i ==4 && SceneManager::instance()->levelCompleted  == 2)
 			{
 				openDoor = true;
 			}
@@ -351,12 +351,12 @@ void Menu_Room::Update(double dt)
 	if (Application::IsKeyPressed(VK_LBUTTON) && !shoot)
 	{
 		lasergun->shoot(&camera);
-		//SceneManager::instance()->levelCompleted += 1; //Put here to test working drawBridge
+		SceneManager::instance()->levelCompleted += 1; //Put here to test working drawBridge
 		shoot = true;
 	}
 	if (Application::IsKeyPressed('T'))
 	{
-		//SceneManager::instance()->levelCompleted = 0;
+		SceneManager::instance()->levelCompleted = 0;
 		lasergun->reload();
 	}
 	if (Application::IsKeyPressed('F'))
@@ -621,6 +621,10 @@ void Menu_Room::GenerateOBJ()
 	turret[13] = new Enemy("Robot", Vector3(0, 0, 400));
 	turret[13]->setCollider(10, 10);
 	turret[13]->updateCurPos();
+	TriggerBox[15] = new GameObject("Robot", Vector3(0,0,400));
+	TriggerBox[15]->setCollider(20,20);
+	TriggerBox[15]->updateCurPos();
+
 
 	//Doors
 	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//Door//Door_Test_4.obj");
@@ -1255,7 +1259,7 @@ void Menu_Room::Exit()
 		if (object[i] != 0)
 			delete object[i];
 	}
-	for (int i = 0; i < 15; ++i)
+	for (int i = 0; i < 16; ++i)
 	{
 		if (TriggerBox[i] != 0)
 			delete TriggerBox[i];
