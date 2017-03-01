@@ -18,7 +18,7 @@ using std::string;
 #include "Player.h"
 #include "Weapon.h"
 #undef numOfEnemy
-#define numOfEnemy 30
+#define numOfEnemy 31
 
 class Menu_Room : public Scene
 {
