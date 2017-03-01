@@ -25,7 +25,7 @@ void ChuanXu::Init()
 	delayTime = 0;
 
 	// Init VBO here
-
+	startLevel = false;
 	lightEnable = true;
 
 
@@ -37,7 +37,7 @@ void ChuanXu::Init()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	//Initialise camera
-	camera.Init(Vector3(90, 30, 0), Vector3(0, -20, -210), Vector3(0, 1, 0));
+	camera.Init(Vector3(90, 30, 0), Vector3(0, -20, -125), Vector3(0, 1, 0));
 	player = new Player("camera", Vector3(40, 30, 30));
 	lasergun = new Weapon("Blaster", Vector3(-0.12f, -0.750, 2), 100);
 
@@ -99,6 +99,9 @@ void ChuanXu::Init()
 	GenerateObj();
 	meshList[GEO_PBULLET] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//Player_Bullet.obj");
 	meshList[GEO_PBULLET]->textureID = LoadTGA("Image//Player//Player_Bullet.tga");
+	meshList[GEO_EXPLANATIONS] = MeshBuilder::GenerateQuad("Explanations", Color(1, 1, 1), 1, 1);
+	meshList[GEO_EXPLANATIONS]->textureID = LoadTGA("Image//CX_Scene//Level_2.tga");
+
 
 	GenerateObj();
 
@@ -620,18 +623,18 @@ void ChuanXu::Update(double dt)
 	static bool shoot = false;
 	static bool smtHappen1= false ;
 	static bool smtHappen2 = false;
-	static bool startLevel = false;
+	//static bool startLevel = false;
 
 	HPsizeX = player->getHealth()*0.215;
 	delayTime += (float)dt;
 	rotateAngle += (float)(10 * dt);
 
-	if (delayTime > 2)
+	if (delayTime > 3 && startLevel)
 	{
 		player->DmgPlayer(5);
 		delayTime = 0;
 	}
-	else if (delayTime < 2)
+	else if (delayTime < 3)
 	{
 		delayTime += (float)dt;
 	}
@@ -645,6 +648,10 @@ void ChuanXu::Update(double dt)
 	{
 		lasergun->shoot(&camera);
 		shoot = true;
+	}
+	if (Application::IsKeyPressed('K'))
+	{
+		startLevel = true;
 	}
 	if (shoot)
 	{
@@ -713,7 +720,6 @@ void ChuanXu::Update(double dt)
 		if (lasergun->pBullet[i] && SimpleEnemy[0] && SimpleEnemy[0]->trigger(lasergun->pBullet[i]) && !smtHappen1)
 		{
 			SimpleEnemy[0]->dmgToEnemy(20);
-			triggerCount++;
 			smtHappen1 = true;
 			break;
 		}
@@ -760,8 +766,10 @@ void ChuanXu::Update(double dt)
 
 
 	lasergun->updateBullet(dt);
-	camera.Update(dt);
-	
+	if (startLevel)
+	{
+		camera.Update(dt);
+	}
 }
 
 void ChuanXu::RenderWalls()
@@ -866,7 +874,11 @@ void ChuanXu::Render()
 
 	 RenderTextOnScreen(meshList[GEO_TEXT], clipCount, (0, 1, 0), 5, 11.7, 1.1);
 	 RenderTextOnScreen(meshList[GEO_TEXT], AmmoLeft, (0, 1, 0), 3, 21.7, 0.2f);
-	 RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(triggerCount), Color(1, 0, 0), 5, 5, 5);
+
+	 if (!startLevel)
+	 {
+		 RenderMeshOnScreen(meshList[GEO_EXPLANATIONS], 40, 30, 60, 60, false);
+	 }
 }
 
 void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)
