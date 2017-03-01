@@ -107,6 +107,7 @@ class Menu_Room : public Scene
 		GEO_BOSSTESTBG,
 		GEO_BOSSTEST,
 		GEO_CODEBLOCK,
+		GEO_DEBRIS,
 		NUM_GEOMETRY,
 	};
 

@@ -152,6 +152,21 @@ void Menu_Room::Update(double dt)
 	turret[22]->updateCurPos();
 	TriggerBox[10]->updateCurPos();
 
+	turret[24]->Position.x += 25 * (float)dt *MovingX;
+	TriggerBox[12]->Position.x = turret[23]->Position.x;
+	turret[24]->updateCurPos();
+	TriggerBox[12]->updateCurPos();
+
+	turret[25]->Position.x += 25 * (float)dt *MovingX;
+	TriggerBox[13]->Position.x = turret[25]->Position.x;
+	turret[25]->updateCurPos();
+	TriggerBox[13]->updateCurPos();
+
+	/*turret[26]->Position.x += 25 * (float)dt *MovingX;
+	TriggerBox[14]->Position.x = turret[26]->Position.x;
+	turret[26]->updateCurPos();
+	TriggerBox[14]->updateCurPos();*/
+
 	if (turret[20]->Position.x > 50)
 	{
 		MovingX = -1;
@@ -366,7 +381,7 @@ void Menu_Room::Render()
 		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
 		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
 	}
-	else if (light[0].type == Light::LIGHT_SPOT)
+	/*else if (light[0].type == Light::LIGHT_SPOT)
 	{
 		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
 		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
@@ -377,7 +392,7 @@ void Menu_Room::Render()
 	{
 		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
 		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
+	}*/
 
 	//Initialize
 	Mtx44 MVP;
@@ -397,6 +412,30 @@ void Menu_Room::Render()
 	EnemyField();
 	DrawBridge();
 	BridgeGate();
+	
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[27]->Position.x, turret[27]->Position.y, turret[27]->Position.z);
+	modelStack.Scale(3, 3, 3);
+	RenderMesh(meshList[GEO_DEBRIS], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[28]->Position.x, turret[28]->Position.y, turret[28]->Position.z);
+	modelStack.Scale(3, 3, 3);
+	RenderMesh(meshList[GEO_DEBRIS], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[29]->Position.x, turret[29]->Position.y, turret[29]->Position.z);
+	modelStack.Scale(3, 3, 3);
+	RenderMesh(meshList[GEO_DEBRIS], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[30]->Position.x, turret[30]->Position.y, turret[30]->Position.z);
+	modelStack.Scale(3, 3, 3);
+	RenderMesh(meshList[GEO_DEBRIS], false);
+	modelStack.PopMatrix();
 
 	for (size_t i = 0; i < clipSize; i++)
 	{
@@ -604,6 +643,9 @@ void Menu_Room::GenerateOBJ()
 	meshList[GEO_CODEBLOCK] = MeshBuilder::GenerateOBJ("Code", "OBJ//Objects//codeBlock.obj");
 	meshList[GEO_CODEBLOCK]->textureID = LoadTGA("Image//model//codeBlock.tga");
 
+	meshList[GEO_DEBRIS] = MeshBuilder::GenerateOBJ("Debris", "OBJ//Objects//Debris.obj");
+	meshList[GEO_DEBRIS]->textureID = LoadTGA("Image//floor//floor.tga");
+
 	//NPC
 	turret[20] = new Enemy("Robot", Vector3(-100, 0, -250));
 	turret[20]->setCollider(10, 10);
@@ -632,6 +674,47 @@ void Menu_Room::GenerateOBJ()
 	TriggerBox[11] = new GameObject("Trigger", Vector3(-25, 0, -200));
 	TriggerBox[11]->setCollider(20, 20);
 	TriggerBox[11]->updateCurPos();
+
+	turret[24] = new Enemy("Robot", Vector3(25, 0, 200));
+	turret[24]->setCollider(10, 10);
+	turret[24]->updateCurPos();
+	TriggerBox[12] = new GameObject("Trigger", Vector3(25, 0, 200));
+	TriggerBox[12]->setCollider(20, 20);
+	TriggerBox[12]->updateCurPos();
+
+	turret[25] = new Enemy("Robot", Vector3(55, 0, 300));
+	turret[25]->setCollider(10, 10);
+	turret[25]->updateCurPos();
+	TriggerBox[13] = new GameObject("Trigger", Vector3(55, 0, 300));
+	TriggerBox[13]->setCollider(20, 20);
+	TriggerBox[13]->updateCurPos();
+
+	turret[26] = new Enemy("Robot", Vector3(60, 0, 150));
+	turret[26]->setCollider(10, 10);
+	turret[26]->updateCurPos();
+	TriggerBox[14] = new GameObject("Trigger", Vector3(60, 0, 150));
+	TriggerBox[14]->setCollider(20, 20);
+	TriggerBox[14]->updateCurPos();
+
+	//Objects in the game
+	turret[27] = new Enemy("Debris", Vector3(-300,0,300));
+	turret[27]->setCollider(50, 50);
+	turret[27]->updateCurPos();
+
+	//Objects in the game
+	turret[28] = new Enemy("Debris", Vector3(-300, 0, -300));
+	turret[28]->setCollider(50, 50);
+	turret[28]->updateCurPos();
+
+	//Objects in the game
+	turret[29] = new Enemy("Debris", Vector3(100, 0, 150));
+	turret[29]->setCollider(50, 50);
+	turret[29]->updateCurPos();
+
+	//Objects in the game
+	turret[30] = new Enemy("Debris", Vector3(100, 0, -150));
+	turret[30]->setCollider(50, 50);
+	turret[30]->updateCurPos();
 }
 
 void Menu_Room::BridgeGate()
@@ -956,6 +1039,24 @@ void Menu_Room::EnemyField()
 	RenderMesh(meshList[GEO_ROBOLOCKED], false);
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[24]->Position.x + Moving, turret[24]->Position.y, turret[24]->Position.z);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOLOCKED], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[25]->Position.x + Moving, turret[25]->Position.y, turret[25]->Position.z);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOLOCKED], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[26]->Position.x + Moving, turret[26]->Position.y, turret[26]->Position.z);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOLOCKED], false);
+	modelStack.PopMatrix();
+
 	//Trigger for all the Machines
 	modelStack.PushMatrix();
 	modelStack.Translate(TriggerBox[8]->Position.x + Moving, 0, TriggerBox[8]->Position.z);
@@ -971,6 +1072,18 @@ void Menu_Room::EnemyField()
 
 	modelStack.PushMatrix();
 	modelStack.Translate(TriggerBox[11]->Position.x + Moving, 0, TriggerBox[11]->Position.z);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(TriggerBox[12]->Position.x + Moving, 0, TriggerBox[12]->Position.z);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(TriggerBox[13]->Position.x + Moving, 0, TriggerBox[13]->Position.z);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(TriggerBox[14]->Position.x + Moving, 0, TriggerBox[14]->Position.z);
 	modelStack.PopMatrix();
 }
 
