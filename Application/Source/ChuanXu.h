@@ -19,6 +19,7 @@ using std::string;
 
 #define Walls 32
 #define numOfIdleNPC 5
+
 class ChuanXu : public Scene 
 {
 
@@ -84,6 +85,9 @@ class ChuanXu : public Scene
 		GEO_HEALTHBG,
 		GEO_BLASTER,
 		GEO_PBULLET,
+		GEO_END,
+		GEO_SIMPLEENEMY,
+		GEO_EXPLANATIONS,
 		NUM_GEOMETRY,
 	};
 
@@ -97,7 +101,8 @@ private:
 	//GameObj
 	GameObject* object[NUM_GEOMETRY];
 	GameObject * WallsObj[Walls];
-	string deltaTime;
+	GameObject* TriggerBox[1];
+	Enemy* SimpleEnemy[2];
 	
 	float rotateAngle = 0;
 	float DelayTimer=0;
@@ -117,8 +122,9 @@ private:
 	float HPsizeX;
 	float delayTime;
 
-	bool healing[5];
 	bool lightEnable;
+	bool startLevel;
+	bool healing[5];
 	bool coverOpened = false;
 	Light light[6];
 

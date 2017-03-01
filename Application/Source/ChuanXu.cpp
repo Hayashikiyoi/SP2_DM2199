@@ -63,7 +63,12 @@ void ChuanXu::Init()
 	{
 		WallsObj[i] = NULL;
 	}
+	for (int i = 0; i < 2; ++i)
+	{
+		SimpleEnemy[i] = NULL;
+	}
 
+	TriggerBox[1] = NULL;
 
 
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
@@ -83,10 +88,19 @@ void ChuanXu::Init()
 
 	meshList[GEO_DEBUGBOX] = MeshBuilder::GenerateCube("Debug", Color(1, 1, 1), 1.f, 1.f, 1.f);
 
-	GenerateObj();
-
 	meshList[GEO_FLOOR] = MeshBuilder::GenerateQuad("Floor", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//floor//floor.tga");
+
+	meshList[GEO_BLASTER] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//blaster.obj");
+	meshList[GEO_BLASTER]->textureID = LoadTGA("Image//Player//blaster.tga");
+
+	meshList[GEO_BLASTER] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//blaster.obj");
+	meshList[GEO_BLASTER]->textureID = LoadTGA("Image//Player//blaster.tga");
+	GenerateObj();
+	meshList[GEO_PBULLET] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//Player_Bullet.obj");
+	meshList[GEO_PBULLET]->textureID = LoadTGA("Image//Player//Player_Bullet.tga");
+
+	GenerateObj();
 
 	//Load vertex and fragment shaders
 	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
@@ -132,29 +146,17 @@ void ChuanXu::Init()
 
 void ChuanXu::lightingfunc()
 {
-	light[0].type = Light::LIGHT_DIRECTIONAL;
-	light[0].position.Set(0, 1000, 0);
+	light[0].type = Light::LIGHT_SPOT;
+	light[0].position.Set(player->Position.x, player->Position.y, player->Position.z);
 	light[0].color.Set(1, 1, 1);
-	light[0].power = 1;
+	light[0].power = 1.5;
 	light[0].kC = 1.f;
 	light[0].kL = 0.01f;
 	light[0].kQ = 0.001f;
-	light[0].cosCutoff = cos(Math::DegreeToRadian(90));
+	light[0].cosCutoff = cos(Math::DegreeToRadian(45));
 	light[0].cosInner = cos(Math::DegreeToRadian(30));
 	light[0].exponent = 3.f;
-	light[0].spotDirection.Set(0.f, 1.f, 0.f);
-
-	light[1].type = Light::LIGHT_SPOT;
-	light[1].position.Set(0, 50, 0);
-	light[1].color.Set(1, 0, 0);
-	light[1].power = 10;
-	light[1].kC = 1.f;
-	light[1].kL = 0.01f;
-	light[1].kQ = 0.001f;
-	light[1].cosCutoff = cos(Math::DegreeToRadian(90));
-	light[1].cosInner = cos(Math::DegreeToRadian(30));
-	light[1].exponent = 3.f;
-	light[1].spotDirection.Set(0.f, 1.f, 0.f);
+	light[0].spotDirection.Set(0.f, -1.f, 0.f);
 
 	//Make sure you pass uniform parameters after glUseProgram()
 	glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
@@ -173,22 +175,6 @@ void ChuanXu::lightingfunc()
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
-	//Make sure you pass uniform parameters after glUseProgram()
-	glUniform3fv(m_parameters[U_LIGHT1_COLOR], 1, &light[1].color.r);
-	glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
-	glUniform1f(m_parameters[U_LIGHT1_KC], light[1].kC);
-	glUniform1f(m_parameters[U_LIGHT1_KL], light[1].kL);
-	glUniform1f(m_parameters[U_LIGHT1_KQ], light[1].kQ);
-
-	glUniform1i(m_parameters[U_LIGHT1_TYPE], light[1].type);
-	glUniform3fv(m_parameters[U_LIGHT1_COLOR], 1, &light[1].color.r);
-	glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
-	glUniform1f(m_parameters[U_LIGHT1_KC], light[1].kC);
-	glUniform1f(m_parameters[U_LIGHT1_KL], light[1].kL);
-	glUniform1f(m_parameters[U_LIGHT1_KQ], light[1].kQ);
-	glUniform1f(m_parameters[U_LIGHT1_COSCUTOFF], light[1].cosCutoff);
-	glUniform1f(m_parameters[U_LIGHT1_COSINNER], light[1].cosInner);
-	glUniform1f(m_parameters[U_LIGHT1_EXPONENT], light[1].exponent);
 
 	glUniform1i(m_parameters[U_NUMLIGHTS], 6);
 
@@ -196,12 +182,17 @@ void ChuanXu::lightingfunc()
 
 void ChuanXu::GenerateObj()
 {
-	//Robot
-	meshList[GEO_ROBOBODY] = MeshBuilder::GenerateOBJ("RoboBody", "OBJ//NPC//Robot_body.obj");
-	meshList[GEO_ROBOBODY]->textureID = LoadTGA("Image//NPC//Robot_Body.tga");
+	//Enemy
+	meshList[GEO_SIMPLEENEMY] = MeshBuilder::GenerateOBJ("Simple_enemy", "OBJ//Enemy//Simple_Enemy.obj");
+	meshList[GEO_SIMPLEENEMY]->textureID = LoadTGA("Image//Enemy//Simple_Enemy.tga");
+	SimpleEnemy[0] = new Enemy("Simple_enemy_1", Vector3(-30, 7, 44));
+	SimpleEnemy[0]->setCollider(26, 26);
+	SimpleEnemy[0]->updateCurPos();
 
-	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("RoboArms", "OBJ//NPC//Robot_Arm.obj");
-	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image//NPC//Robot_Arms.tga");
+	SimpleEnemy[1] = new Enemy("Simple_enemy_2", Vector3(-20, 7, -65));
+	SimpleEnemy[1]->setCollider(26, 26);
+	SimpleEnemy[1]->updateCurPos();
+
 
 
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall2", "OBJ//Wall//CX_WALL.obj");
@@ -355,11 +346,35 @@ void ChuanXu::GenerateObj()
 	healthPack[5]->setCollider(5, 5);
 	healthPack[5]->updateCurPos();
 
-
+	//End point
+	meshList[GEO_END] = MeshBuilder::GenerateQuad("End of maze", Color(1, 1, 1), 10, 10);
+	TriggerBox[1] = new GameObject("End", Vector3(-74, 2, 20));
+	TriggerBox[1]->setCollider(4, 26);
+	TriggerBox[1]->updateCurPos();
 }
 
-void ChuanXu::RenderMaze() // Maze walls and healthpacks
+void ChuanXu::RenderMaze() // Maze walls,end point and healthpacks
 {
+	//Enemy
+	if (!SimpleEnemy[0]->isdead())
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(SimpleEnemy[0]->Position.x, SimpleEnemy[0]->Position.y, SimpleEnemy[0]->Position.z);
+		modelStack.Rotate(SimpleEnemy[0]->RotateToPlayer(player->Position), 0, 1, 0);
+		modelStack.Scale(4, 4, 4);
+		RenderMesh(meshList[GEO_SIMPLEENEMY], true);
+		modelStack.PopMatrix();
+	}
+	if (!SimpleEnemy[1]->isdead())
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(SimpleEnemy[1]->Position.x, SimpleEnemy[1]->Position.y, SimpleEnemy[1]->Position.z);
+		modelStack.Rotate(SimpleEnemy[1]->RotateToPlayer(player->Position), 0, 1, 0);
+		modelStack.Scale(4, 4, 4);
+		RenderMesh(meshList[GEO_SIMPLEENEMY], true);
+		modelStack.PopMatrix();
+	}
+
 	// Maze walls
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[5]->Position.x, WallsObj[5]->Position.y, WallsObj[5]->Position.z);
@@ -548,7 +563,6 @@ void ChuanXu::RenderMaze() // Maze walls and healthpacks
 		RenderMesh(meshList[GEO_RECOVERY], false);
 		modelStack.PopMatrix();
 	}
-
 	if (healing[2])
 	{
 		modelStack.PushMatrix();
@@ -558,7 +572,6 @@ void ChuanXu::RenderMaze() // Maze walls and healthpacks
 		RenderMesh(meshList[GEO_RECOVERY], false);
 		modelStack.PopMatrix();
 	}
-
 	if (healing[3])
 	{
 		modelStack.PushMatrix();
@@ -568,7 +581,6 @@ void ChuanXu::RenderMaze() // Maze walls and healthpacks
 		RenderMesh(meshList[GEO_RECOVERY], false);
 		modelStack.PopMatrix();
 	}
-
 	if (healing[4])
 	{
 		modelStack.PushMatrix();
@@ -578,7 +590,6 @@ void ChuanXu::RenderMaze() // Maze walls and healthpacks
 		RenderMesh(meshList[GEO_RECOVERY], false);
 		modelStack.PopMatrix();
 	}
-
 	if (healing[5])
 	{
 		modelStack.PushMatrix();
@@ -589,54 +600,74 @@ void ChuanXu::RenderMaze() // Maze walls and healthpacks
 		modelStack.PopMatrix();
 	}
 
+	//endpoint
+	modelStack.PushMatrix();
+	modelStack.Translate(TriggerBox[1]->Position.x, TriggerBox[1]->Position.y, TriggerBox[1]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(1.5, 2, 1.5);
+	RenderMesh(meshList[GEO_END], false);
+	modelStack.PopMatrix();
 }
 
 void ChuanXu::Update(double dt)
 {
-	static float translateLimit = 1;
+	static float translateLimit = 1.f;
 	static Vector3 prevpos;
 	static Vector3 prevposTarget;
-	
-	deltaTime = /*"Health" + std::to_string(player->getHealth()); */"FPS:" + std::to_string(1 / dt);
+	static float ROF = 0.125f;
+	static float TP = 0.f;
+	static float time;
+	static bool shoot = false;
+	static bool smtHappen1= false ;
+	static bool smtHappen2 = false;
+	static bool startLevel = false;
+
 	HPsizeX = player->getHealth()*0.215;
 	delayTime += (float)dt;
 	rotateAngle += (float)(10 * dt);
 
-	if (delayTime > 5)
+	if (delayTime > 2)
 	{
 		player->DmgPlayer(5);
 		delayTime = 0;
 	}
-	else if (delayTime < 5)
+	else if (delayTime < 2)
 	{
 		delayTime += (float)dt;
 	}
 
-	static float LSPEED = 10;
-
-	if (Application::IsKeyPressed('V'))
-		lightEnable = false;
-	if (Application::IsKeyPressed('B'))
-		lightEnable = true;
-
-	if (Application::IsKeyPressed('Y'))
-		coverOpened= true;
-
-	if (Application::IsKeyPressed('0')) 
+	if (Application::IsKeyPressed('T'))
 	{
-		light[0].type = Light::LIGHT_POINT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
+		lasergun->reload();
 	}
-	if (Application::IsKeyPressed('9'))
+
+	if (Application::IsKeyPressed(VK_LBUTTON) && !shoot)
 	{
-		light[0].type = Light::LIGHT_DIRECTIONAL;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
+		lasergun->shoot(&camera);
+		shoot = true;
 	}
-	if (Application::IsKeyPressed('8'))
+	if (shoot)
 	{
-		light[0].type = Light::LIGHT_SPOT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
+		TP += dt;
+		if (TP > ROF)
+		{
+			TP = 0;
+			shoot = false;
+		}
 	}
+
+	//delay for player bullet	
+	if (smtHappen1 || smtHappen2 )
+	{
+		time += dt;
+		if (time > 2)
+		{
+			time = 0;
+			smtHappen1 = false;
+			smtHappen2 = false;
+		}
+	}
+
 
 	//Cull back face
 	if (Application::IsKeyPressed('1'))
@@ -674,11 +705,49 @@ void ChuanXu::Update(double dt)
 		}
 	}
 
+	AmmoLeft = std::to_string(lasergun->bulletLeft()) + "/45";
+	clipCount = std::to_string(lasergun->canisterLeft());
+
+	for (int i = 0; i < clipSize; ++i)
+	{
+		if (lasergun->pBullet[i] && SimpleEnemy[0] && SimpleEnemy[0]->trigger(lasergun->pBullet[i]) && !smtHappen1)
+		{
+			SimpleEnemy[0]->dmgToEnemy(5);
+			smtHappen1 = true;
+			break;
+		}
+		if (lasergun->pBullet[i] && SimpleEnemy[1] && SimpleEnemy[1]->trigger(lasergun->pBullet[i]) && !smtHappen2)
+		{
+			SimpleEnemy[2]->dmgToEnemy(5);
+			smtHappen2 = true;
+			break;
+		}
+
+	}
+
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (SimpleEnemy[i] && player->trigger(SimpleEnemy[i]) && !SimpleEnemy[i]->isdead())
+		{
+			player->DmgPlayer(10);
+			camera.position = prevpos;
+			camera.target = prevposTarget;
+			break;
+		}
+	}
+
+
+	if (TriggerBox[1] && player->trigger(TriggerBox[1]))
+	{
+		SceneManager::instance()->levelCompleted = 2;
+		SceneManager::instance()->changeScene(2);
+	}
+
 	for (int i = 0; i < Walls; ++i)
 	{
 		if (WallsObj[i] && player->trigger(WallsObj[i]))
 		{
-			player->DmgPlayer(1);
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
@@ -690,11 +759,10 @@ void ChuanXu::Update(double dt)
 		}
 	}
 
-	AmmoLeft = std::to_string(lasergun->bulletLeft()) + "/45";
-	clipCount = std::to_string(lasergun->canisterLeft());
-	camera.Update(dt);
 
-	
+
+	camera.Update(dt);
+	lasergun->updateBullet(dt);
 }
 
 void ChuanXu::RenderWalls()
@@ -731,28 +799,23 @@ void ChuanXu::RenderWalls()
 	modelStack.Rotate(90, 0, -1, 0);
 	modelStack.Rotate(90, -1, 0, 0);
 	modelStack.Scale(180, 180.f, 180.f);
-	RenderMesh(meshList[GEO_FLOOR], false);
+	RenderMesh(meshList[GEO_FLOOR], true);
 	modelStack.PopMatrix();
 }
 
 void ChuanXu::Render()
 {
-	if (light[0].type == Light::LIGHT_DIRECTIONAL)
+	if (light[0].type == Light::LIGHT_SPOT)
 	{
-		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	
-	if (light[1].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
+		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
 		glUniform3fv(m_parameters[U_LIGHT1_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[1].spotDirection;
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
 		glUniform3fv(m_parameters[U_LIGHT1_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-		glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
-
+		glUniform1f(m_parameters[U_LIGHT1_POWER], light[0].power);
 	}
+
+	
+
 	//Initialize
 	Mtx44 MVP;
 
@@ -771,6 +834,31 @@ void ChuanXu::Render()
 	 RenderMaze();
 
 	//-------------------------------------------------------------------------------------
+	 //player bullet
+	 for (size_t i = 0; i < clipSize; i++)
+	 {
+		 if (lasergun->pBullet[i]->shot() == true)
+		 {
+			 modelStack.PushMatrix();
+			 modelStack.Translate(lasergun->pBullet[i]->Position.x, lasergun->pBullet[i]->Position.y, lasergun->pBullet[i]->Position.z); //Forward translate
+			 modelStack.Scale(0.5f, 0.5f, 0.5f);
+			 RenderMesh(meshList[GEO_PBULLET], true);
+			 modelStack.PopMatrix();
+		 }
+	 }
+
+	 //Laser gun
+	 modelStack.PushMatrix();
+	 modelStack.LoadMatrix(lasergun->rotateGunToCamera(camera.position, camera.up, camera.target)); //Parent to cam
+	 glDisable(GL_DEPTH_TEST); //Gun forever renders
+	 glDisable(GL_CULL_FACE);
+	 modelStack.Translate(lasergun->Position.x, lasergun->Position.y, lasergun->Position.z); //Translate to a proper position
+	 modelStack.Rotate(180, 0, 1, 0); //Gun is inverted
+	 RenderMesh(meshList[GEO_BLASTER], true);
+	 glEnable(GL_DEPTH_TEST);
+	 glEnable(GL_CULL_FACE);
+	 modelStack.PopMatrix();
+
 
 	 RenderMeshOnScreen(meshList[GEO_HEALTHBG], 15, 5, 30, 30, false);
 	 RenderMeshOnScreen(meshList[GEO_HEALTH], 8.f, 5, HPsizeX, 30, true);
@@ -779,11 +867,6 @@ void ChuanXu::Render()
 
 	 RenderTextOnScreen(meshList[GEO_TEXT], clipCount, (0, 1, 0), 5, 11.7, 1.1);
 	 RenderTextOnScreen(meshList[GEO_TEXT], AmmoLeft, (0, 1, 0), 3, 21.7, 0.2f);
-
-	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, (0, 1, 0), 4, 5, 5);
-
-	 RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(player->Position.x), Color(0, 1, 0), 4, 3, 4);
-	 RenderTextOnScreen(meshList[GEO_TEXT], std::to_string(player->Position.z), Color(0, 1, 0), 4, 3, 3);
 }
 
 void ChuanXu::RenderMesh(Mesh *mesh, bool enableLight)
@@ -937,7 +1020,6 @@ void ChuanXu::RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey,
 		modelStack.PopMatrix();
 	}
 	glEnable(GL_DEPTH_TEST);
-
 }
 
 
@@ -957,6 +1039,11 @@ void ChuanXu::Exit()
 	{
 		if (healthPack[i] != NULL)
 			delete healthPack[i];
+	}
+	for (int i = 0; i < 2; ++i)
+	{
+		if (SimpleEnemy[i] != NULL)
+			delete SimpleEnemy[i];
 	}
 	delete player;
 	delete lasergun;
