@@ -127,26 +127,71 @@ void Menu_Room::Init()
 void Menu_Room::Update(double dt)
 {
 	static float translateLimit = 1;
-
 	//deltaTime = "FPS:" + std::to_string(1 / dt);
 
-	cordx = "X: " + std::to_string(camera.position.x);
-	cordz = "Z: " + std::to_string(camera.position.z);
-	static float LSPEED = 10;
+	//-----------------------------------------------------------------------------------------------------------------------------------
 
-	static float change = 1;
+	static float LSPEED = 10;
+	static float change = -1;
+	static float MovingX = 1;
+
+	maware += (float)dt;
+
+	turret[20]->Position.x += 25 * (float)dt *MovingX;
+	TriggerBox[8]->Position.x = turret[20]->Position.x;
+	turret[20]->updateCurPos();
+	TriggerBox[8]->updateCurPos();
+
+	turret[21]->Position.z += 25 * (float)dt *MovingX;
+	TriggerBox[9]->Position.z = turret[21]->Position.z;
+	turret[21]->updateCurPos();
+	TriggerBox[9]->updateCurPos();
+
+	turret[22]->Position.x += 25 * (float)dt *MovingX;
+	TriggerBox[10]->Position.x = turret[22]->Position.x;
+	turret[22]->updateCurPos();
+	TriggerBox[10]->updateCurPos();
+
+	if (turret[20]->Position.x > 50)
+	{
+		MovingX = -1;
+	}
+	else if (turret[20]->Position.x < 0)
+	{
+		MovingX = 1;
+	}
+
+	for (int i = 8; i < 15; i++){
+		if (TriggerBox[i] && player->trigger(TriggerBox[i]))
+		{
+			if (Application::IsKeyPressed('E'))
+			{
+				deltaTime = "HELLO WORLD";
+				chatTime = 0;
+			}
+			if (i == 11 && Application::IsKeyPressed('E'))
+			{
+				deltaTime = "I love spinning";
+				chatTime = 0;
+			}
+		}
+		
+	}
+	//-----------------------------------------------------------------------------------------------------------------------------------
 	TranslateCode += 25 * (float)dt * change;
+	
 	if (TranslateCode > 300)
 	{
 		change = -1;
-		//TranslateCode = 0;
-		
 	}
 	else if (TranslateCode < -300)
 	{
-		TranslateCode = 100;
-		SpawnBoxX = rand() % 50;
-		SpawnBoxZ = rand() % 500;
+		TranslateCode = 299;
+		for (int i = 0; i > 10; i++)
+		{
+			SpawnBoxX[i] = Math::RandIntMinMax(0,50);
+			SpawnBoxZ[i] = Math::RandIntMinMax(0,500);
+		}
 	}
 
 	if (Application::IsKeyPressed('V'))
@@ -220,7 +265,7 @@ void Menu_Room::Update(double dt)
 		if (turret[i] && player->trigger(turret[i]))
 		{
 			//if you need to get pushed out of the collider
-			deltaTime = "Wham bam";
+			//deltaTime = "Wham bam";
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
@@ -235,7 +280,6 @@ void Menu_Room::Update(double dt)
 //----------------------------------------------------------------------------
 	object[GEO_BOTTOMVOTEX]->rotation += (float)dt;
 	object[GEO_VOTEX]->rotation -= (float)dt;
-	deltaTime = "";
 	static bool openDoor = false;
 	for (int i = 0; i < 6; ++i)
 	{
@@ -254,12 +298,8 @@ void Menu_Room::Update(double dt)
 				SceneManager::instance()->changeScene(6);*/
 			if (i == 4)
 				deltaTime = "Press E: Unlock";
-			if (Application::IsKeyPressed('E') && i == 4 && SceneManager::instance()->levelCompleted  == 4)
+			if (Application::IsKeyPressed('E') && i == 3 && SceneManager::instance()->levelCompleted  == 3)
 			{
-				//turret[14]->Position.z = 1000;
-				//turret[14]->Position.y = -100;
-				//turret[16]->Position.z = 1000;
-				//turret[16]->Position.y = -100;
 				openDoor = true;
 			}
 			std::cout << deltaTime  << std::endl;
@@ -353,7 +393,6 @@ void Menu_Room::Render()
 	modelStack.LoadIdentity();
 
 	//-------------------------------------------------------------------------------------
-	//RenderSkybox();
 	Walls();
 	EnemyField();
 	DrawBridge();
@@ -384,20 +423,17 @@ void Menu_Room::Render()
 	modelStack.PopMatrix();
 
 	//No transform needed
-	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 1, 7);
 	
-	//RenderTextOnScreen(meshList[GEO_TEXT], cordx, Color(0, 1, 0), 3, 0, 3);
-	//RenderTextOnScreen(meshList[GEO_TEXT], cordz, Color(0, 1, 0), 3, 0, 5);
-	//RenderMeshOnScreen(meshList[GEO_QUAD], 0, 0, 1, 1, true);
 	RenderMeshOnScreen(meshList[GEO_HEALTHBG], 15, 5, 30, 30, false);
 	RenderMeshOnScreen(meshList[GEO_HEALTH], 7.7f, 5, HPsizeX, 30, true);
 	RenderMeshOnScreen(meshList[GEO_STAMINA], 7.7f, 5, camera.test2, 30, true);
 
+	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 3, 1, 8);
+
+
 	RenderMeshOnScreen(meshList[GEO_AMMOBG], 65, 10, 30, 30, false);
 	RenderTextOnScreen(meshList[GEO_TEXT], clipCount, Color(0, 1, 0), 5, 58, 5);
 	RenderTextOnScreen(meshList[GEO_TEXT], ammoLeft, Color(0, 1, 0), 3, 65.5f, 0.5f);
-	/*RenderMeshOnScreen(meshList[GEO_BOSSTESTBG], 40, 55, test2, 30, false);	
-	RenderMeshOnScreen(meshList[GEO_BOSSTEST], 40, 55, test3, 30, false);*/
 	//-------------------------------------------------------------------------------------
 }
 
@@ -414,19 +450,12 @@ void Menu_Room::GenerateGEOMESH()
 
 	meshList[GEO_AMMOBG] = MeshBuilder::GenerateQuad("ammoBG", Color(1, 1, 1), 1, 1);
 	meshList[GEO_AMMOBG]->textureID = LoadTGA("Image//UI//ammoBG.tga");
-
-	/*meshList[GEO_BOSSTESTBG] = MeshBuilder::GenerateQuad("ammoBG", Color(1, 1, 1), 1, 1);
-	meshList[GEO_BOSSTESTBG]->textureID = LoadTGA("Image//UI//Boss//bossBG.tga");
-	meshList[GEO_BOSSTEST] = MeshBuilder::GenerateQuad("ammoBG", Color(1, 1, 1), 1, 1);
-	meshList[GEO_BOSSTEST]->textureID = LoadTGA("Image//UI//Boss//bossHP.tga");*/
 	//------------------------------------------------------------------------------------
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
-	//meshList[GEO_QUAD]->textureID = LoadTGA("Image//Text//zelda.tga");
 
 	meshList[GEO_VOTEX] = MeshBuilder::GenerateQuad("Votex", Color(1, 1, 1), 1.f, 1.f);
-	//meshList[GEO_VOTEX]->textureID = LoadTGA("Image//skybox//Portal.tga");
 	meshList[GEO_VOTEX]->textureID = LoadTGA("Image//skybox//testTop1.tga");
 	object[GEO_VOTEX] = new GameObject("Top Portal", Vector3(0, 0, 0));
 
@@ -549,9 +578,7 @@ void Menu_Room::GenerateOBJ()
 
 	//Doors
 	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//Door//Door_Test_4.obj");
-	//meshList[GEO_DOOR]->textureID = LoadTGA("Image//Wall//Wall.tga");
 	meshList[GEO_DOOR_FRAME] = MeshBuilder::GenerateOBJ("Door_Frame", "OBJ//Door//doorframe_2.obj");
-	//meshList[GEO_DOOR_FRAME]->textureID = LoadTGA("Image//Wall//Wall.tga");
 	turret[14] = new Enemy("Door", Vector3(0, 0, 100));
 	turret[14]->setCollider(100, 15);
 	turret[14]->updateCurPos();
@@ -576,6 +603,35 @@ void Menu_Room::GenerateOBJ()
 
 	meshList[GEO_CODEBLOCK] = MeshBuilder::GenerateOBJ("Code", "OBJ//Objects//codeBlock.obj");
 	meshList[GEO_CODEBLOCK]->textureID = LoadTGA("Image//model//codeBlock.tga");
+
+	//NPC
+	turret[20] = new Enemy("Robot", Vector3(-100, 0, -250));
+	turret[20]->setCollider(10, 10);
+	turret[20]->updateCurPos();
+	TriggerBox[8] = new GameObject("Trigger", Vector3(-100, 0, -250));
+	TriggerBox[8]->setCollider(20, 20);
+	TriggerBox[8]->updateCurPos();
+
+	turret[21] = new Enemy("Robot", Vector3(-100, 0, -300));
+	turret[21]->setCollider(10, 10);
+	turret[21]->updateCurPos();
+	TriggerBox[9] = new GameObject("Trigger", Vector3(-100, 0, -300));
+	TriggerBox[9]->setCollider(20, 20);
+	TriggerBox[9]->updateCurPos();
+
+	turret[22] = new Enemy("Robot", Vector3(200, 0, -100));
+	turret[22]->setCollider(10, 10);
+	turret[22]->updateCurPos();
+	TriggerBox[10] = new GameObject("Trigger", Vector3(200, 0, 300));
+	TriggerBox[10]->setCollider(20, 20);
+	TriggerBox[10]->updateCurPos();
+
+	turret[23] = new Enemy("Robot", Vector3(-25, 0, -200));
+	turret[23]->setCollider(10, 10);
+	turret[23]->updateCurPos();
+	TriggerBox[11] = new GameObject("Trigger", Vector3(-25, 0, -200));
+	TriggerBox[11]->setCollider(20, 20);
+	TriggerBox[11]->updateCurPos();
 }
 
 void Menu_Room::BridgeGate()
@@ -630,7 +686,7 @@ void Menu_Room::initializeObjects()
 		meshList[i] = NULL;
 		object[i] = 0;
 	}
-	for (int i = 0; i < 6; ++i)
+	for (int i = 0; i < 15; ++i)
 	{
 		TriggerBox[i] = 0;
 	}
@@ -845,38 +901,77 @@ void Menu_Room::EnemyField()
 	RenderMesh(meshList[GEO_COMPUTER], false);
 	modelStack.PopMatrix();
 
+	for (int i = 0; i < 10; i++)
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(SpawnBoxX[i], TranslateCode, SpawnBoxZ[i]);
+		modelStack.Rotate(90, 0, 1, 0);
+		modelStack.Scale(10, 10, 10);
+		RenderMesh(meshList[GEO_CODEBLOCK], false);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(300, TranslateCode, 25);
+		modelStack.Rotate(90, 0, 1, 0);
+		modelStack.Scale(10, 10, 10);
+		RenderMesh(meshList[GEO_CODEBLOCK], false);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(-250, TranslateCode, 50);
+		modelStack.Rotate(90, 0, 1, 0);
+		modelStack.Scale(10, 10, 10);
+		RenderMesh(meshList[GEO_CODEBLOCK], false);
+		modelStack.PopMatrix();
+
+		modelStack.PushMatrix();
+		modelStack.Translate(550, TranslateCode, 50);
+		modelStack.Rotate(90, 0, 1, 0);
+		modelStack.Scale(10, 10, 10);
+		RenderMesh(meshList[GEO_CODEBLOCK], false);
+		modelStack.PopMatrix();
+	}
 	modelStack.PushMatrix();
-	modelStack.Translate(SpawnBoxX, TranslateCode, SpawnBoxZ);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[GEO_CODEBLOCK], false);
-
-	modelStack.Translate(SpawnBoxX, TranslateCode, SpawnBoxZ);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(10, 10, 10);
-	RenderMesh(meshList[GEO_CODEBLOCK], false);
-
-	//modelStack.Translate(SpawnBoxX, TranslateCode, SpawnBoxZ);
-	//modelStack.Rotate(90, 0, 1, 0);
-	//modelStack.Scale(10, 10, 10);
-	//RenderMesh(meshList[GEO_CODEBLOCK], false);
-
-	//modelStack.Translate(SpawnBoxX, TranslateCode, SpawnBoxZ);
-	//modelStack.Rotate(90, 0, 1, 0);
-	//modelStack.Scale(10, 10, 10);
-	//RenderMesh(meshList[GEO_CODEBLOCK], false);
-
-	//modelStack.Translate(SpawnBoxX, TranslateCode, SpawnBoxZ);
-	//modelStack.Rotate(90, 0, 1, 0);
-	//modelStack.Scale(10, 10, 10);
-	//RenderMesh(meshList[GEO_CODEBLOCK], false);
-
-	//modelStack.Translate(SpawnBoxX, TranslateCode, SpawnBoxZ);
-	//modelStack.Rotate(90, 0, 1, 0);
-	//modelStack.Scale(10, 10, 10);
-	//RenderMesh(meshList[GEO_CODEBLOCK], false);
+	modelStack.Translate(turret[20]->Position.x + Moving, turret[20]->Position.y, turret[20]->Position.z);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOLOCKED], false);
 	modelStack.PopMatrix();
-	
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[21]->Position.x, turret[21]->Position.y, turret[21]->Position.z + Moving);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOLOCKED], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[22]->Position.x + Moving, turret[22]->Position.y, turret[22]->Position.z);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOLOCKED], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[23]->Position.x, turret[23]->Position.y, turret[23]->Position.z);
+	modelStack.Rotate(90 * maware,0,1,0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOLOCKED], false);
+	modelStack.PopMatrix();
+
+	//Trigger for all the Machines
+	modelStack.PushMatrix();
+	modelStack.Translate(TriggerBox[8]->Position.x + Moving, 0, TriggerBox[8]->Position.z);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(TriggerBox[9]->Position.x + Moving, 0, TriggerBox[9]->Position.z);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(TriggerBox[10]->Position.x + Moving, 0, TriggerBox[10]->Position.z);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(TriggerBox[11]->Position.x + Moving, 0, TriggerBox[11]->Position.z);
+	modelStack.PopMatrix();
 }
 
 void Menu_Room::RenderMesh(Mesh *mesh, bool enableLight)
@@ -1040,7 +1135,7 @@ void Menu_Room::Exit()
 		if (object[i] != 0)
 			delete object[i];
 	}
-	for (int i = 0; i < 6; ++i)
+	for (int i = 0; i < 15; ++i)
 	{
 		if (TriggerBox[i] != 0)
 			delete TriggerBox[i];

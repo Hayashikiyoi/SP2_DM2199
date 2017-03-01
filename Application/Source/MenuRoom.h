@@ -18,7 +18,7 @@ using std::string;
 #include "Player.h"
 #include "Weapon.h"
 #undef numOfEnemy
-#define numOfEnemy 20
+#define numOfEnemy 30
 
 class Menu_Room : public Scene
 {
@@ -138,11 +138,14 @@ private:
 
 	//GameObj
 	GameObject* object[NUM_GEOMETRY];
-	GameObject* TriggerBox[7];
+	GameObject* TriggerBox[15];
 	Item* Locked[4];
 	float TranslateCode;
-	float SpawnBoxX;
-	float SpawnBoxZ;
+	float Moving;
+	float maware;
+	float chatTime;
+	float SpawnBoxX[10];
+	float SpawnBoxZ[10];
 
 	//Initialize
 	void initializeObjects();
