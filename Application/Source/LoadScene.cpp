@@ -13,7 +13,7 @@ using namespace Math;
 
 LoadScene::LoadScene()
 {
-	m_programID = SceneManager::instance()->programID;
+	m_programID = SceneManager::instance()->returnProg();
 }
 
 LoadScene::~LoadScene()

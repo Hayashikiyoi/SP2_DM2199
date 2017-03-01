@@ -296,17 +296,24 @@ void Menu_Room::Update(double dt)
 	object[GEO_BOTTOMVOTEX]->rotation += (float)dt;
 	object[GEO_VOTEX]->rotation -= (float)dt;
 	static bool openDoor = false;
+	static int checker = 0;
 	for (int i = 0; i < 6; ++i)
 	{
 		if (TriggerBox[i] && player->trigger(TriggerBox[i]))
 		{
-			if (i>=0 && i<=3 && i == SceneManager::instance()->levelCompleted)
-				deltaTime = ("Press E: Level " + std::to_string(i+3));
-			if (Application::IsKeyPressed('E') && i >= 0 && i <= 3 && i <= SceneManager::instance()->levelCompleted)
+			
+			if (i>=0 && i<=1 && i <= SceneManager::instance()->levelCompleted)
+				deltaTime = ("Press E: Level " + std::to_string(i+4));
+			if (Application::IsKeyPressed('E') && i >= 0 && i <= 1 && i <= SceneManager::instance()->levelCompleted)
 			{
-				SceneManager::instance()->changeScene(i + 3);
+				checker = i;
+				SceneManager::instance()->changeScene(i + 4);
 				return;
 			}
+			if (i == 3 && i == SceneManager::instance()->levelCompleted)
+				deltaTime = "Press E: Talk";
+			if (Application::IsKeyPressed('E') && i >= 0 && i <= 2 && i <= SceneManager::instance()->levelCompleted)
+				deltaTime = "go to the gate now";
 			/*if (i == 3)
 				deltaTime = "Press E: Level_3";
 			if (Application::IsKeyPressed('E') && i == 3)

@@ -13,7 +13,7 @@ using namespace Math;
 
 Aloy_Scene::Aloy_Scene()
 {
-	m_programID = SceneManager::instance()->programID;
+	m_programID = SceneManager::instance()->returnProg();
 }
 
 Aloy_Scene::~Aloy_Scene()

@@ -13,7 +13,7 @@ using namespace Math;
 
 tutorialScene::tutorialScene()
 {
-	m_programID = SceneManager::instance()->programID;
+	m_programID = SceneManager::instance()->returnProg();
 }
 
 tutorialScene::~tutorialScene()

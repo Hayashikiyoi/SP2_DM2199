@@ -13,6 +13,7 @@ using namespace Math;
 
 Scene4_Boss::Scene4_Boss()
 {
+	m_programID = SceneManager::instance()->returnProg();
 }
 
 Scene4_Boss::~Scene4_Boss()
@@ -21,6 +22,7 @@ Scene4_Boss::~Scene4_Boss()
 
 void Scene4_Boss::Init()
 {
+	m_programID = SceneManager::instance()->returnProg();
 	// Init VBO here
 	rotateAngle = 0;
 	scaleAll = 2;
@@ -100,7 +102,7 @@ void Scene4_Boss::Init()
 	GenerateOBJ();
 
 	//Load vertex and fragment shaders
-	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
+	//m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
 	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
 	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
@@ -220,25 +222,6 @@ void Scene4_Boss::Update(double dt)
 	rotateAngle += (float)dt;
 	HPsizeX = (float)player->getHealth()*0.215f;
 	test3 = turret[9]->showHP()*0.3f;
-	//if (coverOpened)
-	//{
-	//	if (translateLimit<-10)
-	//		translateLimit *= -1;
-	//	if (openCover <6)
-	//		openCover += (float)(10 * translateLimit*dt);
-	//}
-	//if (Application::IsKeyPressed('I'))
-	//	light[0].position.z -= (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('K'))
-	//	light[0].position.z += (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('J'))
-	//	light[0].position.x -= (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('L'))
-	//	light[0].position.x += (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('O'))
-	//	light[0].position.y -= (float)(LSPEED * dt);
-	//if (Application::IsKeyPressed('P'))
-	//	light[0].position.y += (float)(LSPEED * dt);
 
 	if (Application::IsKeyPressed('0'))
 	{
@@ -378,7 +361,7 @@ void Scene4_Boss::Update(double dt)
 	}
 	if (player->getHealth() == 0)
 	{
-		SceneManager::instance()->changeScene(4);
+		SceneManager::instance()->changeScene(5);
 		return;
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -497,8 +480,8 @@ void Scene4_Boss::Update(double dt)
 	//Change Scene
 	if (TriggerBox[0] && player->trigger(TriggerBox[0]))
 	{
-		SceneManager::instance()->levelCompleted = 4;
-		SceneManager::instance()->changeScene(2);
+		SceneManager::instance()->levelCompleted = 3;
+		SceneManager::instance()->changeScene(3);
 		return;
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------------------

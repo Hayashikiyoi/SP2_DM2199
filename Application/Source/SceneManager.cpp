@@ -12,6 +12,7 @@ SceneManager::~SceneManager()
 
 void SceneManager::changeScene(size_t levelnum)
 {
+
 	sceneManager[currentLevel]->Exit();
 	currentLevel = 1;
 	offset = levelnum;
@@ -61,4 +62,9 @@ void SceneManager::loadingScene()
 	sceneManager[currentLevel]->Exit();
 	currentLevel = offset;
 	sceneManager[currentLevel]->Init();
+}
+
+unsigned int SceneManager::returnProg()
+{
+	return(this->programID);
 }
