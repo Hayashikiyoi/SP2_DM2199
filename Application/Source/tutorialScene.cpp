@@ -13,6 +13,7 @@ using namespace Math;
 
 tutorialScene::tutorialScene()
 {
+	m_programID = SceneManager::instance()->programID;
 }
 
 tutorialScene::~tutorialScene()
@@ -50,7 +51,7 @@ void tutorialScene::Init()
 	GenerateOBJ();
 
 	//Load vertex and fragment shaders
-	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
+	//m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
 	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
 	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
@@ -122,46 +123,6 @@ void tutorialScene::Init()
 
 void tutorialScene::Update(double dt)
 {
-	static float LSPEED = 10;
-	static float change = 1;
-
-	/*tempPlayerposX = std::to_string(camera.position.x);
-	tempPlayerposZ = std::to_string(camera.position.z);*/
-
-	if (Application::IsKeyPressed('V'))
-		lightEnable = false;
-	if (Application::IsKeyPressed('B'))
-		lightEnable = true;
-
-	if (Application::IsKeyPressed('I'))
-		light[0].position.z -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('K'))
-		light[0].position.z += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('J'))
-		light[0].position.x -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('L'))
-		light[0].position.x += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('O'))
-		light[0].position.y -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('P'))
-		light[0].position.y += (float)(LSPEED * dt);
-
-	if (Application::IsKeyPressed('0'))
-	{
-		light[0].type = Light::LIGHT_POINT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	if (Application::IsKeyPressed('9'))
-	{
-		light[0].type = Light::LIGHT_DIRECTIONAL;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-	if (Application::IsKeyPressed('8'))
-	{
-		light[0].type = Light::LIGHT_SPOT;
-		glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
-	}
-
 	//Cull back face
 	if (Application::IsKeyPressed('1'))
 		glEnable(GL_CULL_FACE);
@@ -205,6 +166,32 @@ void tutorialScene::Update(double dt)
 			prevposTarget = camera.target;
 		}
 	}
+	for (int i = 0; i < 3; ++i)
+	{
+		if (triggerbox[i] && player->trigger(triggerbox[i]))
+		{
+			//std::cout << "Hit triggerbox " << std::to_string(i) << std::endl;
+			switch (i)
+			{
+			case 0:
+				tutorial = true;
+				triggerbox[0]->Position = Vector3(1000, 0, 1000); //Move tutorial box away
+				triggerbox[0]->updateCurPos();
+				break;
+			case 1:
+				/*SceneManager::instance()->changeScene(4); //Change to correct scene
+				std::cout << "Change scene" << std::endl;
+				return;*/
+				break;
+			default:
+				break;
+			}
+			break;
+		}
+	}
+	//----------------------------------------------------------------------------
+	//Tutorial--------------------------------------------------------------------
+	
 	//----------------------------------------------------------------------------
 	//Gun Stuffs------------------------------------------------------------------
 	static float ROF = 0.125f;
@@ -235,7 +222,35 @@ void tutorialScene::Update(double dt)
 	ammoLeft = std::to_string(lasergun->bulletLeft()) + "/45";
 	clipCount = std::to_string(lasergun->canisterLeft());
 	//----------------------------------------------------------------------------
-	camera.Update(dt);
+	static float fixedTimer = 0.f;
+	static bool tutorialhappen = false;
+	if (tutorialhappen)
+	{
+		fixedTimer += dt;
+		if (fixedTimer > 2.f)
+		{
+			fixedTimer = 0.f;
+			tutorialhappen = false;
+		}
+	}
+	if (tutorial)
+	{
+		//camera.Reset();
+		if (Application::IsKeyPressed('K') && !tutorialhappen)
+		{
+			tutorialNum++;
+			tutorialhappen = true;
+		}
+		if (tutorialNum > 2)
+		{
+			tutorial = false;
+		}
+	}
+	else
+	{
+		camera.Update(dt);
+	}
+	
 	lasergun->updateBullet(dt);
 }
 
@@ -311,6 +326,19 @@ void tutorialScene::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], clipCount, Color(0, 1, 0), 5, 58, 5);
 	RenderTextOnScreen(meshList[GEO_TEXT], ammoLeft, Color(0, 1, 0), 3, 65.5f, 0.5f);
 
+	//Tutorial Instructions
+	if (tutorialNum == 0)
+	{
+		RenderMeshOnScreen(meshList[GEO_TUTORIAL1], 40, 30, 60, 60, false);
+	}
+	else if (tutorialNum == 1)
+	{
+		RenderMeshOnScreen(meshList[GEO_TUTORIAL2], 40, 30, 60, 60, false);
+	}
+	else if (tutorialNum == 2)
+	{
+		RenderMeshOnScreen(meshList[GEO_TUTORIAL3], 40, 30, 60, 60, false);
+	}
 	/*RenderTextOnScreen(meshList[GEO_TEXT], tempPlayerposX, Color(0, 1, 0), 3, 65.5f, 8);
 	RenderTextOnScreen(meshList[GEO_TEXT], tempPlayerposZ, Color(0, 1, 0), 3, 65.5f, 10);*/
 	//-------------------------------------------------------------------------------------
@@ -344,6 +372,15 @@ void tutorialScene::GenerateGEOMESH()
 
 	meshList[GEO_QUADCEILING] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
 	meshList[GEO_QUADCEILING]->textureID = LoadTGA("Image//Tutorial//ceiling.tga");
+
+	meshList[GEO_TUTORIAL1] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
+	meshList[GEO_TUTORIAL1]->textureID = LoadTGA("Image//Tutorial//tutorial.tga");
+
+	meshList[GEO_TUTORIAL2] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
+	meshList[GEO_TUTORIAL2]->textureID = LoadTGA("Image//Tutorial//tutorial2.tga");
+
+	meshList[GEO_TUTORIAL3] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
+	meshList[GEO_TUTORIAL3]->textureID = LoadTGA("Image//Tutorial//tutorial3.tga");
 }
 void tutorialScene::GenerateSkybox()
 {
@@ -372,8 +409,8 @@ void tutorialScene::GenerateOBJ()
 	meshList[GEO_BLASTER]->textureID = LoadTGA("Image//Player//blaster.tga");
 	meshList[GEO_PBULLET] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//Player_Bullet.obj");
 	meshList[GEO_PBULLET]->textureID = LoadTGA("Image//Player//Player_Bullet.tga");
-	//Models need colliderboxes
 
+	//Models need colliderboxes
 	//-----------------------------------------------------------------------
 	//Walls------------------------------------------------------------------
 	meshList[GEO_WALLROW] = MeshBuilder::GenerateOBJ("WallRow", "OBJ//Tutorial//wallRow.obj");
@@ -412,9 +449,17 @@ void tutorialScene::GenerateOBJ()
 	object[GEO_BUTTON] = new GameObject("Button", Vector3(-30, 8, 0));
 	object[GEO_BUTTON]->setCollider(2.5f, 2.5f);
 	object[GEO_BUTTON]->updateCurPos();
-	triggerbox[1] = new GameObject("ToNextLevelButton", Vector3(-30, 8, 0)); //Create a if statement to go to next level
+
+	//OBJ Trigger boxes
+	triggerbox[1] = new GameObject("ToNextLevelButton", Vector3(-30, 8, 0)); //Create a if statement to go to next level(near button)
 	triggerbox[1]->setCollider(3.5f, 3.5f);
 	triggerbox[1]->updateCurPos();
+	
+	triggerbox[0] = new GameObject("Instructions", Vector3(36, 10, 0));	//Instructions
+	triggerbox[0]->setCollider(2, 2);
+	triggerbox[0]->updateCurPos();
+	tutorial = false;
+	tutorialNum = 0;
 }
 
 void tutorialScene::initializeObjects()
