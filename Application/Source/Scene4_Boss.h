@@ -26,7 +26,7 @@ using std::string;
 
 #define numOfEnemy 25
 #define numOfBullets 6
-#define numOfWalls 10
+#define numOfWalls 14
 #define numOfGun 6
 
 class Scene4_Boss : public Scene
@@ -117,6 +117,7 @@ class Scene4_Boss : public Scene
 		GEO_RECOVERY,
 		GEO_BOSSTESTBG,
 		GEO_BOSSTEST,
+		GEO_DEBRIS,
 		NUM_GEOMETRY,
 	};
 

@@ -115,15 +115,15 @@ void Application::Init()
 void Application::Run()
 {
 	//Add Scenes Here
-	//SceneManager::instance()->addScene(new Aloy_Scene); //Main menu must be at first (Unless have splash screen before that)
+	SceneManager::instance()->addScene(new Aloy_Scene); //Main menu must be at first (Unless have splash screen before that)
 	//SceneManager::instance()->addScene(new Menu_Room);
-	//SceneManager::instance()->addScene(new LoadScene); //Must be after main menu
-	//SceneManager::instance()->addScene(new tutorialScene);
-	//SceneManager::instance()->addScene(new Menu_Room);
+	SceneManager::instance()->addScene(new LoadScene); //Must be after main menu
+	SceneManager::instance()->addScene(new tutorialScene);
+	SceneManager::instance()->addScene(new Menu_Room);
 	//SceneManager::instance()->addScene(new GameOver);
 	//SceneManager::instance()->addScene(new tutorialScene);
 	//SceneManager::instance()->addScene(new Scene1tutorial);
-	SceneManager::instance()->addScene(new ChuanXu);
+	//SceneManager::instance()->addScene(new ChuanXu);
 	//SceneManager::instance()->addScene(new Scene_Level2);
 	//SceneManager::instance()->addScene(new Scene4_Boss);
 	//SceneManager::instance()->addScene(new SceneGameOver); //Cannot be called missing image

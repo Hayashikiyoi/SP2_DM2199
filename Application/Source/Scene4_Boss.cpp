@@ -93,13 +93,8 @@ void Scene4_Boss::Init()
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Text//gothiclight.tga");
 
+
 	meshList[GEO_LIGHTBALL] = MeshBuilder::GenerateSphere("LSphere", Color(1, 1, 1), 12, 12, 1);
-
-	/*meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//NPC//Vending_Machine.obj");
-	meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//NPC//Vending_Machine.tga");
-
-	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//NPC//Vending_Cover.obj");
-	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//NPC//Vending_Cover.tga");*/
 
 	GUI();
 	GenerateOBJ();
@@ -741,6 +736,30 @@ void Scene4_Boss::Walls()
 		RenderMesh(meshList[GEO_DOOR], false);
 		modelStack.PopMatrix();
 	}
+
+	modelStack.PushMatrix();
+	modelStack.Translate(WallsObj[10]->Position.x, 0, WallsObj[10]->Position.z);
+	modelStack.Scale(3, 3, 3);
+	RenderMesh(meshList[GEO_DEBRIS], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(WallsObj[11]->Position.x, 0, WallsObj[11]->Position.z);
+	modelStack.Scale(3, 3, 3);
+	RenderMesh(meshList[GEO_DEBRIS], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(WallsObj[12]->Position.x, 0, WallsObj[12]->Position.z);
+	modelStack.Scale(3, 3, 3);
+	RenderMesh(meshList[GEO_DEBRIS], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(WallsObj[13]->Position.x, 0, WallsObj[13]->Position.z);
+	modelStack.Scale(3, 3, 3);
+	RenderMesh(meshList[GEO_DEBRIS], false);
+	modelStack.PopMatrix();
 }
 
 void Scene4_Boss::GenerateOBJ()
@@ -875,6 +894,25 @@ void Scene4_Boss::GenerateOBJ()
 	Keys[5] = new Item("Battery", Vector3(100, 0, -300), "Getting a Battery");
 	Keys[5]->setCollider(10, 10);
 	Keys[5]->updateCurPos();
+
+
+	meshList[GEO_DEBRIS] = MeshBuilder::GenerateOBJ("Debris", "OBJ//Objects//Debris.obj");
+	meshList[GEO_DEBRIS]->textureID = LoadTGA("Image//floor//floor.tga");
+	WallsObj[10] = new GameObject("Debris", Vector3(200,0,200));
+	WallsObj[10]->setCollider(50,50);
+	WallsObj[10]->updateCurPos();
+
+	WallsObj[11] = new GameObject("Debris", Vector3(-200, 0,-200));
+	WallsObj[11]->setCollider(50, 50);
+	WallsObj[11]->updateCurPos();
+
+	WallsObj[12] = new GameObject("Debris", Vector3(200, 0,-200));
+	WallsObj[12]->setCollider(50, 50);
+	WallsObj[12]->updateCurPos();
+	
+	WallsObj[13] = new GameObject("Debris", Vector3(-200,0, 200));
+	WallsObj[13]->setCollider(50, 50);
+	WallsObj[13]->updateCurPos();
 }
 
 void Scene4_Boss::EnemyField()
@@ -1040,18 +1078,6 @@ void Scene4_Boss::Render()
 		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
 		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
 	}
-	/*else if (light[0].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}*/
 	if (light[1].type == Light::LIGHT_SPOT)
 	{
 		Position lightPosition_cameraspace = viewStack.Top() * light[1].position;
@@ -1079,10 +1105,6 @@ void Scene4_Boss::Render()
 	Walls();
 	EnemyField();
 
-	/*RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
-	RenderTextOnScreen(meshList[GEO_TEXT], BossH, Color(0, 1, 0), 5, 0, 5);*/
-	//RenderTextOnScreen(meshList[GEO_TEXT], AmmoLeft, Color(1, 1, 1), 3, 5, 5);
-	//RenderTextOnScreen(meshList[GEO_TEXT], Mags, Color(1, 1, 1), 5, 0, 5);
 	//GUN Bullets
 	for (size_t i = 0; i < clipSize; i++)
 	{

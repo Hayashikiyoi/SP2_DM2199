@@ -55,7 +55,6 @@ void Scene1tutorial::Init()
 	    meshList[i] = NULL;
 		object[i] = NULL;
 		VendingMachine[i] = NULL;
-		//Doors[i] = NULL;
 	}
 
 	CamObj = new GameObject("camera", Vector3(0, 0, 0));
@@ -65,6 +64,20 @@ void Scene1tutorial::Init()
 		Rock[i] = NULL;
 	}
 
+	for (int i = 0; i < numOfBullets; ++i)
+	{
+		bullet[i] = NULL;
+	}
+
+	for (int i = 0; i < numOfEnemy; ++i)
+	{
+		turret[i] = NULL;
+	}
+
+	for (int i = 0; i < 6; ++i)
+	{
+		Keys[i] = NULL;
+	}
 
 	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
 	meshList[GEO_QUAD] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
@@ -177,28 +190,28 @@ void Scene1tutorial::GenerateOBJ()
 {
 	meshList[GEO_ROCKWALL] = MeshBuilder::GenerateOBJ("Rock1", "OBJ//Wall//Rock1.obj");
 	meshList[GEO_ROCKWALL]->textureID = LoadTGA("Image//Wall//Rock.tga");
-	Rock[1] = new GameObject("Rock", Vector3(-1.5, 6, 20));
+	Rock[0] = new GameObject("Rock", Vector3(-1.5, 6, 20));
+	Rock[0]->setCollider(10, 10);
+	Rock[0]->updateCurPos();
+	Rock[1] = new GameObject("Rock", Vector3(20, 6, 20));
 	Rock[1]->setCollider(10, 10);
 	Rock[1]->updateCurPos();
-	Rock[2] = new GameObject("Rock", Vector3(20, 6, 20));
-	Rock[2]->setCollider(10, 10);
-	Rock[2]->updateCurPos();
 
 	meshList[GEO_VENDINGBODY] = MeshBuilder::GenerateOBJ("Vending machine", "OBJ//NPC//Vending_Machine.obj");
 	meshList[GEO_VENDINGBODY]->textureID = LoadTGA("Image//NPC//Vending_Machine.tga");
-	VendingMachine[1] = new GameObject("Vendingmachine", Vector3(-40, 7, -20));
-	VendingMachine[1]->setCollider(7, 7);
-	VendingMachine[1]->updateCurPos();
+	VendingMachine[0] = new GameObject("Vendingmachine", Vector3(-40, 7, -20));
+	VendingMachine[0]->setCollider(7, 7);
+	VendingMachine[0]->updateCurPos();
 
 	meshList[GEO_VENDINGCOVER] = MeshBuilder::GenerateOBJ("Vending machine cover", "OBJ//NPC//Vending_Cover.obj");
 	meshList[GEO_VENDINGCOVER]->textureID = LoadTGA("Image//NPC//Vending_Cover.tga");
 
 	meshList[GEO_BLUEKEYCARD] = MeshBuilder::GenerateOBJ("keycard", "OBJ//NPC//keycard2.obj");
 	meshList[GEO_BLUEKEYCARD]->textureID = LoadTGA("Image//model//bluekeycard.tga");
-	Keys[1] = new Item("Card", Vector3(-100, 0, 0), "Getting a Key");
-	Keys[1]->setCollider(10, 10);
-	Keys[1]->SetCollected(false);
-	Keys[1]->updateCurPos();
+	Keys[0] = new Item("Card", Vector3(-100, 0, 0), "Getting a Key");
+	Keys[0]->setCollider(10, 10);
+	Keys[0]->SetCollected(false);
+	Keys[0]->updateCurPos();
 
 	meshList[GEO_BLASTER] = MeshBuilder::GenerateOBJ("Blaster", "OBJ//Player//blaster.obj");
 	meshList[GEO_BLASTER]->textureID = LoadTGA("Image//Player//blaster.tga");
@@ -207,17 +220,17 @@ void Scene1tutorial::GenerateOBJ()
 
 	meshList[GEO_BATTERY] = MeshBuilder::GenerateOBJ("Battery", "OBJ//NPC//Battery_Clips.obj");
 	meshList[GEO_BATTERY]->textureID = LoadTGA("Image//Player//Battery_Clips.tga");
-	Keys[2] = new Item("Battery", Vector3(300, 0, 0), "Getting a Battery");
+	Keys[1] = new Item("Battery", Vector3(300, 0, 0), "Getting a Battery");
+	Keys[1]->setCollider(10, 10);
+	Keys[1]->updateCurPos();
+
+	Keys[2] = new Item("Battery", Vector3(0, 0, 300), "Getting a Battery");
 	Keys[2]->setCollider(10, 10);
 	Keys[2]->updateCurPos();
 
-	Keys[3] = new Item("Battery", Vector3(0, 0, 300), "Getting a Battery");
+	Keys[3] = new Item("Battery", Vector3(0, 0, -300), "Getting a Battery");
 	Keys[3]->setCollider(10, 10);
 	Keys[3]->updateCurPos();
-
-	Keys[4] = new Item("Battery", Vector3(0, 0, -300), "Getting a Battery");
-	Keys[4]->setCollider(10, 10);
-	Keys[4]->updateCurPos();
 
 	meshList[GEO_ROBOLOCKED] = MeshBuilder::GenerateOBJ("RobotLock", "OBJ//NPC//Robot_body.obj");
 	meshList[GEO_ROBOLOCKED]->textureID = LoadTGA("Image//NPC//Robot_Body_Locked.tga");
@@ -227,15 +240,15 @@ void Scene1tutorial::GenerateOBJ()
 	meshList[GEO_ROBOBODY]->textureID = LoadTGA("Image//NPC//Robot_Body.tga");
 	meshList[GEO_ROBOARMS] = MeshBuilder::GenerateOBJ("Robot", "OBJ//NPC//Robot_Arm.obj");
 	meshList[GEO_ROBOARMS]->textureID = LoadTGA("Image/NPC//Robot_Arms.tga");
-	turret[3] = new Enemy("Robot", Vector3(100, 0, -300));
-	turret[3]->setCollider(10, 10);
-	turret[3]->updateCurPos();
+	turret[0] = new Enemy("Robot", Vector3(100, 0, -300));
+	turret[0]->setCollider(10, 10);
+	turret[0]->updateCurPos();
 	TriggerBox[0] = new GameObject("Trigger", Vector3(100, 0, -300));
 	TriggerBox[0]->setCollider(20, 20);
 	TriggerBox[0]->updateCurPos();
-	turret[4] = new Enemy("Robot", Vector3(100, 0, -300));
-	turret[4]->setCollider(10, 10);
-	turret[4]->updateCurPos();
+	turret[1] = new Enemy("Robot", Vector3(100, 0, -300));
+	turret[1]->setCollider(10, 10);
+	turret[1]->updateCurPos();
 
 }
 
@@ -454,10 +467,6 @@ void Scene1tutorial::GUI()
 	meshList[GEO_AMMOBG] = MeshBuilder::GenerateQuad("ammoBG", Color(1, 1, 1), 1, 1);
 	meshList[GEO_AMMOBG]->textureID = LoadTGA("Image//UI//ammoBG.tga");
 
-	meshList[GEO_BOSSTESTBG] = MeshBuilder::GenerateQuad("ammoBG", Color(1, 1, 1), 1, 1);
-	meshList[GEO_BOSSTESTBG]->textureID = LoadTGA("Image//UI//Boss//bossBG.tga");
-	meshList[GEO_BOSSTEST] = MeshBuilder::GenerateQuad("ammoBG", Color(1, 1, 1), 1, 1);
-	meshList[GEO_BOSSTEST]->textureID = LoadTGA("Image//UI//Boss//bossHP.tga");
 }
 
 void Scene1tutorial::RenderWall()
