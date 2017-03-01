@@ -12,16 +12,17 @@
 #include"Fps_Camera.h"
 #include"Player.h"
 #include"Item.h"
+#include "Weapon.h"
 
 #include <string>
 using std::string;
 #undef numOfEnemy
 #undef Walls
 
-#define numOfEnemy 5
-#define numOfBullet 5
+#define numOfEnemy 6
+#define numOfBullets 5
 #define Walls 4
-#define numOfRocks 10
+#define numOfRocks 50
 
 class Scene1tutorial : public Scene
 {
@@ -81,8 +82,22 @@ class Scene1tutorial : public Scene
 		GEO_ROCKWALL,
 		GEO_BOULDER,
 		GEO_DOOR,
-		GEO_CANDRINK,
+		GEO_BLASTER,
+		GEO_PBULLET,
+		GEO_BATTERY,
 		GEO_BLUEKEYCARD,
+		GEO_HEALTH,
+		GEO_STAMINA,
+		GEO_HEALTHBG,
+		GEO_AMMOBG,
+		GEO_BOSSTESTBG,
+		GEO_BOSSTEST,
+		GEO_TURRETHEAD_2,
+		GEO_TURRETBODY_2,
+		GEO_BULLET,
+		GEO_RECOVERY,
+		GEO_ROBOLOCKED,
+		GEO_ROBOARMSLOCKED,
 		NUM_GEOMETRY,
 	};
 
@@ -102,11 +117,15 @@ private:
 	GameObject* Doors[NUM_GEOMETRY];
 	GameObject* Boulder[NUM_GEOMETRY];
 	GameObject* TriggerBox[2];
-	Item* Keys[2];
+	Weapon* lasergun;
+	Item* Keys[6];
 
 	string deltaTime;
 	//Vector3 Robot;
+	//Vector3 Bullet;
 	Bullet bullet_1;
+	Enemy* turret[numOfEnemy];
+	Bullet* bullet[numOfBullets];
 	Vector3 CrossHair;
 	float rotateAngle;
 	float translateX[3]; //Original code : float translateX; added [] to make 3 array
@@ -114,7 +133,15 @@ private:
 	float openCover = 0;
 	float DelayTimer = 0;
 	void skyBox();
-	void GenerateObj();
+	void GenerateOBJ();
+	void GUI();
+
+	//Player
+	float moveBullet;
+	float HPsizeX;
+	float test2;
+	float test3;
+	string clipCount, ammoLeft;
 
 	Fps_Camera camera;
 	MS modelStack, viewStack, projectionStack;
@@ -130,7 +157,7 @@ private:
 
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey);
+	void RenderMeshOnScreen(Mesh* mesh, int x, int y, int sizex, int sizey, bool isHealth);
 	void RenderWall();
 	void RenderObjects();
 
@@ -146,11 +173,7 @@ public:
 
 	float translate_DoorLeft;
 	float translate_DoorRight;
-	float translate_DoorLeft2;
-	float translate_DoorRight2;
-	float translate_BoulderRolling;
 	float keyrotation;
-	int counterForDrink;
 	 
 	std::string coords;
 };
