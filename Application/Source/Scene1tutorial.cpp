@@ -232,6 +232,13 @@ void Scene1tutorial::GenerateOBJ()
 	Keys[3]->setCollider(10, 10);
 	Keys[3]->updateCurPos();
 
+
+	meshList[GEO_RECOVERY] = MeshBuilder::GenerateOBJ("Recovery", "OBJ//Player//Can.obj");
+	//meshList[GEO_RECOVERY]->textureID = LoadTGA("Image//Player//.tga");
+	Keys[4] = new Item("Battery", Vector3(100, 0, -300), "Getting a Battery");
+	Keys[4]->setCollider(10, 10);
+	Keys[4]->updateCurPos();
+
 	meshList[GEO_ROBOLOCKED] = MeshBuilder::GenerateOBJ("RobotLock", "OBJ//NPC//Robot_body.obj");
 	meshList[GEO_ROBOLOCKED]->textureID = LoadTGA("Image//NPC//Robot_Body_Locked.tga");
 	meshList[GEO_ROBOARMSLOCKED] = MeshBuilder::GenerateOBJ("RobotLock", "OBJ//NPC//Robot_Arm.obj");
@@ -272,10 +279,6 @@ void Scene1tutorial::Update(double dt)
 		lightEnable = true;
 
 	DelayTimer += (float)dt;
-
-
-
-
 
 	//if (coverOpened)
 	//{
@@ -723,6 +726,7 @@ void Scene1tutorial::RenderObjects()
 	bullet[1]->setCollider(5, 5);
 	bullet[1]->updateCurPos();
 }
+
 void Scene1tutorial::Render()
 {
 	if (light[0].type == Light::LIGHT_DIRECTIONAL)
@@ -809,7 +813,61 @@ void Scene1tutorial::Render()
 	RenderMeshOnScreen(meshList[GEO_BOSSTESTBG], 40, 55, test2, 30, false);
 	RenderMeshOnScreen(meshList[GEO_BOSSTEST], 40, 55, test3, 30, false);
 
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[5]->Position.x, turret[5]->Position.y, turret[5]->Position.z);
+	modelStack.Rotate(turret[5]->RotateToPlayer(camera.position), 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOBODY], false);
+	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[6]->Position.x, turret[6]->Position.y, turret[6]->Position.z);
+	modelStack.Rotate(turret[6]->RotateToPlayer(camera.position), 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOARMS], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[7]->Position.x, turret[7]->Position.y, turret[7]->Position.z);
+	modelStack.Rotate(turret[7]->RotateToPlayer(camera.position), 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOLOCKED], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[8]->Position.x, turret[8]->Position.y, turret[8]->Position.z);
+	modelStack.Rotate(turret[8]->RotateToPlayer(camera.position), 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOARMSLOCKED], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[9]->Position.x, turret[9]->Position.y, turret[9]->Position.z);
+	modelStack.Rotate(turret[9]->RotateToPlayer(camera.position), 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOLOCKED], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[10]->Position.x, turret[10]->Position.y, turret[10]->Position.z);
+	modelStack.Rotate(turret[10]->RotateToPlayer(camera.position), 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOARMSLOCKED], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[11]->Position.x, turret[11]->Position.y, turret[11]->Position.z);
+	modelStack.Rotate(turret[11]->RotateToPlayer(camera.position), 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOLOCKED], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(turret[12]->Position.x, turret[12]->Position.y, turret[12]->Position.z);
+	modelStack.Rotate(turret[12]->RotateToPlayer(camera.position), 0, 1, 0);
+	modelStack.Scale(5, 5, 5);
+	RenderMesh(meshList[GEO_ROBOARMSLOCKED], false);
+	modelStack.PopMatrix();
 }
 
 void Scene1tutorial::RenderMesh(Mesh *mesh, bool enableLight)
@@ -822,7 +880,7 @@ void Scene1tutorial::RenderMesh(Mesh *mesh, bool enableLight)
 	glUniformMatrix4fv(m_parameters[U_MODELVIEW], 1, GL_FALSE, &modelView.a[0]);
 	if (enableLight && lightEnable)
 	{
-		glUniform1i(m_parameters[U_LIGHTENABLED], 1);
+		glUniform1i(m_parameters[U_LIGHTENABLED], 1); 
 		modelView_inverse_transpose = modelView.GetInverse().GetTranspose();
 		glUniformMatrix4fv(m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE], 1, GL_FALSE, &modelView_inverse_transpose.a[0]);
 
