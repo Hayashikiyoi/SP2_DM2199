@@ -351,9 +351,10 @@ void ChuanXu::GenerateObj()
 	healthPack[4]->updateCurPos();
 
 	//End point
-	meshList[GEO_END] = MeshBuilder::GenerateQuad("End of maze", Color(1, 1, 1), 10, 10);
-	TriggerBox[0] = new GameObject("End", Vector3(-74, 2, 20));
-	TriggerBox[0]->setCollider(8, 26);
+	meshList[GEO_END] = MeshBuilder::GenerateOBJ("Exit","OBJ//Tutorial//button.obj");
+	meshList[GEO_END]->textureID = LoadTGA("Image//Tutorial//button.tga");
+	TriggerBox[0] = new GameObject("End", Vector3(-70, 2, 20));
+	TriggerBox[0]->setCollider(2.5f, 2.5f);
 	TriggerBox[0]->updateCurPos();
 }
 
@@ -607,8 +608,7 @@ void ChuanXu::RenderMaze() // Maze walls,end point and healthpacks
 	//endpoint
 	modelStack.PushMatrix();
 	modelStack.Translate(TriggerBox[0]->Position.x, TriggerBox[0]->Position.y, TriggerBox[0]->Position.z);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(1.5, 2, 1.5);
+	modelStack.Scale(1.f,1.f,1.f);
 	RenderMesh(meshList[GEO_END], false);
 	modelStack.PopMatrix();
 }

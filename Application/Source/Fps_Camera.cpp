@@ -135,14 +135,6 @@ void Fps_Camera::Update(double dt)
 	target = position + view;
 	up = (rotate)* up;
 
-	if (Application::IsKeyPressed('R'))
-	{
-		Reset();
-	}
+
 }
-void Fps_Camera::Reset()
-{
-	position = defaultPosition;
-	target = defaultTarget;
-	up = defaultUp;
-}
+
