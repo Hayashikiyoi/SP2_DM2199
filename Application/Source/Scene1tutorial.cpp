@@ -301,7 +301,7 @@ void Scene1tutorial::Update(double dt)
 			tutorialNum++;
 			tutorialhappen = true;
 		} 
-		if (tutorialNum > 4)
+		if (tutorialNum > 1)
 		{
 			tutorial = false;
 		}
@@ -403,18 +403,7 @@ void Scene1tutorial::Render()
 	{
 		RenderMeshOnScreen(meshList[GEO_TUTORIAL5], 40, 30, 60, 60, false);
 	}
-	else if (tutorialNum == 2)
-	{
-		RenderMeshOnScreen(meshList[GEO_TUTORIAL6], 40, 30, 60, 60, false);
-	}
-	else if (tutorialNum == 3)
-	{
-		RenderMeshOnScreen(meshList[GEO_TUTORIAL7], 40, 30, 60, 60, false);
-	}
-	else if (tutorialNum == 4)
-	{
-		RenderMeshOnScreen(meshList[GEO_TUTORIAL8], 40, 30, 60, 60, false);
-	}
+	
  
 	/*RenderTextOnScreen(meshList[GEO_TEXT], tempPlayerposX, Color(0, 1, 0), 3, 65.5f, 8);
 	RenderTextOnScreen(meshList[GEO_TEXT], tempPlayerposZ, Color(0, 1, 0), 3, 65.5f, 10);*/
@@ -454,7 +443,7 @@ void Scene1tutorial::GenerateGEOMESH()
 	meshList[GEO_TUTORIAL4]->textureID = LoadTGA("Image//Tutorial//tutorial4.tga");
 
 	meshList[GEO_TUTORIAL5] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
-	meshList[GEO_TUTORIAL5]->textureID = LoadTGA("Image//Tutorial//tutorial5.tga");
+	meshList[GEO_TUTORIAL5]->textureID = LoadTGA("Image//Tutorial//tutorial9.tga");
 
 	meshList[GEO_TUTORIAL6] = MeshBuilder::GenerateQuad("quad", Color(1, 1, 1), 1, 1);
 	meshList[GEO_TUTORIAL6]->textureID = LoadTGA("Image//Tutorial//tutorial6.tga");
@@ -486,7 +475,7 @@ void Scene1tutorial::GenerateSkybox()
 	meshList[GEO_LEFT]->textureID = LoadTGA("Image//skyboxtutorial//left.tga");
 	
 	meshList[GEO_GROUND] = MeshBuilder::GenerateGround("quad", Color(1, 1, 1), 1, 1);
-	meshList[GEO_GROUND]->textureID = LoadTGA("Image//model//ground.tga");
+	meshList[GEO_GROUND]->textureID = LoadTGA("Image//skyboxtutorial//ground.tga");
 }
 void Scene1tutorial::GenerateOBJ()
 {
@@ -529,6 +518,7 @@ void Scene1tutorial::GenerateOBJ()
 	Rock[2] = new GameObject("Rock", Vector3(20, 6, 20));
 	Rock[2]->setCollider(10, 10);
 	Rock[2]->updateCurPos();
+	
 
 	/*meshList[GEO_TURRETHEAD_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_head.obj");
 	meshList[GEO_TURRETHEAD_2]->textureID = LoadTGA("Image//Enemy//Turret_Head.tga");
