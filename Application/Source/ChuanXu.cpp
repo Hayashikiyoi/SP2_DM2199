@@ -13,6 +13,7 @@ using namespace Math;
 
 ChuanXu::ChuanXu()
 {
+	m_programID = SceneManager::instance()->returnProg();
 }
 
 ChuanXu::~ChuanXu()
@@ -63,7 +64,7 @@ void ChuanXu::Init()
 	{
 		WallsObj[i] = NULL;
 	}
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < numOfEnemy; ++i)
 	{
 		SimpleEnemy[i] = NULL;
 	}
@@ -106,7 +107,7 @@ void ChuanXu::Init()
 	GenerateObj();
 
 	//Load vertex and fragment shaders
-	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
+//	m_programID = LoadShaders("Shader//Texture.vertexshader", "Shader//Text.fragmentshader");
 	m_parameters[U_MVP] = glGetUniformLocation(m_programID, "MVP");
 	m_parameters[U_MODELVIEW] = glGetUniformLocation(m_programID, "MV");
 	m_parameters[U_MODELVIEW_INVERSE_TRANSPOSE] = glGetUniformLocation(m_programID, "MV_inverse_transpose");
@@ -200,159 +201,159 @@ void ChuanXu::GenerateObj()
 
 	meshList[GEO_WALL] = MeshBuilder::GenerateOBJ("Wall2", "OBJ//Wall//CX_WALL.obj");
 	meshList[GEO_WALL]->textureID = LoadTGA("Image//Wall//MazeWall.tga");
-	WallsObj[1] = new GameObject("right wall", Vector3(11, 0, -78));
-	WallsObj[1]->setCollider(200
+	WallsObj[0] = new GameObject("right wall", Vector3(11, 0, -78));
+	WallsObj[0]->setCollider(200
 		, 3);
+	WallsObj[0]->updateCurPos();
+
+	WallsObj[1] = new GameObject("back wall", Vector3(100, 0, 11));
+	WallsObj[1]->setCollider(3, 200);
 	WallsObj[1]->updateCurPos();
 
-	WallsObj[2] = new GameObject("back wall", Vector3(100, 0, 11));
-	WallsObj[2]->setCollider(3, 200);
+	WallsObj[2] = new GameObject("left wall", Vector3(12, 0, 100));
+	WallsObj[2]->setCollider(200, 3);
 	WallsObj[2]->updateCurPos();
 
-	WallsObj[3] = new GameObject("left wall", Vector3(12, 0, 100));
-	WallsObj[3]->setCollider(200, 3);
+	WallsObj[3] = new GameObject("front wall", Vector3(-75, 0, 12));
+	WallsObj[3]->setCollider(3, 200);
 	WallsObj[3]->updateCurPos();
 
-	WallsObj[4] = new GameObject("front wall", Vector3(-75, 0, 12));
-	WallsObj[4]->setCollider(3, 200);
-	WallsObj[4]->updateCurPos();
-
-	WallsObj[6] = new GameObject("maze_wall_1", Vector3(-54.5, 0, 55.5));
-	WallsObj[6]->setCollider(4, 52);
-	WallsObj[6]->updateCurPos();
-
-	WallsObj[5] = new GameObject("maze_wall_2", Vector3(1, 0, 33.5));
-	WallsObj[5]->setCollider(115, 4);
+	WallsObj[5] = new GameObject("maze_wall_1", Vector3(-54.5, 0, 55.5));
+	WallsObj[5]->setCollider(4, 52);
 	WallsObj[5]->updateCurPos();
 
-	WallsObj[7] = new GameObject("maze_wall_3", Vector3(-34, 0, 66.6));
-	WallsObj[7]->setCollider(4, 26);
-	WallsObj[7]->updateCurPos();
+	WallsObj[4] = new GameObject("maze_wall_2", Vector3(1, 0, 33.5));
+	WallsObj[4]->setCollider(115, 4);
+	WallsObj[4]->updateCurPos();
 
-	WallsObj[9] = new GameObject("maze_wall_4", Vector3(-11, 0, 88.8));
-	WallsObj[9]->setCollider(4, 26);
-	WallsObj[9]->updateCurPos();
+	WallsObj[6] = new GameObject("maze_wall_3", Vector3(-34, 0, 66.6));
+	WallsObj[6]->setCollider(4, 26);
+	WallsObj[6]->updateCurPos();
 
-	WallsObj[8] = new GameObject("maze_wall_5", Vector3(-1, 0, 55.5));
-	WallsObj[8]->setCollider(72, 4);
+	WallsObj[8] = new GameObject("maze_wall_4", Vector3(-11, 0, 88.8));
+	WallsObj[8]->setCollider(4, 26);
 	WallsObj[8]->updateCurPos();
 
-	WallsObj[10] = new GameObject("maze_wall_6", Vector3(10, 0, 77.7));
-	WallsObj[10]->setCollider(4, 52);
-	WallsObj[10]->updateCurPos();
-    
-	WallsObj[12] = new GameObject("maze_wall_7", Vector3(44.5, 0, 77.7));
-	WallsObj[12]->setCollider(26, 4);
-	WallsObj[12]->updateCurPos();
+	WallsObj[7] = new GameObject("maze_wall_5", Vector3(-1, 0, 55.5));
+	WallsObj[7]->setCollider(72, 4);
+	WallsObj[7]->updateCurPos();
 
-	WallsObj[11] = new GameObject("maze_wall_8", Vector3(55, 0, 88.8));
-	WallsObj[11]->setCollider(4, 26);
+	WallsObj[9] = new GameObject("maze_wall_6", Vector3(10, 0, 77.7));
+	WallsObj[9]->setCollider(4, 52);
+	WallsObj[9]->updateCurPos();
+    
+	WallsObj[11] = new GameObject("maze_wall_7", Vector3(44.5, 0, 77.7));
+	WallsObj[11]->setCollider(26, 4);
 	WallsObj[11]->updateCurPos();
 
-	WallsObj[13] = new GameObject("maze_wall_9", Vector3(56.5, 0, 44));
-	WallsObj[13]->setCollider(4, 26);
+	WallsObj[10] = new GameObject("maze_wall_8", Vector3(55, 0, 88.8));
+	WallsObj[10]->setCollider(4, 26);
+	WallsObj[10]->updateCurPos();
+
+	WallsObj[12] = new GameObject("maze_wall_9", Vector3(56.5, 0, 44));
+	WallsObj[12]->setCollider(4, 26);
+	WallsObj[12]->updateCurPos();
+
+	WallsObj[13] = new GameObject("maze_wall_10", Vector3(77, 0, 44.5));
+	WallsObj[13]->setCollider(4, 70);
 	WallsObj[13]->updateCurPos();
 
-	WallsObj[14] = new GameObject("maze_wall_10", Vector3(77, 0, 44.5));
-	WallsObj[14]->setCollider(4, 70);
+	WallsObj[14] = new GameObject("maze_wall_11", Vector3(77, 0, 11));
+	WallsObj[14]->setCollider(47, 4);
 	WallsObj[14]->updateCurPos();
 
-	WallsObj[15] = new GameObject("maze_wall_11", Vector3(77, 0, 11));
-	WallsObj[15]->setCollider(47, 4);
+	WallsObj[15] = new GameObject("maze_wall_12", Vector3(33, 0, 11));
+	WallsObj[15]->setCollider(4, 47);
 	WallsObj[15]->updateCurPos();
 
-	WallsObj[16] = new GameObject("maze_wall_12", Vector3(33, 0, 11));
-	WallsObj[16]->setCollider(4, 47);
+	WallsObj[16] = new GameObject("maze_wall_13", Vector3(-11, 0, 0));
+	WallsObj[16]->setCollider(4, 68);
 	WallsObj[16]->updateCurPos();
 
-	WallsObj[17] = new GameObject("maze_wall_13", Vector3(-11, 0, 0));
-	WallsObj[17]->setCollider(4, 68);
+	WallsObj[17] = new GameObject("maze_wall_14", Vector3(0, 0, 11));
+	WallsObj[17]->setCollider(26, 4);
 	WallsObj[17]->updateCurPos();
 
-	WallsObj[18] = new GameObject("maze_wall_14", Vector3(0, 0, 11));
+	WallsObj[18] = new GameObject("maze_wall_15", Vector3(22.5, 0, -11));
 	WallsObj[18]->setCollider(26, 4);
 	WallsObj[18]->updateCurPos();
 
-	WallsObj[19] = new GameObject("maze_wall_15", Vector3(22.5, 0, -11));
-	WallsObj[19]->setCollider(26, 4);
+	WallsObj[19] = new GameObject("maze_wall_16", Vector3(77, 0, -11));
+	WallsObj[19]->setCollider(47, 4);
 	WallsObj[19]->updateCurPos();
 
-	WallsObj[20] = new GameObject("maze_wall_16", Vector3(77, 0, -11));
-	WallsObj[20]->setCollider(47, 4);
+	WallsObj[20] = new GameObject("maze_wall_17", Vector3(77.5, 0, -43.5));
+	WallsObj[20]->setCollider(4, 26);
 	WallsObj[20]->updateCurPos();
 
-	WallsObj[21] = new GameObject("maze_wall_17", Vector3(77.5, 0, -43.5));
+	WallsObj[21] = new GameObject("maze_wall_18", Vector3(55, 0, -67));
 	WallsObj[21]->setCollider(4, 26);
 	WallsObj[21]->updateCurPos();
 
-	WallsObj[22] = new GameObject("maze_wall_18", Vector3(55, 0, -67));
-	WallsObj[22]->setCollider(4, 26);
+	WallsObj[22] = new GameObject("maze_wall_19", Vector3(55, 0, -33));
+	WallsObj[22]->setCollider(47, 4);
 	WallsObj[22]->updateCurPos();
 
-	WallsObj[23] = new GameObject("maze_wall_19", Vector3(55, 0, -33));
-	WallsObj[23]->setCollider(47, 4);
+	WallsObj[23] = new GameObject("maze_wall_20", Vector3(33.25, 0, -55.5));
+	WallsObj[23]->setCollider(4, 47);
 	WallsObj[23]->updateCurPos();
 
-	WallsObj[24] = new GameObject("maze_wall_20", Vector3(33.25, 0, -55.5));
-	WallsObj[24]->setCollider(4, 47);
+	WallsObj[24] = new GameObject("maze_wall_21", Vector3(0.5, 0, -54.5));
+	WallsObj[24]->setCollider(26, 4);
 	WallsObj[24]->updateCurPos();
 
-	WallsObj[25] = new GameObject("maze_wall_21", Vector3(0.5, 0, -54.5));
-	WallsObj[25]->setCollider(26, 4);
+	WallsObj[25] = new GameObject("maze_wall_22", Vector3(-44, 0, -55.5));
+	WallsObj[25]->setCollider(25, 4);
 	WallsObj[25]->updateCurPos();
 
-	WallsObj[26] = new GameObject("maze_wall_22", Vector3(-44, 0, -55.5));
-	WallsObj[26]->setCollider(25, 4);
+	WallsObj[26] = new GameObject("maze_wall_23", Vector3(-55, 0, -22.2));
+	WallsObj[26]->setCollider(4, 26);
 	WallsObj[26]->updateCurPos();
 
-	WallsObj[27] = new GameObject("maze_wall_23", Vector3(-55, 0, -22.2));
-	WallsObj[27]->setCollider(4, 26);
+	WallsObj[27] = new GameObject("24", Vector3(-65.5, 0, -33.3));
+	WallsObj[27]->setCollider(26, 4);
 	WallsObj[27]->updateCurPos();
 
-	WallsObj[28] = new GameObject("24", Vector3(-65.5, 0, -33.3));
-	WallsObj[28]->setCollider(26, 4);
+	WallsObj[28] = new GameObject("maze_wall_25", Vector3(-33.5, 0, -22.2));
+	WallsObj[28]->setCollider(4, 74);
 	WallsObj[28]->updateCurPos();
 
-	WallsObj[29] = new GameObject("maze_wall_25", Vector3(-33.5, 0, -22.2));
-	WallsObj[29]->setCollider(4, 74);
+	WallsObj[29] = new GameObject("maze_wall_26", Vector3(-55.25, 0, 11.1));
+	WallsObj[29]->setCollider(47, 4);
 	WallsObj[29]->updateCurPos();
 
-	WallsObj[30] = new GameObject("maze_wall_26", Vector3(-55.25, 0, 11.1));
-	WallsObj[30]->setCollider(47, 4);
+	WallsObj[30] = new GameObject("maze_wall_27", Vector3(11.5, 0, -32.75));
+	WallsObj[30]->setCollider(4, 48);
 	WallsObj[30]->updateCurPos();
-
-	WallsObj[31] = new GameObject("maze_wall_27", Vector3(11.5, 0, -32.75));
-	WallsObj[31]->setCollider(4, 48);
-	WallsObj[31]->updateCurPos();
 
 	//Health packs
 	meshList[GEO_RECOVERY] = MeshBuilder::GenerateOBJ("Recovery", "OBJ//Player//Can.obj");
 	//meshList[GEO_RECOVERY]->textureID = LoadTGA("Image//Player//.tga");
 
-	healthPack[1] = new Item("Health_Pack_1", Vector3(88, 0, 17),"Heal player");
+	healthPack[0] = new Item("Health_Pack_1", Vector3(88, 0, 17),"Heal player");
+	healthPack[0]->setCollider(5, 5);
+	healthPack[0]->updateCurPos();
+
+	healthPack[1] = new Item("Health_Pack_2", Vector3(40, 0, 88), "Heal player");
 	healthPack[1]->setCollider(5, 5);
 	healthPack[1]->updateCurPos();
 
-	healthPack[2] = new Item("Health_Pack_2", Vector3(40, 0, 88), "Heal player");
+	healthPack[2] = new Item("Health_Pack_3", Vector3(0, 0, 85), "Heal player");
 	healthPack[2]->setCollider(5, 5);
 	healthPack[2]->updateCurPos();
 
-	healthPack[3] = new Item("Health_Pack_3", Vector3(0, 0, 85), "Heal player");
+	healthPack[3] = new Item("Health_Pack_4", Vector3(45, 0, -60), "Heal player");
 	healthPack[3]->setCollider(5, 5);
 	healthPack[3]->updateCurPos();
 
-	healthPack[4] = new Item("Health_Pack_4", Vector3(45, 0, -60), "Heal player");
+	healthPack[4] = new Item("Health_Pack_5", Vector3(-65, 0, -15), "Heal player");
 	healthPack[4]->setCollider(5, 5);
 	healthPack[4]->updateCurPos();
-
-	healthPack[5] = new Item("Health_Pack_5", Vector3(-65, 0, -15), "Heal player");
-	healthPack[5]->setCollider(5, 5);
-	healthPack[5]->updateCurPos();
 
 	//End point
 	meshList[GEO_END] = MeshBuilder::GenerateQuad("End of maze", Color(1, 1, 1), 10, 10);
 	TriggerBox[0] = new GameObject("End", Vector3(-74, 2, 20));
-	TriggerBox[0]->setCollider(4, 26);
+	TriggerBox[0]->setCollider(8, 26);
 	TriggerBox[0]->updateCurPos();
 }
 
@@ -365,7 +366,7 @@ void ChuanXu::RenderMaze() // Maze walls,end point and healthpacks
 		modelStack.Translate(SimpleEnemy[0]->Position.x, SimpleEnemy[0]->Position.y, SimpleEnemy[0]->Position.z);
 		modelStack.Rotate(SimpleEnemy[0]->RotateToPlayer(player->Position), 0, 1, 0);
 		modelStack.Scale(4, 4, 4);
-		RenderMesh(meshList[GEO_SIMPLEENEMY], false);
+		RenderMesh(meshList[GEO_SIMPLEENEMY], true);
 		modelStack.PopMatrix();
 	}
 	if (!SimpleEnemy[1]->isdead())
@@ -374,60 +375,67 @@ void ChuanXu::RenderMaze() // Maze walls,end point and healthpacks
 		modelStack.Translate(SimpleEnemy[1]->Position.x, SimpleEnemy[1]->Position.y, SimpleEnemy[1]->Position.z);
 		modelStack.Rotate(SimpleEnemy[1]->RotateToPlayer(player->Position), 0, 1, 0);
 		modelStack.Scale(4, 4, 4);
-		RenderMesh(meshList[GEO_SIMPLEENEMY], false);
+		RenderMesh(meshList[GEO_SIMPLEENEMY], true);
 		modelStack.PopMatrix();
 	}
 
 	// Maze walls
 	modelStack.PushMatrix();
-	modelStack.Translate(WallsObj[5]->Position.x, WallsObj[5]->Position.y, WallsObj[5]->Position.z);
+	modelStack.Translate(WallsObj[4]->Position.x, WallsObj[4]->Position.y, WallsObj[4]->Position.z);
 	modelStack.Scale(7.5, 1.5, 1.5);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(WallsObj[5]->Position.x, WallsObj[5]->Position.y, WallsObj[5]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(3, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[6]->Position.x, WallsObj[6]->Position.y, WallsObj[6]->Position.z);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(3, 1.5, 1.5);
-	RenderMesh(meshList[GEO_WALL], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(WallsObj[7]->Position.x, WallsObj[7]->Position.y, WallsObj[7]->Position.z);
-	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(1.5, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(WallsObj[8]->Position.x, WallsObj[8]->Position.y, WallsObj[8]->Position.z);
+	modelStack.Translate(WallsObj[7]->Position.x, WallsObj[7]->Position.y, WallsObj[7]->Position.z);
 	modelStack.Scale(4.5, 1.5, 1.5);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(WallsObj[8]->Position.x, WallsObj[8]->Position.y, WallsObj[8]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(1.5, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[9]->Position.x, WallsObj[9]->Position.y, WallsObj[9]->Position.z);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(1.5, 1.5, 1.5);
+	modelStack.Scale(3, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[10]->Position.x, WallsObj[10]->Position.y, WallsObj[10]->Position.z);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(3, 1.5, 1.5);
+	modelStack.Scale(1.5, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[11]->Position.x, WallsObj[11]->Position.y, WallsObj[11]->Position.z);
-	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(1.5, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[12]->Position.x, WallsObj[12]->Position.y, WallsObj[12]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(1.5, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
@@ -435,19 +443,19 @@ void ChuanXu::RenderMaze() // Maze walls,end point and healthpacks
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[13]->Position.x, WallsObj[13]->Position.y, WallsObj[13]->Position.z);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(1.5, 1.5, 1.5);
-	RenderMesh(meshList[GEO_WALL], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(WallsObj[14]->Position.x, WallsObj[14]->Position.y, WallsObj[14]->Position.z);
-	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(4.5, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
+	modelStack.Translate(WallsObj[14]->Position.x, WallsObj[14]->Position.y, WallsObj[14]->Position.z);
+	modelStack.Scale(3, 1.5, 1.5);
+	RenderMesh(meshList[GEO_WALL], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[15]->Position.x, WallsObj[15]->Position.y, WallsObj[15]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(3, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
@@ -455,14 +463,13 @@ void ChuanXu::RenderMaze() // Maze walls,end point and healthpacks
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[16]->Position.x, WallsObj[16]->Position.y, WallsObj[16]->Position.z);
 	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(3, 1.5, 1.5);
+	modelStack.Scale(4.5, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[17]->Position.x, WallsObj[17]->Position.y, WallsObj[17]->Position.z);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(4.5, 1.5, 1.5);
+	modelStack.Scale(1.5, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
@@ -474,13 +481,14 @@ void ChuanXu::RenderMaze() // Maze walls,end point and healthpacks
 
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[19]->Position.x, WallsObj[19]->Position.y, WallsObj[19]->Position.z);
-	modelStack.Scale(1.5, 1.5, 1.5);
+	modelStack.Scale(3, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(WallsObj[20]->Position.x, WallsObj[20]->Position.y, WallsObj[20]->Position.z);
-	modelStack.Scale(3, 1.5, 1.5);
+	modelStack.Translate(WallsObj[28]->Position.x, WallsObj[20]->Position.y, WallsObj[20]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(1.5, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
@@ -493,21 +501,20 @@ void ChuanXu::RenderMaze() // Maze walls,end point and healthpacks
 
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[22]->Position.x, WallsObj[22]->Position.y, WallsObj[22]->Position.z);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(1.5, 1.5, 1.5);
+	modelStack.Scale(3, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[23]->Position.x, WallsObj[23]->Position.y, WallsObj[23]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(3, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[24]->Position.x, WallsObj[24]->Position.y, WallsObj[24]->Position.z);
-	modelStack.Rotate(90, 0, 1, 0);
-	modelStack.Scale(3, 1.5, 1.5);
+	modelStack.Scale(1.5, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
@@ -519,44 +526,47 @@ void ChuanXu::RenderMaze() // Maze walls,end point and healthpacks
 
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[26]->Position.x, WallsObj[26]->Position.y, WallsObj[26]->Position.z);
+	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(1.5, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[27]->Position.x, WallsObj[27]->Position.y, WallsObj[27]->Position.z);
-	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(1.5, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
 	modelStack.Translate(WallsObj[28]->Position.x, WallsObj[28]->Position.y, WallsObj[28]->Position.z);
-	modelStack.Scale(1.5, 1.5, 1.5);
-	RenderMesh(meshList[GEO_WALL], true);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
-	modelStack.Translate(WallsObj[29]->Position.x, WallsObj[29]->Position.y, WallsObj[29]->Position.z);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(4.5, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(WallsObj[30]->Position.x, WallsObj[30]->Position.y, WallsObj[30]->Position.z);
+	modelStack.Translate(WallsObj[29]->Position.x, WallsObj[29]->Position.y, WallsObj[29]->Position.z);
 	modelStack.Scale(3, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(WallsObj[31]->Position.x, WallsObj[31]->Position.y, WallsObj[31]->Position.z);
+	modelStack.Translate(WallsObj[30]->Position.x, WallsObj[30]->Position.y, WallsObj[30]->Position.z);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(3, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	//health pack
+	if (healing[0])
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(healthPack[0]->Position.x, 0, healthPack[0]->Position.z);
+		modelStack.Scale(0.5, 0.5, 0.5);
+		modelStack.Rotate(rotateAngle, 0, 1, 0);
+		RenderMesh(meshList[GEO_RECOVERY], false);
+		modelStack.PopMatrix();
+	}
 	if (healing[1])
 	{
 		modelStack.PushMatrix();
@@ -593,15 +603,6 @@ void ChuanXu::RenderMaze() // Maze walls,end point and healthpacks
 		RenderMesh(meshList[GEO_RECOVERY], false);
 		modelStack.PopMatrix();
 	}
-	if (healing[5])
-	{
-		modelStack.PushMatrix();
-		modelStack.Translate(healthPack[5]->Position.x, 0, healthPack[5]->Position.z);
-		modelStack.Scale(0.5, 0.5, 0.5);
-		modelStack.Rotate(rotateAngle, 0, 1, 0);
-		RenderMesh(meshList[GEO_RECOVERY], false);
-		modelStack.PopMatrix();
-	}
 
 	//endpoint
 	modelStack.PushMatrix();
@@ -623,12 +624,27 @@ void ChuanXu::Update(double dt)
 	static bool shoot = false;
 	static bool smtHappen1= false ;
 	static bool smtHappen2 = false;
-	//static bool startLevel = false;
 
 	HPsizeX = player->getHealth()*0.215;
 	delayTime += (float)dt;
 	rotateAngle += (float)(10 * dt);
 
+
+	for (int i = 0; i < clipSize; ++i)
+	{
+		if (lasergun->pBullet[i] && SimpleEnemy[0] && SimpleEnemy[0]->trigger(lasergun->pBullet[i]) && !smtHappen1)
+		{
+			SimpleEnemy[0]->dmgToEnemy(20);
+			smtHappen1 = true;
+			break;
+		}
+		if (lasergun->pBullet[i] && SimpleEnemy[1] && SimpleEnemy[1]->trigger(lasergun->pBullet[i]) && !smtHappen2)
+		{
+			SimpleEnemy[1]->dmgToEnemy(20);
+			smtHappen2 = true;
+			break;
+		}
+	}
 	if (delayTime > 3 && startLevel)
 	{
 		player->DmgPlayer(5);
@@ -674,7 +690,9 @@ void ChuanXu::Update(double dt)
 			smtHappen2 = false;
 		}
 	}
-	
+
+
+
 
 	//Cull back face
 	if (Application::IsKeyPressed('1'))
@@ -715,23 +733,9 @@ void ChuanXu::Update(double dt)
 	AmmoLeft = std::to_string(lasergun->bulletLeft()) + "/45";
 	clipCount = std::to_string(lasergun->canisterLeft());
 
-	for (int i = 0; i < clipSize; ++i)
-	{
-		if (lasergun->pBullet[i] && SimpleEnemy[0] && SimpleEnemy[0]->trigger(lasergun->pBullet[i]) && !smtHappen1)
-		{
-			SimpleEnemy[0]->dmgToEnemy(20);
-			smtHappen1 = true;
-			break;
-		}
-		if (lasergun->pBullet[i] && SimpleEnemy[1] && SimpleEnemy[1]->trigger(lasergun->pBullet[i]) && !smtHappen2)
-		{
-			SimpleEnemy[1]->dmgToEnemy(20);
-			smtHappen2 = true;
-			break;
-		}
-	}
 
-	for (int i = 0; i < 2; i++)
+
+	for (int i = 0; i < numOfEnemy; i++)
 	{
 		if (SimpleEnemy[i] && player->trigger(SimpleEnemy[i]) && !SimpleEnemy[i]->isdead())
 		{
@@ -740,13 +744,6 @@ void ChuanXu::Update(double dt)
 			camera.target = prevposTarget;
 			break;
 		}
-	}
-
-
-	if (TriggerBox[0] && player->trigger(TriggerBox[0]))
-	{
-		SceneManager::instance()->levelCompleted = 2;
-		SceneManager::instance()->changeScene(2);
 	}
 
 	for (int i = 0; i < Walls; ++i)
@@ -764,37 +761,50 @@ void ChuanXu::Update(double dt)
 		}
 	}
 
+	if (TriggerBox[0] && player->trigger(TriggerBox[0]))
+	{
+		SceneManager::instance()->levelCompleted = 2;
+		SceneManager::instance()->changeScene(3);
+		return;
+	}
+	if (player->getHealth() == 0)
+	{
+		SceneManager::instance()->changeScene(6);
+		return;
+	}
 
-	lasergun->updateBullet(dt);
+
+	
 	if (startLevel)
 	{
 		camera.Update(dt);
+		lasergun->updateBullet(dt);
 	}
 }
 
 void ChuanXu::RenderWalls()
 {	
 	modelStack.PushMatrix();
-	modelStack.Translate(WallsObj[1]->Position.x,WallsObj[1]->Position.y, WallsObj[1]->Position.z);
+	modelStack.Translate(WallsObj[0]->Position.x,WallsObj[0]->Position.y, WallsObj[0]->Position.z);
 	modelStack.Scale(12, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(WallsObj[2]->Position.x, WallsObj[2]->Position.y, WallsObj[2]->Position.z);
+	modelStack.Translate(WallsObj[1]->Position.x, WallsObj[1]->Position.y, WallsObj[1]->Position.z);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(12, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(WallsObj[3]->Position.x, WallsObj[3]->Position.y, WallsObj[3]->Position.z);
+	modelStack.Translate(WallsObj[2]->Position.x, WallsObj[2]->Position.y, WallsObj[2]->Position.z);
 	modelStack.Scale(12, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(WallsObj[4]->Position.x, WallsObj[4]->Position.y, WallsObj[4]->Position.z);
+	modelStack.Translate(WallsObj[3]->Position.x, WallsObj[3]->Position.y, WallsObj[3]->Position.z);
 	modelStack.Rotate(90, 0, 1, 0);
 	modelStack.Scale(12, 1.5, 1.5);
 	RenderMesh(meshList[GEO_WALL], true);
@@ -1052,11 +1062,13 @@ void ChuanXu::Exit()
 		if (healthPack[i] != NULL)
 			delete healthPack[i];
 	}
-	for (int i = 0; i < 2; ++i)
+	for (int i = 0; i < numOfEnemy; ++i)
 	{
 		if (SimpleEnemy[i] != NULL)
 			delete SimpleEnemy[i];
 	}
+	if (TriggerBox[0] != NULL)
+		delete TriggerBox[0];
 	delete player;
 	delete lasergun;
 

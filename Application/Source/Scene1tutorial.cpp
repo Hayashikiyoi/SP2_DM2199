@@ -731,7 +731,7 @@ void Scene1tutorial::Render()
 	modelStack.LoadIdentity();
 
 	//-------------------------------------------------------------------------------------
-	skyBox();
+	//skyBox();
 	RenderWall();
 	RenderObjects();
 
