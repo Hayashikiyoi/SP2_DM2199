@@ -359,7 +359,7 @@ void Scene4_Boss::Update(double dt)
 	}
 	if (player->getHealth() == 0)
 	{
-		SceneManager::instance()->changeScene(5);
+		SceneManager::instance()->changeScene(6);
 		return;
 	}
 	//---------------------------------------------------------------------------------------------------------------------------------------------------------
