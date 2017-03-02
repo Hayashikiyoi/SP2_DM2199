@@ -169,6 +169,22 @@ void Scene1tutorial::Update(double dt)
 		}
 	}
 
+	for (int i = 0; i < numOfRocks; ++i)
+	{
+		if (Rock[i] && player->trigger(Rock[i]))
+		{
+			camera.position = prevpos;
+			camera.target = prevposTarget;
+			break;
+		}
+		else if (i == (numOfRocks - 1))
+		{
+			prevpos = camera.position;
+			prevposTarget = camera.target;
+		}
+	}
+	
+
 	/*for (int i = 1; i <= 5; ++i)
 	{
 		if (bullet[i]->shoot)
@@ -285,7 +301,7 @@ void Scene1tutorial::Update(double dt)
 			tutorialNum++;
 			tutorialhappen = true;
 		} 
-		if (tutorialNum > 5)
+		if (tutorialNum > 4)
 		{
 			tutorial = false;
 		}
@@ -379,6 +395,26 @@ void Scene1tutorial::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], ammoLeft, Color(0, 1, 0), 3, 65.5f, 0.5f);
 
 	//Tutorial Instructions
+	if (tutorialNum == 0)
+	{
+		RenderMeshOnScreen(meshList[GEO_TUTORIAL4], 40, 30, 60, 60, false);
+	}
+	else if (tutorialNum == 1)
+	{
+		RenderMeshOnScreen(meshList[GEO_TUTORIAL5], 40, 30, 60, 60, false);
+	}
+	else if (tutorialNum == 2)
+	{
+		RenderMeshOnScreen(meshList[GEO_TUTORIAL6], 40, 30, 60, 60, false);
+	}
+	else if (tutorialNum == 3)
+	{
+		RenderMeshOnScreen(meshList[GEO_TUTORIAL7], 40, 30, 60, 60, false);
+	}
+	else if (tutorialNum == 4)
+	{
+		RenderMeshOnScreen(meshList[GEO_TUTORIAL8], 40, 30, 60, 60, false);
+	}
  
 	/*RenderTextOnScreen(meshList[GEO_TEXT], tempPlayerposX, Color(0, 1, 0), 3, 65.5f, 8);
 	RenderTextOnScreen(meshList[GEO_TEXT], tempPlayerposZ, Color(0, 1, 0), 3, 65.5f, 10);*/
@@ -470,11 +506,11 @@ void Scene1tutorial::GenerateOBJ()
 	object[GEO_BUTTON]->updateCurPos();
 
 	//OBJ Trigger boxes
-	triggerbox[1] = new GameObject("ToNextLevelButton", Vector3(-30, 8, 0)); //Create a if statement to go to next level(near button)
+	triggerbox[1] = new GameObject("ToNextLevelButton", Vector3(37, 7, -35)); //Create a if statement to go to next level(near button)
 	triggerbox[1]->setCollider(3.5f, 3.5f);
 	triggerbox[1]->updateCurPos();
 
-	triggerbox[0] = new GameObject("Instructions", Vector3(36, 10, 0));	//Instructions
+	triggerbox[0] = new GameObject("Instructions", Vector3(-30, 0, 40));	//Instructions
 	triggerbox[0]->setCollider(2, 2);
 	triggerbox[0]->updateCurPos();
 	tutorial = false;
@@ -487,6 +523,12 @@ void Scene1tutorial::GenerateOBJ()
 
 	meshList[GEO_ROCK] = MeshBuilder::GenerateOBJ("Rock", "OBJ//Wall//Rock1.obj");
 	meshList[GEO_ROCK]->textureID = LoadTGA("Image//model//Rock.tga");
+	Rock[1] = new GameObject("Rock", Vector3(-1.5, 6, 20));
+	Rock[1]->setCollider(10, 10);
+	Rock[1]->updateCurPos();
+	Rock[2] = new GameObject("Rock", Vector3(20, 6, 20));
+	Rock[2]->setCollider(10, 10);
+	Rock[2]->updateCurPos();
 
 	/*meshList[GEO_TURRETHEAD_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_head.obj");
 	meshList[GEO_TURRETHEAD_2]->textureID = LoadTGA("Image//Enemy//Turret_Head.tga");
@@ -515,6 +557,10 @@ void Scene1tutorial::initializeObjects()
 		triggerbox[i] = 0;
 	}
 
+	for (int i = 0; i < numOfRocks; ++i)
+	{
+		Rock[i] = 0;
+	}
 	/*for (int i = 0; i < numOfEnemy; ++i)
 	{
 		turret[i] = 0;
@@ -921,6 +967,11 @@ void Scene1tutorial::Exit()
 	{
 		if (triggerbox[i] != 0)
 			delete triggerbox[i];
+	}
+	for (int i = 0; i < numOfRocks; ++i)
+	{
+		if (Rock[i] != NULL)
+			delete Rock[i];
 	}
 	delete player;
 	delete lasergun;
