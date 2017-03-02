@@ -169,6 +169,22 @@ void Scene1tutorial::Update(double dt)
 		}
 	}
 
+	for (int i = 0; i < numOfRocks; ++i)
+	{
+		if (Rock[i] && player->trigger(Rock[i]))
+		{
+			camera.position = prevpos;
+			camera.target = prevposTarget;
+			break;
+		}
+		else if (i == (numOfRocks - 1))
+		{
+			prevpos = camera.position;
+			prevposTarget = camera.target;
+		}
+	}
+	
+
 	/*for (int i = 1; i <= 5; ++i)
 	{
 		if (bullet[i]->shoot)
@@ -285,7 +301,7 @@ void Scene1tutorial::Update(double dt)
 			tutorialNum++;
 			tutorialhappen = true;
 		} 
-		if (tutorialNum > 5)
+		if (tutorialNum > 4)
 		{
 			tutorial = false;
 		}
@@ -379,6 +395,26 @@ void Scene1tutorial::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], ammoLeft, Color(0, 1, 0), 3, 65.5f, 0.5f);
 
 	//Tutorial Instructions
+	if (tutorialNum == 0)
+	{
+		RenderMeshOnScreen(meshList[GEO_TUTORIAL4], 40, 30, 60, 60, false);
+	}
+	else if (tutorialNum == 1)
+	{
+		RenderMeshOnScreen(meshList[GEO_TUTORIAL5], 40, 30, 60, 60, false);
+	}
+	else if (tutorialNum == 2)
+	{
+		RenderMeshOnScreen(meshList[GEO_TUTORIAL6], 40, 30, 60, 60, false);
+	}
+	else if (tutorialNum == 3)
+	{
+		RenderMeshOnScreen(meshList[GEO_TUTORIAL7], 40, 30, 60, 60, false);
+	}
+	else if (tutorialNum == 4)
+	{
+		RenderMeshOnScreen(meshList[GEO_TUTORIAL8], 40, 30, 60, 60, false);
+	}
  
 	/*RenderTextOnScreen(meshList[GEO_TEXT], tempPlayerposX, Color(0, 1, 0), 3, 65.5f, 8);
 	RenderTextOnScreen(meshList[GEO_TEXT], tempPlayerposZ, Color(0, 1, 0), 3, 65.5f, 10);*/
@@ -470,11 +506,11 @@ void Scene1tutorial::GenerateOBJ()
 	object[GEO_BUTTON]->updateCurPos();
 
 	//OBJ Trigger boxes
-	triggerbox[1] = new GameObject("ToNextLevelButton", Vector3(-30, 8, 0)); //Create a if statement to go to next level(near button)
+	triggerbox[1] = new GameObject("ToNextLevelButton", Vector3(37, 7, -35)); //Create a if statement to go to next level(near button)
 	triggerbox[1]->setCollider(3.5f, 3.5f);
 	triggerbox[1]->updateCurPos();
 
-	triggerbox[0] = new GameObject("Instructions", Vector3(36, 10, 0));	//Instructions
+	triggerbox[0] = new GameObject("Instructions", Vector3(-30, 0, 40));	//Instructions
 	triggerbox[0]->setCollider(2, 2);
 	triggerbox[0]->updateCurPos();
 	tutorial = false;
@@ -487,6 +523,12 @@ void Scene1tutorial::GenerateOBJ()
 
 	meshList[GEO_ROCK] = MeshBuilder::GenerateOBJ("Rock", "OBJ//Wall//Rock1.obj");
 	meshList[GEO_ROCK]->textureID = LoadTGA("Image//model//Rock.tga");
+	Rock[1] = new GameObject("Rock", Vector3(-1.5, 6, 20));
+	Rock[1]->setCollider(10, 10);
+	Rock[1]->updateCurPos();
+	Rock[2] = new GameObject("Rock", Vector3(20, 6, 20));
+	Rock[2]->setCollider(10, 10);
+	Rock[2]->updateCurPos();
 
 	/*meshList[GEO_TURRETHEAD_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_head.obj");
 	meshList[GEO_TURRETHEAD_2]->textureID = LoadTGA("Image//Enemy//Turret_Head.tga");
@@ -515,6 +557,10 @@ void Scene1tutorial::initializeObjects()
 		triggerbox[i] = 0;
 	}
 
+	for (int i = 0; i < numOfRocks; ++i)
+	{
+		Rock[i] = 0;
+	}
 	/*for (int i = 0; i < numOfEnemy; ++i)
 	{
 		turret[i] = 0;
@@ -737,228 +783,18 @@ void Scene1tutorial::RenderRocks()
 		RenderMesh(meshList[GEO_ROCK], true);
 		modelStack.PopMatrix();
 	}
-	
-		modelStack.PushMatrix();
-		modelStack.Translate(-1.5, 6, 20);
-		modelStack.Scale(10.f, 10.f, 10.f);
-		RenderMesh(meshList[GEO_ROCKWALL], true);
-		modelStack.PopMatrix();
-	
-		modelStack.PushMatrix();
-		modelStack.Translate(20, 6, 20);
-		modelStack.Scale(10.f, 10.f, 10.f);
-		RenderMesh(meshList[GEO_ROCKWALL], true);
-		modelStack.PopMatrix();
-
-//		//TURRETS_1
-//		modelStack.PushMatrix();
-//		modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
-//		modelStack.Rotate(turret[1]->RotateToPlayer(camera.position), 0, 1, 0);
-//		modelStack.Scale(3, 3, 3);
-//		RenderMesh(meshList[GEO_TURRETHEAD_2], true);
-//		modelStack.PopMatrix();
-//
-//		modelStack.PushMatrix();
-//		modelStack.Translate(turret[5]->Position.x, turret[5]->Position.y, turret[5]->Position.z);
-//		modelStack.Scale(3, 3, 3);
-//		RenderMesh(meshList[GEO_TURRETBODY_2], true);
-//		modelStack.PopMatrix();
-//
-//		if (bullet[1]->shoot)
-//		{
-//			modelStack.PushMatrix();
-//			modelStack.Translate(bullet[1]->Position.x, bullet[1]->Position.y, bullet[1]->Position.z);
-//			modelStack.Rotate(bullet[1]->rotation, 0, 1, 0);
-//			RenderMesh(meshList[GEO_BULLET], false);
-//			modelStack.PopMatrix();
-//		}
-//
-//		modelStack.PushMatrix();
-//		modelStack.Translate(Keys[2]->Position.x, Keys[2]->Position.y, Keys[2]->Position.z);
-//		modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
-//		RenderMesh(meshList[GEO_BATTERY], true);
-//		modelStack.PopMatrix();
-//
-//		modelStack.PushMatrix();
-//		modelStack.Translate(Keys[3]->Position.x, Keys[3]->Position.y, Keys[3]->Position.z);
-//		modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
-//		RenderMesh(meshList[GEO_BATTERY], true);
-//		modelStack.PopMatrix();
-//
-//		modelStack.PushMatrix();
-//		modelStack.Translate(Keys[4]->Position.x, Keys[4]->Position.y, Keys[4]->Position.z);
-//		modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
-//		RenderMesh(meshList[GEO_BATTERY], true);
-//		modelStack.PopMatrix();
-//
-//		modelStack.PushMatrix();
-//		modelStack.Translate(Keys[5]->Position.x, Keys[5]->Position.y, Keys[5]->Position.z);
-//		modelStack.Rotate(90 * rotateAngle, 0, 1, 0);
-//		RenderMesh(meshList[GEO_RECOVERY], true);
-//		modelStack.PopMatrix();
-//}
-//
-//void Scene1tutorial::skyBox()
-//{
-//	modelStack.PushMatrix();
-//	modelStack.Translate(0, 7.1f, 0);
-//	RenderMesh(meshList[GEO_AXES], false);
-//	modelStack.PopMatrix();
-//
-//	modelStack.PushMatrix();
-//	modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
-//	RenderMesh(meshList[GEO_LIGHTBALL], false);
-//	modelStack.PopMatrix();
-//
-//	//Bottom
-//	modelStack.PushMatrix();
-//	//to do: transformation code here
-//	modelStack.Translate(camera.position.x, camera.position.y - 498.f, camera.position.z);
-//	modelStack.Rotate(90, 0, -1, 0);
-//	modelStack.Rotate(90, -1, 0, 0);
-//	modelStack.Scale(1000.f, 1000.f, 1000.f);
-//	RenderMesh(meshList[GEO_BOTTOM], false);
-//	modelStack.PopMatrix();
-//
-//	//Top
-//	modelStack.PushMatrix();
-//	//to do: transformation code here
-//	modelStack.Translate(camera.position.x, camera.position.y + 498.f, camera.position.z);
-//	modelStack.Rotate(90, 0, -1, 0);
-//	modelStack.Rotate(90, 1, 0, 0);
-//	modelStack.Scale(1000.f, 1000.f, 1000.f);
-//	RenderMesh(meshList[GEO_TOP], false);
-//	modelStack.PopMatrix();
-//
-//	//Front
-//	modelStack.PushMatrix();
-//	//to do: transformation code here
-//	modelStack.Translate(camera.position.x, camera.position.y, camera.position.z - 498.f);
-//	//modelStack.Rotate(90, -1, 0, 0);
-//	modelStack.Scale(1000.f, 1000.f, 1000.f);
-//	RenderMesh(meshList[GEO_FRONT], false);
-//	modelStack.PopMatrix();
-//
-//	//Right
-//	modelStack.PushMatrix();
-//	//to do: transformation code here
-//	modelStack.Translate(camera.position.x + 498.f, camera.position.y, camera.position.z);
-//	modelStack.Rotate(90, 0, -1, 0);
-//	modelStack.Scale(1000.f, 1000.f, 1000.f);
-//	RenderMesh(meshList[GEO_RIGHT], false);
-//	modelStack.PopMatrix();
-//
-//	//Left
-//	modelStack.PushMatrix();
-//	//to do: transformation code here
-//	modelStack.Translate(camera.position.x - 498.f, camera.position.y, camera.position.z);
-//	modelStack.Rotate(90, 0, 1, 0);
-//	modelStack.Scale(1000.f, 1000.f, 1000.f);
-//	RenderMesh(meshList[GEO_LEFT], false);
-//	modelStack.PopMatrix();
-//
-//	//Back
-//	modelStack.PushMatrix();
-//	//to do: transformation code here
-//	modelStack.Translate(camera.position.x, camera.position.y, camera.position.z + 498.f);
-//	modelStack.Rotate(180, 0, 1, 0);
-//	modelStack.Scale(1000.f, 1000.f, 1000.f);
-//	RenderMesh(meshList[GEO_BACK], false);
-//	modelStack.PopMatrix();
-//
-//	modelStack.PushMatrix();
-//	modelStack.Translate(0, 7, 0);
-//	modelStack.Rotate(90, -1, 0, 0);
-//	modelStack.Scale(1000, 1000, 1000);
-//	RenderMesh(meshList[GEO_FLOOR], true);
-//	modelStack.PopMatrix();
-}
-
-void Scene1tutorial::RenderObjects()
-{
-	//modelStack.PushMatrix();
-	//modelStack.Translate(20, 8, 40);;
-	//modelStack.Scale(2.5, 2.5, 2.5);
-	//modelStack.Rotate(rotateAngle, 0, 1, 0);
-	//RenderMesh(meshList[GEO_BLUEKEYCARD], true);
-	//modelStack.PopMatrix();
-	//
-	//modelStack.PushMatrix();
-	//modelStack.Translate(-40, 7, -20);
-	//modelStack.Scale(0.5, 0.5, 0.5);
-	//modelStack.Rotate(270, 0, 1, 0);
-	//RenderMesh(meshList[GEO_VENDINGBODY], true);
-	//modelStack.PushMatrix();
-	//RenderMesh(meshList[GEO_VENDINGCOVER], true);
-	//modelStack.PopMatrix();
-	//modelStack.PopMatrix();
-
-	////TURRETS
-	//meshList[GEO_TURRETHEAD_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_head.obj");
-	//meshList[GEO_TURRETHEAD_2]->textureID = LoadTGA("Image//Enemy//Turret_Head.tga");
-	//meshList[GEO_TURRETBODY_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_body.obj");
-	//meshList[GEO_TURRETBODY_2]->textureID = LoadTGA("Image//Enemy//Turret_Body.tga");
-	//turret[2] = new Enemy("Turret", Vector3(300, 0, 300));
-	//turret[2]->setCollider(10, 10);
-	//turret[2]->updateCurPos();
-	//turret[3] = new Enemy("Turret", Vector3(300, 0, 300));
-
-	////Bullets
-	//meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Bullet", "OBJ//Enemy//Bullet.obj");
-	//meshList[GEO_BULLET]->textureID = LoadTGA("Image//Enemy//Bullet.tga");
-	//bullet[1] = new Bullet("Bullet_1", Vector3(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z));
-	//bullet[1]->setCollider(5, 5);
-	//bullet[1]->updateCurPos();
-}
-
-void Scene1tutorial::Render()
-{
-	if (light[0].type == Light::LIGHT_DIRECTIONAL)
-	{
-		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
-		Vector3 lightDirection_cameraspace = viewStack.Top() * lightDir;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
-	}
-	else if (light[0].type == Light::LIGHT_SPOT)
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
-		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
-	}
-	else
-	{
-		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
-		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
-	}
-
-	//Initialize
-	Mtx44 MVP;
-
-	//Clear color buffer every frame
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//Setup the view for camera
-	viewStack.LoadIdentity();
-	viewStack.LookAt(camera.position.x, camera.position.y, camera.position.z,
-		camera.target.x, camera.target.y, camera.target.z,
-		camera.up.x, camera.up.y, camera.up.z);
-	modelStack.LoadIdentity();
-
-	//-------------------------------------------------------------------------------------
-	skyBox();
-	RenderWall();
-	RenderObjects();
-
-	RenderTextOnScreen(meshList[GEO_TEXT], deltaTime, Color(0, 1, 0), 5, 0, 0);
 
 	modelStack.PushMatrix();
-	RenderTextOnScreen(meshList[GEO_TEXT], coords, Color(1, 0, 0), 2.f, 0.5, 10.f);
+	modelStack.Translate(-1.5, 6, 20);
+	modelStack.Scale(10.f, 10.f, 10.f);
+	RenderMesh(meshList[GEO_ROCK], true);
 	modelStack.PopMatrix();
 
-	////No transform needed
-	//RenderMeshOnScreen(meshList[GEO_QUAD], 10, 10, 10, 10);
-	//-------------------------------------------------------------------------------------
+	modelStack.PushMatrix();
+	modelStack.Translate(20, 6, 20);
+	modelStack.Scale(10.f, 10.f, 10.f);
+	RenderMesh(meshList[GEO_ROCK], true);
+	modelStack.PopMatrix();
 }
 
 void Scene1tutorial::RenderMesh(Mesh *mesh, bool enableLight)
@@ -1131,6 +967,11 @@ void Scene1tutorial::Exit()
 	{
 		if (triggerbox[i] != 0)
 			delete triggerbox[i];
+	}
+	for (int i = 0; i < numOfRocks; ++i)
+	{
+		if (Rock[i] != NULL)
+			delete Rock[i];
 	}
 	delete player;
 	delete lasergun;

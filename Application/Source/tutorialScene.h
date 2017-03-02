@@ -111,6 +111,7 @@ private:
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* walls[5]; //Enclosed room
 
+
 	//Initialize
 	void initializeObjects();
 

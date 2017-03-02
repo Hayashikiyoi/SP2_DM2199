@@ -20,6 +20,7 @@ using std::string;
 #undef numOfEnemy
 #define numOfEnemy 5
 #define numOfBullets 5
+#define numOfRocks 55
 
 class Scene1tutorial : public Scene
 {
@@ -118,6 +119,7 @@ private:
 	//GameObj
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* walls[5]; //Enclosed room
+	GameObject* Rock[numOfRocks];
 
 	//Initialize
 	void initializeObjects();
@@ -143,7 +145,7 @@ private:
 	/*string tempPlayerposX, tempPlayerposZ;*/
 
 	//Trigger box (Instructions)(To next level)
-	GameObject* triggerbox[3];
+	GameObject* triggerbox[8];
 	float Maware;
 	float DelayTimer = 0;
 
