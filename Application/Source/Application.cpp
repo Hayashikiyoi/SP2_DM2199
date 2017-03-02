@@ -119,12 +119,13 @@ void Application::Run()
 	SceneManager::instance()->addScene(new LoadScene); //Must be after main menu
 	SceneManager::instance()->addScene(new tutorialScene);
 	SceneManager::instance()->addScene(new Menu_Room);
+	
 	SceneManager::instance()->addScene(new ChuanXu);
 	SceneManager::instance()->addScene(new Scene4_Boss);
 	SceneManager::instance()->addScene(new GameOver);
 	SceneManager::instance()->addScene(new Win);
 	SceneManager::instance()->addScene(new Credits);
-	SceneManager::instance()->addScene(new Scene1tutorial);
+SceneManager::instance()->addScene(new Scene1tutorial);
 	SceneManager::instance()->startScreen(); //Start of program (Initialise screen)
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
