@@ -518,6 +518,61 @@ void Scene1tutorial::GenerateOBJ()
 	Rock[2] = new GameObject("Rock", Vector3(20, 6, 20));
 	Rock[2]->setCollider(10, 10);
 	Rock[2]->updateCurPos();
+	for (int i = 0; i < 90; i += 10)
+	{
+		Rock[3] = new GameObject("Rock", Vector3(i - 42, 6, 47));
+		Rock[3]->setCollider(10, 10);
+		Rock[3]->updateCurPos();
+
+		Rock[4] = new GameObject("Rock", Vector3(i - 42, 6, -47));
+		Rock[4]->setCollider(10, 10);
+		Rock[4]->updateCurPos();
+
+		Rock[5] = new GameObject("Rock", Vector3(47, 6, i - 42));
+		Rock[5]->setCollider(10, 10);
+		Rock[5]->updateCurPos();
+	}
+
+	for (int i = 0; i < 30; i += 10)
+	{
+		Rock[6] = new GameObject("Rock", Vector3(i - 37, 6, 20));
+		Rock[6]->setCollider(10, 10);
+		Rock[6]->updateCurPos();
+
+		Rock[7] = new GameObject("Rock", Vector3(10, 6, i + 20));
+		Rock[7]->setCollider(10, 10);
+		Rock[7]->updateCurPos();
+	}
+
+	for (int i = 0; i < 40; i += 10)
+	{
+		Rock[8] = new GameObject("Rock", Vector3(30, 6, i - 10));
+		Rock[8]->setCollider(10, 10);
+		Rock[8]->updateCurPos();
+	}
+
+	for (int i = 0; i < 40; i += 10)
+	{
+		Rock[9] = new GameObject("Rock", Vector3(i - 10, 6, -10));
+		Rock[9]->setCollider(10, 10);
+		Rock[9]->updateCurPos();
+	}
+
+	for (int i = 0; i < 30; i += 10)
+	{
+		Rock[10] = new GameObject("Rock", Vector3(-10, 6, i - 30));
+		Rock[10]->setCollider(10, 10);
+		Rock[10]->updateCurPos();
+	}
+
+	for (int i = 0; i < 20; i += 10)
+	{
+		Rock[11] = new GameObject("Rock", Vector3(28, 6, i - 38));
+		Rock[11]->setCollider(10, 10);
+		Rock[11]->updateCurPos();
+	}
+
+
 	
 
 	/*meshList[GEO_TURRETHEAD_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_head.obj");
