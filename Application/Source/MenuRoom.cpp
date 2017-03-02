@@ -628,7 +628,9 @@ void Menu_Room::GenerateOBJ()
 
 	//Doors
 	meshList[GEO_DOOR] = MeshBuilder::GenerateOBJ("Door", "OBJ//Door//Door_Test_4.obj");
+	meshList[GEO_DOOR]->textureID = LoadTGA("Image//Door//Door_Test_4.tga");
 	meshList[GEO_DOOR_FRAME] = MeshBuilder::GenerateOBJ("Door_Frame", "OBJ//Door//doorframe_2.obj");
+	meshList[GEO_DOOR_FRAME]->textureID = LoadTGA("Image//Door//doorframe_2.tga");
 	turret[14] = new Enemy("Door", Vector3(0, 0, 100));
 	turret[14]->setCollider(100, 15);
 	turret[14]->updateCurPos();

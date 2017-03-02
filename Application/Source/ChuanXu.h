@@ -17,8 +17,9 @@
 #include <string>
 using std::string;
 
-#define Walls 32
+#define Walls 31
 #define numOfIdleNPC 5
+#define numOfEnemy 2
 
 class ChuanXu : public Scene 
 {
@@ -102,7 +103,7 @@ private:
 	GameObject* object[NUM_GEOMETRY];
 	GameObject * WallsObj[Walls];
 	GameObject* TriggerBox[1];
-	Enemy* SimpleEnemy[2];
+	Enemy* SimpleEnemy[numOfEnemy];
 	float rotateAngle = 0;
 	float DelayTimer=0;
 	void RenderWalls();
@@ -117,7 +118,7 @@ private:
 	Player* player;
 	Weapon* lasergun;
 	string clipCount, ammoLeft;
-	Item* healthPack[6];
+	Item* healthPack[5];
 	float HPsizeX;
 	float delayTime;
 
