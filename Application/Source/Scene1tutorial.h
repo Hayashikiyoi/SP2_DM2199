@@ -17,9 +17,9 @@ using std::string;
 #include "Item.h"
 #include "Player.h"
 #include "Weapon.h"
-#undef numOfEnemy
+#undef numOfEnemy 
 #define numOfEnemy 5
-#define numOfBullets 5
+#define numOfBullets 1
 #define numOfRocks 55
 
 class Scene1tutorial : public Scene
@@ -126,8 +126,6 @@ private:
 
 	//Render
 	void RenderSkybox();
-	void RenderWalls();
-	void RenderFloor();
 	void RenderGameItems();
 	void RenderRocks();
 

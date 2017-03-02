@@ -24,7 +24,7 @@ void Scene1tutorial::Init()
 {
 	// Init VBO here
 	lightEnable = true;
-
+	tutorial = false;
 	//Emable depth test
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE); //Deletes the backface
@@ -154,21 +154,47 @@ void Scene1tutorial::Update(double dt)
 		}
 
 	}
-	for (int i = 0; i < 5; ++i) //Collision with walls
+	DelayTimer += (float)dt;
+	if (DelayTimer > 5)
 	{
-		if (walls[i] && player->trigger(walls[i]))
+		DelayTimer = 0;
+		bullet[0]->shoot = false;
+	}
+	else if (DelayTimer < 0.5 && tutorial)
+	{
+		bullet[0]->shoot = true;
+	}
+	for (int i = 0; i < numOfBullets; ++i)
+	{
+		if (bullet[i]->shoot && !turret[0]->isdead())
+			bullet[i]->bulletUpdate(dt);
+		if (bullet[i]->shoot == false){
+				bullet[i]->shootBullet(turret[0]->RotateToPlayer(camera.position), turret[0]->Position);
+		}
+		bullet[i]->updateCurPos();
+	}
+	
+	for (int i = 0; i < 1; ++i)
+	{
+		if (bullet[i] && player->trigger(bullet[i]) && tutorial)
 		{
+			player->DmgPlayer(20);
 			camera.position = prevpos;
 			camera.target = prevposTarget;
 			break;
 		}
-		else if (i == (5 - 1))//Max value thx
-		{
-			prevpos = camera.position;
-			prevposTarget = camera.target;
-		}
+	
 	}
-
+	if (object[GEO_BUTTON] && player->trigger(object[GEO_BUTTON]))
+	{
+		SceneManager::instance()->changeScene(3);
+		return;
+	}
+	for (int i = 0; i < clipSize; ++i)
+	{
+		if (lasergun->pBullet[i] && turret[0] && turret[0]->trigger(lasergun->pBullet[i]))
+			turret[0]->dmgToEnemy(10);
+	}
 	for (int i = 0; i < numOfRocks; ++i)
 	{
 		if (Rock[i] && player->trigger(Rock[i]))
@@ -185,69 +211,6 @@ void Scene1tutorial::Update(double dt)
 	}
 	
 
-	/*for (int i = 1; i <= 5; ++i)
-	{
-		if (bullet[i]->shoot)
-			bullet[i]->bulletUpdate(dt);
-		if (bullet[i]->shoot == false){
-			if (i == 5)
-				bullet[i]->shootBullet(turret[9]->RotateToPlayer(camera.position), turret[9]->Position);
-			else
-				bullet[i]->shootBullet(turret[i]->RotateToPlayer(camera.position), turret[i]->Position);
-		}
-		bullet[i]->updateCurPos();
-	}
-
-	for (int i = 0; i < numOfBullets; ++i)
-	{
-		if (bullet[i] && player->trigger(bullet[i]))
-		{
-			if (!smtHappen)
-			{
-				if (i == 5)
-					player->DmgPlayer(30);
-				else
-					player->DmgPlayer(10);
-
-				smtHappen = true;
-				bullet[i]->shoot = false;
-				DelayTimer = 0;
-			}
-		}
-	}*/
-
-	for (int i = 0; i < 3; ++i)
-	{
-		if (triggerbox[i] && player->trigger(triggerbox[i]))
-		{
-			//std::cout << "Hit triggerbox " << std::to_string(i) << std::endl;
-			switch (i)
-			{
-			case 0:
-				tutorial = true;
-				triggerbox[0]->Position = Vector3(1000, 0, 1000); //Move tutorial box away
-				triggerbox[0]->updateCurPos();
-				break;
-			case 1:
-				SceneManager::instance()->changeScene(3); //Change to correct scene
-				std::cout << "Change scene" << std::endl;
-				return;
-				break;
-			case 2:
-				if (Application::IsKeyPressed('E'))
-				{
-					player->HealPlayer(50);
-					triggerbox[i]->Position.x = 1000;
-					triggerbox[i]->Position.z = 1000;
-					triggerbox[i]->updateCurPos();
-				}
-				break;
-			default:
-				break;
-			}
-			break;
-		}
-	}
 	//----------------------------------------------------------------------------
 	//Tutorial--------------------------------------------------------------------
 	Maware += (float)dt;
@@ -269,6 +232,10 @@ void Scene1tutorial::Update(double dt)
 	{
 		lasergun->pickupClip();
 	}
+	if (Application::IsKeyPressed('K'))
+	{
+		tutorial = true;
+	}
 	if (shoot)
 	{
 		TP += (float)dt;
@@ -283,30 +250,13 @@ void Scene1tutorial::Update(double dt)
 	//----------------------------------------------------------------------------
 	static float fixedTimer = 0.f;
 	static bool tutorialhappen = false;
-	if (tutorialhappen)
+
+	if (player->getHealth() == 0)
 	{
-		fixedTimer += dt;
-		if (fixedTimer > 2.f)
-		{
-			player->DmgPlayer(25);
-			fixedTimer = 0.f;
-			tutorialhappen = false;
-		}
+		SceneManager::instance()->changeScene(6);
+		return;
 	}
 	if (tutorial)
-	{
-		//camera.Reset();
-		if (Application::IsKeyPressed('K') && !tutorialhappen)
-		{
-			tutorialNum++;
-			tutorialhappen = true;
-		} 
-		if (tutorialNum > 1)
-		{
-			tutorial = false;
-		}
-	}
-	else
 	{
 		camera.Update(dt);
 	}
@@ -350,8 +300,7 @@ void Scene1tutorial::Render()
 
 	//-------------------------------------------------------------------------------------
 	RenderSkybox();
-	//RenderWalls();
-	RenderFloor();
+
 	RenderGameItems();
 	RenderRocks();
 
@@ -395,18 +344,16 @@ void Scene1tutorial::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], ammoLeft, Color(0, 1, 0), 3, 65.5f, 0.5f);
 
 	//Tutorial Instructions
-	if (tutorialNum == 0)
+	if (tutorial == false)
 	{
 		RenderMeshOnScreen(meshList[GEO_TUTORIAL4], 40, 30, 60, 60, false);
 	}
-	else if (tutorialNum == 1)
-	{
-		RenderMeshOnScreen(meshList[GEO_TUTORIAL5], 40, 30, 60, 60, false);
-	}
+	//else if (tutorialNum == 1)
+	//{
+	//	RenderMeshOnScreen(meshList[GEO_TUTORIAL5], 40, 30, 60, 60, false);
+	//}
 	
- 
-	/*RenderTextOnScreen(meshList[GEO_TEXT], tempPlayerposX, Color(0, 1, 0), 3, 65.5f, 8);
-	RenderTextOnScreen(meshList[GEO_TEXT], tempPlayerposZ, Color(0, 1, 0), 3, 65.5f, 10);*/
+
 	//-------------------------------------------------------------------------------------
 }
 
@@ -494,16 +441,7 @@ void Scene1tutorial::GenerateOBJ()
 	object[GEO_BUTTON]->setCollider(2.5f, 2.5f);
 	object[GEO_BUTTON]->updateCurPos();
 
-	//OBJ Trigger boxes
-	triggerbox[1] = new GameObject("ToNextLevelButton", Vector3(37, 7, -35)); //Create a if statement to go to next level(near button)
-	triggerbox[1]->setCollider(3.5f, 3.5f);
-	triggerbox[1]->updateCurPos();
 
-	triggerbox[0] = new GameObject("Instructions", Vector3(-30, 0, 40));	//Instructions
-	triggerbox[0]->setCollider(2, 2);
-	triggerbox[0]->updateCurPos();
-	tutorial = false;
-	tutorialNum = 0;
 
 	meshList[GEO_RECOVERY] = MeshBuilder::GenerateOBJ("Recovery", "OBJ//Player//Can.obj");
 	triggerbox[2] = new GameObject("Recovery", Vector3(20, 7, 40));
@@ -575,14 +513,28 @@ void Scene1tutorial::GenerateOBJ()
 
 	
 
-	/*meshList[GEO_TURRETHEAD_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_head.obj");
+	meshList[GEO_TURRETHEAD_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_head.obj");
 	meshList[GEO_TURRETHEAD_2]->textureID = LoadTGA("Image//Enemy//Turret_Head.tga");
 	meshList[GEO_TURRETBODY_2] = MeshBuilder::GenerateOBJ("Turret", "OBJ//Enemy//Turret_body.obj");
 	meshList[GEO_TURRETBODY_2]->textureID = LoadTGA("Image//Enemy//Turret_Body.tga");
-	turret[0] = new Enemy("Turret", Vector3(300, 0, 300));
+	turret[0] = new Enemy("Turret", Vector3(20, 7, 40));
 	turret[0]->setCollider(10, 10);
 	turret[0]->updateCurPos();
-	turret[1] = new Enemy("Turret", Vector3(300, 0, 300));*/
+
+	meshList[GEO_BULLET] = MeshBuilder::GenerateOBJ("Turret_bullet", "OBJ//Enemy//Bullet.obj");
+	meshList[GEO_BULLET]->textureID = LoadTGA("Image//Enemy//Bullet.tga");
+	bullet[0] = new Bullet("Turret_BUllet", turret[0]->Position);
+	bullet[0]->setCollider(5, 5);
+
+
+	//OBJ Trigger boxes
+	triggerbox[1] = new GameObject("ToNextLevelButton", Vector3(37, 7, -35)); //Create a if statement to go to next level(near button)
+	triggerbox[1]->setCollider(3.5f, 3.5f);
+	triggerbox[1]->updateCurPos();
+
+	triggerbox[0] = new GameObject("Instructions", Vector3(turret[0]->Position));	//Instructions
+	triggerbox[0]->setCollider(5, 5);
+	triggerbox[0]->updateCurPos();
 }
 
 void Scene1tutorial::initializeObjects()
@@ -606,15 +558,8 @@ void Scene1tutorial::initializeObjects()
 	{
 		Rock[i] = 0;
 	}
-	/*for (int i = 0; i < numOfEnemy; ++i)
-	{
-		turret[i] = 0;
-	}
-
-	for (int i = 0; i < numOfBullets; ++i)
-	{
-		bullet[i] = 0;
-	}*/
+	turret[0] = 0;
+	bullet[0] = 0;
 }
 void Scene1tutorial::RenderGameItems()
 {
@@ -624,57 +569,31 @@ void Scene1tutorial::RenderGameItems()
 	RenderMesh(meshList[GEO_BUTTON], true);
 	modelStack.PopMatrix();
 
-	////TURRETS_1
-	//modelStack.PushMatrix();
-	//modelStack.Translate(turret[1]->Position.x, turret[1]->Position.y, turret[1]->Position.z);
-	//modelStack.Rotate(turret[1]->RotateToPlayer(camera.position), 0, 1, 0);
-	//modelStack.Scale(3, 3, 3);
-	//RenderMesh(meshList[GEO_TURRETHEAD_2], true);
-	//modelStack.PopMatrix();
 
-	//modelStack.PushMatrix();
-	//modelStack.Translate(turret[5]->Position.x, turret[5]->Position.y, turret[5]->Position.z);
-	//modelStack.Scale(3, 3, 3);
-	//RenderMesh(meshList[GEO_TURRETBODY_2], true);
-	//modelStack.PopMatrix();
-
-	//if (bullet[1]->shoot)
-	//{
-	//	modelStack.PushMatrix();
-	//	modelStack.Translate(bullet[1]->Position.x, bullet[1]->Position.y, bullet[1]->Position.z);
-	//	modelStack.Rotate(bullet[1]->rotation, 0, 1, 0);
-	//	RenderMesh(meshList[GEO_BULLET], false);
-	//	modelStack.PopMatrix();
-	//}
-}
-void Scene1tutorial::RenderWalls()
-{
-	for (int i = 0; i < 2; ++i) //First 2 walls
+	if (!turret[0]->isdead())
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(walls[i]->Position.x, walls[i]->Position.y, walls[i]->Position.z);
-		modelStack.Scale(4, 2, 1);
-		RenderMesh(meshList[GEO_WALLROW], false);
+		modelStack.Translate(turret[0]->Position.x, turret[0]->Position.y, turret[0]->Position.z);
+		modelStack.Rotate(turret[0]->RotateToPlayer(player->Position), 0, 1, 0);
+		modelStack.Scale(1.5, 1.5, 1.5);
+		RenderMesh(meshList[GEO_TURRETBODY_2], true);
+		modelStack.PushMatrix();
+		RenderMesh(meshList[GEO_TURRETHEAD_2], true);
+		modelStack.PopMatrix();
 		modelStack.PopMatrix();
 	}
-	modelStack.PushMatrix();
-	modelStack.Translate(walls[2]->Position.x, walls[2]->Position.y, walls[2]->Position.z);
-	modelStack.Rotate(walls[2]->rotation, 0, 1, 0);
-	modelStack.Scale(1, 2, 1);
-	RenderMesh(meshList[GEO_WALLROW], false);
-	modelStack.PopMatrix();
 
-	modelStack.PushMatrix();
-	modelStack.Translate(walls[3]->Position.x, walls[3]->Position.y, walls[3]->Position.z);
-	modelStack.Rotate(walls[3]->rotation, 0, 1, 0);
-	modelStack.Scale(1, 2, 1);
-	RenderMesh(meshList[GEO_WALLROW], false);
-	modelStack.PopMatrix();
+	if (bullet[0]->shoot && !turret[0]->isdead())
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(bullet[0]->Position.x, bullet[0]->Position.y, bullet[0]->Position.z);
+		modelStack.Rotate(bullet[0]->rotation, 0, 1, 0);
+		RenderMesh(meshList[GEO_BULLET], false);
+		modelStack.PopMatrix();
+	}
 }
-void Scene1tutorial::RenderFloor()
-{
 
-}
+
 void Scene1tutorial::RenderSkybox()
 {
 	RenderMesh(meshList[GEO_AXES], false);

@@ -216,7 +216,7 @@ void Menu_Room::Update(double dt)
 
 	//if (Application::IsKeyPressed('Y'))
 	//	coverOpened = true;
-
+	
 	if (Application::IsKeyPressed('I'))
 		light[0].position.z -= (float)(LSPEED * dt);
 	if (Application::IsKeyPressed('K'))
@@ -297,19 +297,25 @@ void Menu_Room::Update(double dt)
 	object[GEO_VOTEX]->rotation -= (float)dt;
 	static bool openDoor = false;
 	static int checker = 0;
+
+
+
+
 	for (int i = 0; i < 6; ++i)
 	{
+		
 		if (TriggerBox[i] && player->trigger(TriggerBox[i]))
 		{
 			
 			if (i>=0 && i<=1 && i <= SceneManager::instance()->levelCompleted)
 				deltaTime = ("Press E: Level " + std::to_string(i+4));
-			if (Application::IsKeyPressed('E') && i >= 0 && i <= 1 && i <= SceneManager::instance()->levelCompleted)
+		/*	if (Application::IsKeyPressed('E') && i >= 0 && i <= 1 && i <= SceneManager::instance()->levelCompleted)
 			{
 				checker = i;
 				SceneManager::instance()->changeScene(i + 4);
 				return;
-			}
+			}*/
+	
 			if (i == 3 && i == SceneManager::instance()->levelCompleted)
 				deltaTime = "Press E: Talk";
 			if (Application::IsKeyPressed('E') && i >= 0 && i <= 1 && i <= SceneManager::instance()->levelCompleted)
@@ -324,11 +330,32 @@ void Menu_Room::Update(double dt)
 			{
 				openDoor = true;
 			}
+			else if (Application::IsKeyPressed('E') && SceneManager::instance()->levelCompleted <1)
+			{
+				checker = i;
+				SceneManager::instance()->changeScene(4);
+				return;
+			}
+			else if (Application::IsKeyPressed('E') && SceneManager::instance()->levelCompleted >= 1)
+			{
+				checker = i;
+				SceneManager::instance()->changeScene(5);
+				return;
+			}
 			std::cout << deltaTime  << std::endl;
 			break;
 		}
 	}
 
+	if (Hidden[0] && player->trigger(Hidden[0]))
+	{
+		deltaTime = "Press E";
+		if (Application::IsKeyPressed('E'))
+		{
+			SceneManager::instance()->changeScene(9);
+			return;
+		}
+	}
 	if (openDoor && turret[14]->Position.y >= -100)
 	{
 		turret[14]->Position.y -= 10 * dt;
@@ -481,6 +508,8 @@ void Menu_Room::Render()
 	RenderMeshOnScreen(meshList[GEO_AMMOBG], 65, 10, 30, 30, false);
 	RenderTextOnScreen(meshList[GEO_TEXT], clipCount, Color(0, 1, 0), 5, 58, 5);
 	RenderTextOnScreen(meshList[GEO_TEXT], ammoLeft, Color(0, 1, 0), 3, 65.5f, 0.5f);
+
+
 	//-------------------------------------------------------------------------------------
 }
 
@@ -729,6 +758,11 @@ void Menu_Room::GenerateOBJ()
 	turret[30] = new Enemy("Debris", Vector3(100, 0, -150));
 	turret[30]->setCollider(50, 50);
 	turret[30]->updateCurPos();
+
+	// trigger for hidden map
+	Hidden[0] = new GameObject("Trigger", Vector3(165, 0, -325));
+	Hidden[0]->setCollider(3, 3);
+	Hidden[0]->updateCurPos();
 }
 
 void Menu_Room::BridgeGate()
@@ -796,6 +830,7 @@ void Menu_Room::initializeObjects()
 	{
 		turret[i] = NULL;
 	}
+	Hidden[0] = NULL;
 }
 
 void Menu_Room::RenderSkybox()
@@ -1272,6 +1307,8 @@ void Menu_Room::Exit()
 		if (Locked[i] != 0)
 			delete Locked[i];
 	}
+	if (Hidden[0] != 0)
+		delete Hidden[0];
 	delete player;
 	delete lasergun;
 	// Cleanup VBO here

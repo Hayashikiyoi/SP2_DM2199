@@ -140,6 +140,7 @@ private:
 	//GameObj
 	GameObject* object[NUM_GEOMETRY];
 	GameObject* TriggerBox[16];
+	GameObject* Hidden[1];
 	Item* Locked[4];
 	float TranslateCode;
 	float Moving;
