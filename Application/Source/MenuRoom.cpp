@@ -128,7 +128,7 @@ void Menu_Room::Update(double dt)
 {
 	static float translateLimit = 1;
 	//deltaTime = "FPS:" + std::to_string(1 / dt);
-
+	deltaTime = "";
 	//-----------------------------------------------------------------------------------------------------------------------------------
 
 	static float LSPEED = 10;
@@ -186,7 +186,7 @@ void Menu_Room::Update(double dt)
 			}
 			if (i == 15 && Application::IsKeyPressed('E'))
 			{
-				SceneManager::instance()->changeScene(6);
+				SceneManager::instance()->changeScene(7);
 				return;
 			}
 		}
@@ -320,7 +320,7 @@ void Menu_Room::Update(double dt)
 				SceneManager::instance()->changeScene(6);*/
 			if (i == 4)
 				deltaTime = "Press E: Unlock";
-			if (Application::IsKeyPressed('E') && i ==4 && SceneManager::instance()->levelCompleted  == 2)
+			if (Application::IsKeyPressed('E') && i ==4 && SceneManager::instance()->levelCompleted  >= 2)
 			{
 				openDoor = true;
 			}
@@ -372,6 +372,7 @@ void Menu_Room::Update(double dt)
 			shoot = false;
 		}
 	}
+
 	ammoLeft = std::to_string(lasergun->bulletLeft()) + "/45";
 	clipCount = std::to_string(lasergun->canisterLeft());
 	//----------------------------------------------------------------------------
@@ -764,7 +765,7 @@ void Menu_Room::DrawBridge()
 {
 	int counter = SceneManager::instance()->levelCompleted;
 
-	for (int i = 0; i <= counter; i++)
+	for (int i = 0; i <= counter+2; i++)
 	{
 		modelStack.PushMatrix();
 		modelStack.Translate(0, -1, (-100 + ((float)(i-1)*50)) );

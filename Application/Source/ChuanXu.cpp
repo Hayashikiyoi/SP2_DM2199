@@ -763,7 +763,7 @@ void ChuanXu::Update(double dt)
 
 	if (TriggerBox[0] && player->trigger(TriggerBox[0]))
 	{
-		SceneManager::instance()->levelCompleted = 2;
+		SceneManager::instance()->levelCompleted = 1;
 		SceneManager::instance()->changeScene(3);
 		return;
 	}
